@@ -58,7 +58,7 @@
 * 
 * Input data revision: 5.936
 * 
-* Last modification (input data): Wed Dec 11 09:40:06 2019
+* Last modification (input data): Thu Dec 19 11:25:44 2019
 * 
 *###################### R SECTION END (VERSION INFO) ###########################
 
@@ -256,6 +256,10 @@ cm_noReboundEffect      "Switch for allowing a rebound effect when closing the e
 cm_peakBudgYr       "date of net-zero CO2 emissions for peak budget runs without overshoot"
 cm_taxCO2inc_after_peakBudgYr "annual increase of CO2 price after the Peak Budget Year in $ per tCO2"
 cm_CO2priceRegConvEndYr      "Year at which regional CO2 prices converge in module 45 realization diffPhaseIn2LinFlex"
+
+c_etaElCarEUR        "Switch for changing the efficiency of electric cars in EUR"
+c_inco0ElCarEUR      "Switch for changing the (initial) investment costs of electric cars in EUR"
+cm_regLaw_ICE        "Switch applying a regulatory law to ICE vehicles in EUR by setting an upper bound to their share starting in 2035"
 ;
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -343,7 +347,7 @@ cm_expoLinear_yearStart  = 2050;   !! def = 2050
 c_budgetCO2FFI           = 1000;   !! def = 1000
 c_abtrdy                 = 2010;   !! def = 2010
 c_abtcst                 = 1;      !! def = 1
-c_budgetCO2              = 1350;   !! def = 1300
+c_budgetCO2              = 1300;   !! def = 1300
 $setGlobal cm_regiCO2target  off       !! def = off
 cm_peakBudgYr                 = 2050;    !! def = 2050
 cm_taxCO2inc_after_peakBudgYr = 2;      !! def = 2
@@ -364,6 +368,10 @@ cm_carbonprice_temperatureLimit       = 1.8;   !! def = 1.8
 cm_DiscRateScen = 0;!! def = 0
 cm_noReboundEffect = 0;
 $setGlobal cm_EsubGrowth  low  !! def = low
+
+c_etaElCarEUR           = 0;      !! def = 0
+c_inco0ElCarEUR         = 1;      !! def = 1
+cm_regLaw_ICE           = -1;     !! def = -1
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ***                           YOU ARE IN THE WARNING ZONE (DON'T DO CHANGES HERE)

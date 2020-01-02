@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #--- Job Submission parameters ------
-#SBATCH --qos=short
+#SBATCH --qos=standby
 #SBATCH --job-name=__JOB_NAME__
 #SBATCH --output=log.txt
 #SBATCH --nodes=1
