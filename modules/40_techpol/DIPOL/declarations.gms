@@ -10,8 +10,6 @@
 *** from NDC2018 afterwards
 $include "./modules/40_techpol/NDC2018/declarations.gms"
 
-display "test*LM*2020-01-07 DIPOL declarations";
-
 *** EOF ./modules/40_techpol/DIPOL/declarations.gms
 
 

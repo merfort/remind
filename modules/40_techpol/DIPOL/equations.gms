@@ -10,6 +10,4 @@
 *** from NDC2018 afterwards
 $include "./modules/40_techpol/NDC2018/equations.gms"
 
-display "test*LM*2020-01-07 DIPOL equations";
-
 *** EOF ./modules/40_techpol/DIPOL/equations.gms

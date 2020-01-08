@@ -6,13 +6,25 @@
 *** |  Contact: remind@pik-potsdam.de
 *** SOF ./modules/40_techpol/DIPOL/bounds.gms 
 
-*LM* Include bounds.gms from the NDC2018 realization. All policies from DIPOL will therefore add to those
-*** from NDC2018 afterwards
+
+*** ---------------------------------------------------------------------------
+*** *LM* Include bounds.gms from the NDC2018 realization. All policies from 
+*** DIPOL will therefore add to those from NDC2018 afterwards
+*** ---------------------------------------------------------------------------
 $include "./modules/40_techpol/NDC2018/bounds.gms"
 
 
-display "test*LM*2020-01-07 DIPOL bounds";
+*** ---------------------------------------------------------------------------
+*** Set bounds for transport sector
+*** ---------------------------------------------------------------------------
 
-*** vm_cap.lo(t,regi,"spv","1") = p40_TechBound(t,regi,"spv")*0.001; 
+*LM* Set lower bounds for tdh2t in EUR between 2020 and 2050. Values are taken from a Budg600 run
+vm_cap.lo(2020,"EUR","tdh2t","1") = 0.00011; 
+vm_cap.lo(2025,"EUR","tdh2t","1") = 0.00169; 
+vm_cap.lo(2030,"EUR","tdh2t","1") = 0.00690; 
+vm_cap.lo(2035,"EUR","tdh2t","1") = 0.01612; 
+vm_cap.lo(2040,"EUR","tdh2t","1") = 0.02642; 
+vm_cap.lo(2045,"EUR","tdh2t","1") = 0.03504; 
+vm_cap.lo(2050,"EUR","tdh2t","1") = 0.03937; 
 
 *** EOF ./modules/40_techpol/DIPOL/bounds.gms
