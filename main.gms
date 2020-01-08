@@ -260,6 +260,7 @@ cm_CO2priceRegConvEndYr      "Year at which regional CO2 prices converge in modu
 c_etaElCarEUR        "Switch for changing the efficiency of electric cars in EUR"
 c_inco0ElCarEUR      "Switch for changing the (initial) investment costs of electric cars in EUR"
 cm_regLaw_ICE        "Switch applying a regulatory law to ICE vehicles in EUR by setting an upper bound to their share starting in 2035"
+cm_bounds_tdh2t_EUR  "Switch for turning on lower bounds for vm_cap of tdh2t in EUR between 2020 and 2050"
 ;
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -372,6 +373,7 @@ $setGlobal cm_EsubGrowth  low  !! def = low
 c_etaElCarEUR           = 0;      !! def = 0
 c_inco0ElCarEUR         = 1;      !! def = 1
 cm_regLaw_ICE           = -1;     !! def = -1
+cm_bounds_tdh2t_EUR     = 0;      !! def = 0
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ***                           YOU ARE IN THE WARNING ZONE (DON'T DO CHANGES HERE)
