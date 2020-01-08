@@ -126,8 +126,4 @@ vm_cap.lo(t,regi,"apCarDiEffT","1")$(t.val > 2090) = 0.001;
 vm_cap.lo(t,regi,"apCarDiEffH2T","1")$(t.val > 2090) = 0.001;
 
 $endif.cm_GDPScen
-
-*LM* regulatory law setting an upper bound to ICE in EUR beginning in 2035 according to switch. Used for DIPOL project
-vm_shUePeT.up(t,"EUR","apCarPeT")$((cm_regLaw_ICE ge 0) AND (t.val ge 2035)) = cm_regLaw_ICE;
-
 *** EOF ./modules/35_transport/complex/bounds.gms

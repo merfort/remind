@@ -18,6 +18,9 @@ $include "./modules/40_techpol/NDC2018/bounds.gms"
 *** Set bounds for transport sector
 *** ---------------------------------------------------------------------------
 
+*LM* Regulatory law setting an upper bound to ICE in EUR beginning in 2035 according to switch.
+vm_shUePeT.up(t,"EUR","apCarPeT")$((cm_regLaw_ICE_EUR ge 0) AND (t.val ge 2035)) = cm_regLaw_ICE_EUR;
+
 *LM* If switch is on, set lower bounds for tdh2t in EUR between 2020 and 2050.
 *** Values are taken from a Budg600 run
 if (cm_bounds_tdh2t_EUR eq 1,
