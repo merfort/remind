@@ -946,9 +946,6 @@ loop(teNoLearn(te),
 );
 display pm_inco0_t;
 
-*LM* Change investment costs of tdh2t in EUR according to c_inco0_tdh2t_EUR for the years 2020-2040
-pm_inco0_t(ttot, "EUR", "tdh2t")$(ttot.val ge 2020 AND ttot.val lt 2040) = c_inco0_tdh2t_EUR * pm_inco0_t(ttot, "EUR", "tdh2t");
-
 ***for those technologies, for which differentiated costs are available for 2015-2040, use those
 $if %cm_techcosts% == "REG"   loop(teRegTechCosts(te)$(not teLearn(te)),
 $if %cm_techcosts% == "REG"   pm_inco0_t(ttot,regi,te)$(ttot.val ge 2015 AND ttot.val lt 2040) = p_inco0(ttot,regi,te);
