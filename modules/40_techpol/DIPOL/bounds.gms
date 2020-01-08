@@ -21,13 +21,13 @@ $include "./modules/40_techpol/NDC2018/bounds.gms"
 *LM* If switch is on, set lower bounds for tdh2t in EUR between 2020 and 2050.
 *** Values are taken from a Budg600 run
 if (cm_bounds_tdh2t_EUR eq 1,
-	vm_cap.lo(2020,"EUR","tdh2t","1") = 0.00011;
-	vm_cap.lo(2025,"EUR","tdh2t","1") = 0.00169;
-	vm_cap.lo(2030,"EUR","tdh2t","1") = 0.00690;
-	vm_cap.lo(2035,"EUR","tdh2t","1") = 0.01612;
-	vm_cap.lo(2040,"EUR","tdh2t","1") = 0.02642;
-	vm_cap.lo(2045,"EUR","tdh2t","1") = 0.03504;
-	vm_cap.lo(2050,"EUR","tdh2t","1") = 0.03937;
+	vm_cap.lo("2020","EUR","tdh2t","1") = 0.00011;
+	vm_cap.lo("2025","EUR","tdh2t","1") = 0.00169;
+	vm_cap.lo("2030","EUR","tdh2t","1") = 0.00690;
+	vm_cap.lo("2035","EUR","tdh2t","1") = 0.01612;
+	vm_cap.lo("2040","EUR","tdh2t","1") = 0.02642;
+	vm_cap.lo("2045","EUR","tdh2t","1") = 0.03504;
+	vm_cap.lo("2050","EUR","tdh2t","1") = 0.03937;
 );
 
 *** EOF ./modules/40_techpol/DIPOL/bounds.gms
