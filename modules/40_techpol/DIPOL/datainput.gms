@@ -8,12 +8,13 @@
 
 
 *** ---------------------------------------------------------------------------
-*** *LM* Include datainput.gms from the NDC2018 realization. All policies from
-*** DIPOL will therefore add to those from NDC2018 afterwards.
-*** For Baseline scenarios a switch can be activated to exclude the NDC2018
-*** content
+*** *LM* Include content from another realization. All policies from DIPOL will
+*** therefore add to those from the other realization. The default setting adds
+*** the NDC2018 realization. For baseline scenarios, the switch can be
+*** deactivated
 *** ---------------------------------------------------------------------------
-$if %cm_DIPOL_only% == "off" $include "./modules/40_techpol/NDC2018/datainput.gms"
+$if %cm_DIPOL_addRealization% == "NDC2018" $include "./modules/40_techpol/NDC2018/datainput.gms"
+$if %cm_DIPOL_addRealization% == "NPi2018" $include "./modules/40_techpol/NPi2018/datainput.gms"
 
 *** EOF ./modules/40_techpol/DIPOL/datainput.gms
 
