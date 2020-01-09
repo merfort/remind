@@ -9,9 +9,11 @@
 
 *** ---------------------------------------------------------------------------
 *** *LM* Include bounds.gms from the NDC2018 realization. All policies from
-*** DIPOL will therefore add to those from NDC2018 afterwards
+*** DIPOL will therefore add to those from NDC2018 afterwards.
+*** For Baseline scenarios a switch can be activated to exclude the NDC2018
+*** content
 *** ---------------------------------------------------------------------------
-$include "./modules/40_techpol/NDC2018/bounds.gms"
+$if %cm_DIPOL_only% == "off" $include "./modules/40_techpol/NDC2018/bounds.gms"
 
 
 *** ---------------------------------------------------------------------------

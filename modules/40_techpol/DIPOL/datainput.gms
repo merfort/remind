@@ -6,9 +6,14 @@
 *** |  Contact: remind@pik-potsdam.de
 *** SOF ./modules/40_techpol/DIPOL/datainput.gms 
 
-*LM* Include datainput.gms from the NDC2018 realization. All policies from DIPOL will therefore add to those
-*** from NDC2018 afterwards
-$include "./modules/40_techpol/NDC2018/datainput.gms"
+
+*** ---------------------------------------------------------------------------
+*** *LM* Include datainput.gms from the NDC2018 realization. All policies from
+*** DIPOL will therefore add to those from NDC2018 afterwards.
+*** For Baseline scenarios a switch can be activated to exclude the NDC2018
+*** content
+*** ---------------------------------------------------------------------------
+$if %cm_DIPOL_only% == "off" $include "./modules/40_techpol/NDC2018/datainput.gms"
 
 *** EOF ./modules/40_techpol/DIPOL/datainput.gms
 

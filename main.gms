@@ -58,7 +58,7 @@
 * 
 * Input data revision: 5.936
 * 
-* Last modification (input data): Mon Jan  6 12:39:08 2020
+* Last modification (input data): Thu Jan  9 09:01:59 2020
 * 
 *###################### R SECTION END (VERSION INFO) ###########################
 
@@ -412,6 +412,8 @@ $setglobal c_testOneRegi_region  EUR       !! def = EUR
 $setglobal cm_cooling_shares  static    !! def = static
 $setglobal cm_techcosts  REG       !! def = REG
 $setglobal cm_regNetNegCO2  on       !! def = on
+
+$setglobal cm_DIPOL_only  off        !! def = off
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
