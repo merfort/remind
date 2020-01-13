@@ -257,6 +257,7 @@ cm_peakBudgYr       "date of net-zero CO2 emissions for peak budget runs without
 cm_taxCO2inc_after_peakBudgYr "annual increase of CO2 price after the Peak Budget Year in $ per tCO2"
 cm_CO2priceRegConvEndYr      "Year at which regional CO2 prices converge in module 45 realization diffPhaseIn2LinFlex"
 
+c_etaElCar           "Switch for changing the efficiency of electric cars globally"
 c_etaElCarEUR        "Switch for changing the efficiency of electric cars in EUR"
 c_inco0ElCarEUR      "Switch for changing the (initial) investment costs of electric cars in EUR"
 cm_regLaw_ICE_EUR    "Switch applying a regulatory law to ICE vehicles in EUR by setting an upper bound to their share starting in 2035"
@@ -370,6 +371,7 @@ cm_DiscRateScen = 0;!! def = 0
 cm_noReboundEffect = 0;
 $setGlobal cm_EsubGrowth  low  !! def = low
 
+c_etaElCar              = 0;      !! def = 0
 c_etaElCarEUR           = 0;      !! def = 0
 c_inco0ElCarEUR         = 1;      !! def = 1
 cm_regLaw_ICE_EUR       = -1;     !! def = -1

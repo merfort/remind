@@ -794,6 +794,12 @@ loop(ttot$(ttot.val ge 2005),
   p_adj_coeff(ttot,regi,teStor)            = 0.05;
 );
 
+*LM* changing the seed for apCarElT according to switch
+loop(ttot$(ttot.val ge 2020 AND (ttot.val lt 2050)),
+	p_adj_seed_te(ttot,regi,"apCarElT") = (1+c_etaElCar) * p_adj_seed_te(ttot,regi,"apCarElT");
+);
+
+
 p_adj_coeff(ttot,regi,te)            = 25 * p_adj_coeff(ttot,regi,te);  !! Rescaling all adjustment cost coefficients
 
 p_adj_coeff_Orig(ttot,regi,te)    = p_adj_coeff(ttot,regi,te);  
