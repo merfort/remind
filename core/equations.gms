@@ -731,9 +731,7 @@ q_eqadj(regi,ttot,teAdj(te))$(ttot.val ge max(2010, cm_startyear)) ..
          power(
          (sum(te2rlf(te,rlf),vm_deltaCap(ttot,regi,te,rlf)) - sum(te2rlf(te,rlf),vm_deltaCap(ttot-1,regi,te,rlf)))/(pm_ttot_val(ttot)-pm_ttot_val(ttot-1))
          ,2)
-                /( sum(te2rlf(te,rlf),vm_deltaCap(ttot-1,regi,te,rlf))
-				   + p_adj_seed_reg(ttot,regi) * p_adj_seed_te(ttot,regi,te) * (1 + c_etaElCarEUR$(sameAs(regi, "EUR") and sameAs(te, "apCarElT") and (ttot.val ge 2020) and (ttot.val lt 2050)))
-				                                                                    !! *LM* change adjustment costs of apCarElT for EUR before 2050 (according to c_etaElCarEUR, used for DIPOL project)
+                /( sum(te2rlf(te,rlf),vm_deltaCap(ttot-1,regi,te,rlf)) + p_adj_seed_reg(ttot,regi) * p_adj_seed_te(ttot,regi,te)  
                    + p_adj_deltacapoffset("2010",regi,te)$(ttot.val eq 2010) + p_adj_deltacapoffset("2015",regi,te)$(ttot.val eq 2015)
                   );
 
