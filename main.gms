@@ -58,7 +58,7 @@
 * 
 * Input data revision: 5.936
 * 
-* Last modification (input data): Thu Jan  9 09:01:59 2020
+* Last modification (input data): Wed Jan 22 10:34:14 2020
 * 
 *###################### R SECTION END (VERSION INFO) ###########################
 
@@ -156,6 +156,8 @@ $setglobal techpol  none              !! def = none
 $setglobal emicapregi  none           !! def = none
 ***---------------------    42_banking  -----------------------------------------
 $setglobal banking  off               !! def = off
+***---------------------    43_stakepol  ----------------------------------------
+$setglobal stakepol  none             !! def = none
 ***---------------------    45_carbonprice  -------------------------------------
 $setglobal carbonprice  none          !! def = none
 ***---------------------    47_regipol  -------------------------------------

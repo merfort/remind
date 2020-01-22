@@ -794,6 +794,7 @@ sets
        techpol
        emicapregi
        banking
+       stakepol
        carbonprice
        regipol
        damages
@@ -827,6 +828,7 @@ module2realisation(modules,*) "mapping of modules and active realisations" /
        techpol . %techpol%
        emicapregi . %emicapregi%
        banking . %banking%
+       stakepol . %stakepol%
        carbonprice . %carbonprice%
        regipol . %regipol%
        damages . %damages%
