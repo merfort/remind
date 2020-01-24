@@ -10,8 +10,16 @@
 *** Set bounds for transport sector
 *** ---------------------------------------------------------------------------
 
-*LM* Regulatory law setting an upper bound to ICE in EUR beginning in 2035 according to switch.
-vm_shUePeT.up(t,"EUR","apCarPeT")$((cm_regLaw_ICE_EUR ge 0) AND (t.val ge 2035)) = cm_regLaw_ICE_EUR;
+*LM* Regulatory law setting an upper bound to ICE for given region(s) and start year(s)
+*** according to switch.
+$ifThen.upboundICE not "%cm_upboundICE%" == "off"
+* loop((ttot, all_regi)$(p43_upboundICE(ttot, all_regi) gt 0),
+loop((ttot, all_regi)$t_regi_upboundICE_43(ttot, all_regi),
+	loop(t$(t.val ge ttot.val),
+		vm_shUePeT.up(t,all_regi,"apCarPeT") = p43_upboundICE(ttot,all_regi);
+	);
+);
+$endIf.upboundICE
 
 *LM* Set lower bounds for tdh2t in EUR between 2020 and 2050 if switch is activated.
 *** Values are taken from a Budg600 run

@@ -1,37 +1,41 @@
-title;start;stakepol;c_etaElCar;c_inco0ElCarEUR;cm_regLaw_ICE_EUR;c_abtrdy;c_abtcst;c_bioliqscen;c_bioh2scen;cm_bioenergymaxscen;CCU;cm_bounds_tdh2t_EUR;cm_bounds_tdelt_EUR;regionmapping;cm_rcp_scen;cm_iterative_target_adj;c_budgetCO2;carbonprice;cm_co2_tax_2020;optimization;c_testOneRegi_region;buildings;techpol;cm_emiscen;cm_multigasscen;cm_startyear;path_gdx;path_gdx_ref;path_gdx_bau
-Base;0;DIPOL;0;1;-1;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;none;0;0;none;-1;nash;EUR;simple;none;1;2;2005;./config/input.gdx;;
-NDC;0;DIPOL;0;1;-1;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp45;3;0;NDC2018;1;nash;EUR;simple;NDC2018;9;3;2015;./config/input.gdx;./output/Base_2020-01-20_10.20.31/fulldata.gdx;./output/Base_2020-01-20_10.20.31/fulldata.gdx
-Npi;0;DIPOL;0;1;-1;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp45;3;0;NPi2018;1;nash;EUR;simple;NPi2018;9;3;2025;./config/input.gdx;./output/NDC_2020-01-20_11.07.49/fulldata.gdx;./output/Base_2020-01-20_10.20.31/fulldata.gdx
-Budg600;0;DIPOL;0;1;-1;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp20;5;600;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;./output/NDC_2020-01-20_11.07.49/fulldata.gdx;./output/Base_2020-01-20_10.20.31/fulldata.gdx
-Budg600_noDIPOL;0;none;0;1;-1;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp20;5;600;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;./output/NDC_2020-01-20_11.07.49/fulldata.gdx;./output/Base_2020-01-20_10.20.31/fulldata.gdx
-Budg600_DIPOL_allOff;0;DIPOL;0;1;-1;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp20;5;600;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;./output/NDC_2020-01-20_11.07.49/fulldata.gdx;./output/Base_2020-01-20_10.20.31/fulldata.gdx
-Budg600_DIPOL_allOn;0;DIPOL;4;0.8333;10;2010;1.2;1;1;0;on;1;1;./config/regionmappingH12.csv;rcp20;5;600;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;./output/NDC_2020-01-20_11.07.49/fulldata.gdx;./output/Base_2020-01-20_10.20.31/fulldata.gdx
-Budg950;0;DIPOL;0;1;-1;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp26;5;950;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;./output/NDC_2020-01-20_11.07.49/fulldata.gdx;./output/Base_2020-01-20_10.20.31/fulldata.gdx
-Budg950_noDIPOL;0;none;0;1;-1;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp26;5;950;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;./output/NDC_2020-01-20_11.07.49/fulldata.gdx;./output/Base_2020-01-20_10.20.31/fulldata.gdx
-Budg1300;0;DIPOL;0;1;-1;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp26;5;1300;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;./output/NDC_2020-01-20_11.07.49/fulldata.gdx;./output/Base_2020-01-20_10.20.31/fulldata.gdx
-Budg1300_noDIPOL;0;none;0;1;-1;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp26;5;1300;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;./output/NDC_2020-01-20_11.07.49/fulldata.gdx;./output/Base_2020-01-20_10.20.31/fulldata.gdx
-Base_EUR;0;DIPOL;0;1;-1;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;none;0;0;none;-1;testOneRegi;EUR;simple;none;1;2;2005;./config/input.gdx;;
-NDC_EUR;0;DIPOL;0;1;-1;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp45;3;0;NDC2018;1;testOneRegi;EUR;simple;NDC2018;9;3;2015;./config/input.gdx;Base_EUR;Base_EUR
-Npi_EUR;0;DIPOL;0;1;-1;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp45;3;0;NPi2018;1;testOneRegi;EUR;simple;NPi2018;9;3;2025;./config/input.gdx;NDC_EUR;Base_EUR
-Budg600_EUR;0;DIPOL;0;1;-1;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp20;5;600;expoLinear;30;testOneRegi;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;NDC_EUR;Base_EUR
-Budg950_EUR;0;DIPOL;0;1;-1;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp26;5;950;expoLinear;30;testOneRegi;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;NDC_EUR;Base_EUR
-Budg1300_EUR;0;DIPOL;0;1;-1;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp26;5;1300;expoLinear;30;testOneRegi;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;NDC_EUR;Base_EUR
-Base_etaElCar4p0;0;DIPOL;4;1;-1;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;none;0;0;none;-1;nash;EUR;simple;none;1;2;2005;./config/input.gdx;;
-Budg600_etaElCar4p0;0;DIPOL;4;1;-1;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp20;5;600;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;Base;Base
-Base_inco0p83;0;DIPOL;0;0.8333;-1;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;none;0;0;none;-1;nash;EUR;simple;none;1;2;2005;./config/input.gdx;;
-Budg600_inco0p83;0;DIPOL;0;0.8333;-1;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp20;5;600;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;Base_etaElCar4p0;Base_inco0p83
-Base_ICE10;0;DIPOL;0;1;10;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;none;0;0;none;-1;nash;EUR;simple;none;1;2;2005;./config/input.gdx;;
-Budg600_ICE10;0;DIPOL;0;1;10;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp20;5;600;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;Base;Base
-Base_abtRestr;0;DIPOL;0;1;-1;2030;1.2;1;1;4;off;0;0;./config/regionmappingH12.csv;none;0;0;none;-1;nash;EUR;simple;none;1;2;2005;./config/input.gdx;;
-Budg600_abtRestr;0;DIPOL;0;1;-1;2030;1.2;1;1;4;off;0;0;./config/regionmappingH12.csv;rcp20;5;600;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;Base_abtRestr;Base_abtRestr
-Base_abtConserv;0;DIPOL;0;1;-1;2030;1;0;0;1;off;0;0;./config/regionmappingH12.csv;none;0;0;none;-1;nash;EUR;simple;none;1;2;2005;./config/input.gdx;;
-Budg600_abtConserv;0;DIPOL;0;1;-1;2030;1;0;0;1;off;0;0;./config/regionmappingH12.csv;rcp20;5;600;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;Base_abtConserv;Base_abtConserv
-Base_abtrdy2030;0;DIPOL;0;1;-1;2030;1;1;1;0;off;0;0;./config/regionmappingH12.csv;none;0;0;none;-1;nash;EUR;simple;none;1;2;2005;./config/input.gdx;;
-Base_abtrdy2020;0;DIPOL;0;1;-1;2020;1;1;1;0;off;0;0;./config/regionmappingH12.csv;none;0;0;none;-1;nash;EUR;simple;none;1;2;2005;./config/input.gdx;;
-Base_abtBioMaxScen4;0;DIPOL;0;1;-1;2010;1;1;1;4;off;0;0;./config/regionmappingH12.csv;none;0;0;none;-1;nash;EUR;simple;none;1;2;2005;./config/input.gdx;;
-Base_inco0tdh2t_0p86;0;DIPOL;0;1;-1;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;none;0;0;none;-1;nash;EUR;simple;none;1;2;2005;./config/input.gdx;;
-Budg600_inco0tdh2t_0p86;0;DIPOL;0;1;-1;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp20;5;600;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;Base_inco0tdh2t_0p86;Base_inco0tdh2t_0p86
-NDC_tdh2tOn;0;DIPOL;0;1;-1;2010;1;1;1;0;off;1;0;./config/regionmappingH12.csv;rcp45;3;0;NDC2018;1;nash;EUR;simple;NDC2018;9;3;2015;./config/input.gdx;Base;Base
-Budg600_tdh2tOn;0;DIPOL;0;1;-1;2010;1;1;1;0;off;1;0;./config/regionmappingH12.csv;rcp20;5;600;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;NDC;Base
-NDC_tdeltOn;0;DIPOL;0;1;-1;2010;1;1;1;0;off;0;1;./config/regionmappingH12.csv;rcp45;3;0;NDC2018;1;nash;EUR;simple;NDC2018;9;3;2015;./config/input.gdx;Base;Base
-Budg600_tdeltOn;0;DIPOL;0;1;-1;2010;1;1;1;0;off;0;1;./config/regionmappingH12.csv;rcp20;5;600;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;NDC;Base
+title;start;stakepol;c_etaElCar;c_inco0ElCarEUR;cm_upboundICE;c_abtrdy;c_abtcst;c_bioliqscen;c_bioh2scen;cm_bioenergymaxscen;CCU;cm_bounds_tdh2t_EUR;cm_bounds_tdelt_EUR;regionmapping;cm_rcp_scen;cm_iterative_target_adj;c_budgetCO2;carbonprice;cm_co2_tax_2020;optimization;c_testOneRegi_region;buildings;techpol;cm_emiscen;cm_multigasscen;cm_startyear;path_gdx;path_gdx_ref;path_gdx_bau
+Base;0;DIPOL;0;1;off;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;none;0;0;none;-1;nash;EUR;simple;none;1;2;2005;./config/input.gdx;;
+NDC;0;DIPOL;0;1;off;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp45;3;0;NDC2018;1;nash;EUR;simple;NDC2018;9;3;2015;./config/input.gdx;./output/Base_2020-01-20_10.20.31/fulldata.gdx;./output/Base_2020-01-20_10.20.31/fulldata.gdx
+Npi;0;DIPOL;0;1;off;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp45;3;0;NPi2018;1;nash;EUR;simple;NPi2018;9;3;2025;./config/input.gdx;./output/NDC_2020-01-20_11.07.49/fulldata.gdx;./output/Base_2020-01-20_10.20.31/fulldata.gdx
+Budg600;0;DIPOL;0;1;off;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp20;5;600;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;./output/NDC_2020-01-20_11.07.49/fulldata.gdx;./output/Base_2020-01-20_10.20.31/fulldata.gdx
+Budg600_noDIPOL;0;none;0;1;off;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp20;5;600;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;./output/NDC_2020-01-20_11.07.49/fulldata.gdx;./output/Base_2020-01-20_10.20.31/fulldata.gdx
+Budg600_DIPOL_allOff;0;DIPOL;0;1;off;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp20;5;600;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;./output/NDC_2020-01-20_11.07.49/fulldata.gdx;./output/Base_2020-01-20_10.20.31/fulldata.gdx
+Budg600_DIPOL_allOn;0;DIPOL;4;0.8333;2035.EUR 10;2010;1.2;1;1;0;on;1;1;./config/regionmappingH12.csv;rcp20;5;600;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;./output/NDC_2020-01-20_11.07.49/fulldata.gdx;./output/Base_2020-01-20_10.20.31/fulldata.gdx
+Budg950;0;DIPOL;0;1;off;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp26;5;950;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;./output/NDC_2020-01-20_11.07.49/fulldata.gdx;./output/Base_2020-01-20_10.20.31/fulldata.gdx
+Budg950_noDIPOL;0;none;0;1;off;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp26;5;950;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;./output/NDC_2020-01-20_11.07.49/fulldata.gdx;./output/Base_2020-01-20_10.20.31/fulldata.gdx
+Budg1300;0;DIPOL;0;1;off;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp26;5;1300;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;./output/NDC_2020-01-20_11.07.49/fulldata.gdx;./output/Base_2020-01-20_10.20.31/fulldata.gdx
+Budg1300_noDIPOL;0;none;0;1;off;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp26;5;1300;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;./output/NDC_2020-01-20_11.07.49/fulldata.gdx;./output/Base_2020-01-20_10.20.31/fulldata.gdx
+Base_EUR;0;DIPOL;0;1;off;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;none;0;0;none;-1;testOneRegi;EUR;simple;none;1;2;2005;./config/input.gdx;;
+Base_EUR_ICE_testZero;0;DIPOL;0;1;2035.EUR 0.002, 2050.EUR 0.001;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;none;0;0;none;-1;testOneRegi;EUR;simple;none;1;2;2005;./config/input.gdx;;
+Base_EUR_ICE10_newStyle;0;DIPOL;0;1;2035.EUR 10;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;none;0;0;none;-1;testOneRegi;EUR;simple;none;1;2;2005;./config/input.gdx;;
+NDC_EUR;0;DIPOL;0;1;off;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp45;3;0;NDC2018;1;testOneRegi;EUR;simple;NDC2018;9;3;2015;./config/input.gdx;Base_EUR;Base_EUR
+Npi_EUR;0;DIPOL;0;1;off;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp45;3;0;NPi2018;1;testOneRegi;EUR;simple;NPi2018;9;3;2025;./config/input.gdx;NDC_EUR;Base_EUR
+Budg600_EUR;0;DIPOL;0;1;off;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp20;5;600;expoLinear;30;testOneRegi;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;NDC_EUR;Base_EUR
+Budg950_EUR;0;DIPOL;0;1;off;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp26;5;950;expoLinear;30;testOneRegi;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;NDC_EUR;Base_EUR
+Budg1300_EUR;0;DIPOL;0;1;off;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp26;5;1300;expoLinear;30;testOneRegi;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;NDC_EUR;Base_EUR
+Base_etaElCar4p0;0;DIPOL;4;1;off;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;none;0;0;none;-1;nash;EUR;simple;none;1;2;2005;./config/input.gdx;;
+Budg600_etaElCar4p0;0;DIPOL;4;1;off;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp20;5;600;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;Base;Base
+Base_inco0p83;0;DIPOL;0;0.8333;off;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;none;0;0;none;-1;nash;EUR;simple;none;1;2;2005;./config/input.gdx;;
+Budg600_inco0p83;0;DIPOL;0;0.8333;off;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp20;5;600;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;Base_etaElCar4p0;Base_inco0p83
+Base_ICE_multiRegiTime;0;DIPOL;0;1;2035.EUR 10, 2040.EUR 6, 2040.USA 9;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;none;0;0;none;-1;nash;EUR;simple;none;1;2;2005;./config/input.gdx;;
+Base_ICE10_newStyle;0;DIPOL;0;1;2035.EUR 10;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;none;0;0;none;-1;nash;EUR;simple;none;1;2;2005;./config/input.gdx;;
+Budg600_multiRegiTime;0;DIPOL;0;1;2035.EUR 10, 2040.EUR 6, 2040.USA 9;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp20;5;600;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;./output/NDC_2020-01-20_11.07.49/fulldata.gdx;./output/Base_2020-01-20_10.20.31/fulldata.gdx
+Budg600_ICE10;0;DIPOL;0;1;2035.EUR 10;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp20;5;600;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;./output/NDC_2020-01-20_11.07.49/fulldata.gdx;./output/Base_2020-01-20_10.20.31/fulldata.gdx
+Base_abtRestr;0;DIPOL;0;1;off;2030;1.2;1;1;4;off;0;0;./config/regionmappingH12.csv;none;0;0;none;-1;nash;EUR;simple;none;1;2;2005;./config/input.gdx;;
+Budg600_abtRestr;0;DIPOL;0;1;off;2030;1.2;1;1;4;off;0;0;./config/regionmappingH12.csv;rcp20;5;600;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;Base_abtRestr;Base_abtRestr
+Base_abtConserv;0;DIPOL;0;1;off;2030;1;0;0;1;off;0;0;./config/regionmappingH12.csv;none;0;0;none;-1;nash;EUR;simple;none;1;2;2005;./config/input.gdx;;
+Budg600_abtConserv;0;DIPOL;0;1;off;2030;1;0;0;1;off;0;0;./config/regionmappingH12.csv;rcp20;5;600;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;Base_abtConserv;Base_abtConserv
+Base_abtrdy2030;0;DIPOL;0;1;off;2030;1;1;1;0;off;0;0;./config/regionmappingH12.csv;none;0;0;none;-1;nash;EUR;simple;none;1;2;2005;./config/input.gdx;;
+Base_abtrdy2020;0;DIPOL;0;1;off;2020;1;1;1;0;off;0;0;./config/regionmappingH12.csv;none;0;0;none;-1;nash;EUR;simple;none;1;2;2005;./config/input.gdx;;
+Base_abtBioMaxScen4;0;DIPOL;0;1;off;2010;1;1;1;4;off;0;0;./config/regionmappingH12.csv;none;0;0;none;-1;nash;EUR;simple;none;1;2;2005;./config/input.gdx;;
+Base_inco0tdh2t_0p86;0;DIPOL;0;1;off;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;none;0;0;none;-1;nash;EUR;simple;none;1;2;2005;./config/input.gdx;;
+Budg600_inco0tdh2t_0p86;0;DIPOL;0;1;off;2010;1;1;1;0;off;0;0;./config/regionmappingH12.csv;rcp20;5;600;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;Base_inco0tdh2t_0p86;Base_inco0tdh2t_0p86
+NDC_tdh2tOn;0;DIPOL;0;1;off;2010;1;1;1;0;off;1;0;./config/regionmappingH12.csv;rcp45;3;0;NDC2018;1;nash;EUR;simple;NDC2018;9;3;2015;./config/input.gdx;Base;Base
+Budg600_tdh2tOn;0;DIPOL;0;1;off;2010;1;1;1;0;off;1;0;./config/regionmappingH12.csv;rcp20;5;600;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;NDC;Base
+NDC_tdeltOn;0;DIPOL;0;1;off;2010;1;1;1;0;off;0;1;./config/regionmappingH12.csv;rcp45;3;0;NDC2018;1;nash;EUR;simple;NDC2018;9;3;2015;./config/input.gdx;Base;Base
+Budg600_tdeltOn;0;DIPOL;0;1;off;2010;1;1;1;0;off;0;1;./config/regionmappingH12.csv;rcp20;5;600;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;NDC;Base
