@@ -58,7 +58,7 @@
 * 
 * Input data revision: 5.936
 * 
-* Last modification (input data): Fri Jan 24 12:22:24 2020
+* Last modification (input data): Wed Jan 29 09:52:55 2020
 * 
 *###################### R SECTION END (VERSION INFO) ###########################
 
@@ -264,6 +264,7 @@ c_etaElCar           "Switch for changing the efficiency of electric cars global
 c_inco0ElCarEUR      "Switch for changing the (initial) investment costs of electric cars in EUR"
 cm_bounds_tdh2t_EUR  "Switch for turning on lower bounds for vm_cap of tdh2t in EUR between 2020 and 2050"
 cm_bounds_tdelt_EUR  "Switch for turning on lower bounds for vm_cap of tdelt in EUR between 2020 and 2050"
+cm_regiNoBioImport   "Switch defining regions where biomass impport is disabled"
 ;
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -373,11 +374,12 @@ cm_DiscRateScen = 0;!! def = 0
 cm_noReboundEffect = 0;
 $setGlobal cm_EsubGrowth  low  !! def = low
 
-$setGlobal cm_upboundICE  off     !! def = off
-c_etaElCar              = 0;      !! def = 0
-c_inco0ElCarEUR         = 1;      !! def = 1
-cm_bounds_tdh2t_EUR     = 0;      !! def = 0
-cm_bounds_tdelt_EUR     = 0;      !! def = 0
+$setGlobal cm_upboundICE  off          !! def = off
+c_etaElCar                   = 0;      !! def = 0
+c_inco0ElCarEUR              = 1;      !! def = 1
+cm_bounds_tdh2t_EUR          = 0;      !! def = 0
+cm_bounds_tdelt_EUR          = 0;      !! def = 0
+$setGlobal cm_regiNoBioImport  none    !! def <- "none"
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ***                           YOU ARE IN THE WARNING ZONE (DON'T DO CHANGES HERE)

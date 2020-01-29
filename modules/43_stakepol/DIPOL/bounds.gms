@@ -13,7 +13,6 @@
 *LM* Regulatory law setting an upper bound to ICE for given region(s) and start year(s)
 *** according to switch.
 $ifThen.upboundICE not "%cm_upboundICE%" == "off"
-* loop((ttot, all_regi)$(p43_upboundICE(ttot, all_regi) gt 0),
 loop((ttot, all_regi)$t_regi_upboundICE_43(ttot, all_regi),
 	loop(t$(t.val ge ttot.val),
 		vm_shUePeT.up(t,all_regi,"apCarPeT") = p43_upboundICE(ttot,all_regi);
@@ -44,5 +43,10 @@ if (cm_bounds_tdelt_EUR eq 1,
 	vm_cap.lo("2045","EUR","tdelt","1") = 0.16665672;
 	vm_cap.lo("2050","EUR","tdelt","1") = 0.18292249;
 );
+
+*LM* Switch off biomass import for a given region(s)
+$ifThen.regiNoBioImport not "%cm_regiNoBioImport%" == "none"
+vm_Mport.fx(t,regiNoBioImport_43,"pebiolc") = 0;
+$endIf.regiNoBioImport
 
 *** EOF ./modules/43_stakepol/DIPOL/bounds.gms
