@@ -38,6 +38,10 @@ $offdelim
 ;
 p32_factorStorage(all_regi,all_te) = f32_factorStorage(all_regi,all_te);
 
+*LM* Changes the storage factor according to the switch cm_factorStorageMult (used in the DIPOL project), as a proxy for 
+*** more optimistic/pessimistic assumptions on the expansion of renewables
+p32_factorStorage(all_regi,all_te) = cm_factorStorageMult * p32_factorStorage(all_regi,all_te);
+
 
 ***parameter p32_storexp(all_regi,all_te) - exponent that determines how curtailment and storage requirements per kW increase with market share of wind and solar. 1 means specific marginal costs increase linearly
 p32_storexp(regi,"spv")     = 1;

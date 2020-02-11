@@ -265,6 +265,7 @@ c_inco0ElCarEUR      "Switch for changing the (initial) investment costs of elec
 cm_bounds_tdh2t_EUR  "Switch for turning on lower bounds for vm_cap of tdh2t in EUR between 2020 and 2050"
 cm_bounds_tdelt_EUR  "Switch for turning on lower bounds for vm_cap of tdelt in EUR between 2020 and 2050"
 cm_regiNoBioImport   "Switch defining regions where biomass impport is disabled"
+cm_factorStorageMult "Multitplicative factor for the scaling of curtailment and storage requirements for renewables"
 ;
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -380,6 +381,7 @@ c_inco0ElCarEUR              = 1;      !! def = 1
 cm_bounds_tdh2t_EUR          = 0;      !! def = 0
 cm_bounds_tdelt_EUR          = 0;      !! def = 0
 $setGlobal cm_regiNoBioImport  none    !! def <- "none"
+cm_factorStorageMult         = 1;      !! def <- 1
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ***                           YOU ARE IN THE WARNING ZONE (DON'T DO CHANGES HERE)
