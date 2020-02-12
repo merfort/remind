@@ -584,4 +584,10 @@ loop ((t, regi) $ ( (sameAs(t,"2010") OR sameAs(t,"2015"))
       vm_prodSe.up(t,regi,"pegas","sehe","gashp")   = 0;
 );
 );
+
+*LM* Remove bound on vm_prodSe of biochp for IND, 2015. This is necessary to avoid an infeasibility in case of c_abtrdy is activated,
+*** i.e. if advanced bioenergy technologies are not ready before 2030. In order to to match historic values, there needs to be at
+*** least one technology in IND, 2015, that can convert pebiolc into seel. And if c_abtrdy is activated, biochp is the only technolgy
+*** left to do the job.
+vm_prodSe.up("2015","IND","pebiolc","seel","biochp")  = inf;
 *** EOF ./core/bounds.gms
