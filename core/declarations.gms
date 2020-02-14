@@ -183,6 +183,8 @@ pm_taxCO2eqSCC(ttot,all_regi)                        "carbon tax component due t
 
 pm_consPC(tall,all_regi)                             "consumption per capita"
 pm_GDPGross(tall,all_regi)                           "gross GDP (before damages)"
+
+pm_subsidies_teLearn(tall,all_regi,all_te)           "explicit subsidies for a learning technology that reduce investment costs. [T$/TW]"
 ***----------------------------------------------------------------------------------------
 *** ----- Parameters needed for MAGICC ----------------------------------------------------
 p_MAGICC_emi(tall,RCP_regions_world_bunkers,emiRCP)  "emission data to export"

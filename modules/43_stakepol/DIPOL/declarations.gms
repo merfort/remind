@@ -7,6 +7,15 @@
 *** SOF ./modules/43_stakepol/DIPOL/declarations.gms
 
 
+*LM* Define parameter to read subsidies directly from the config file. The first entry defines
+*** the starting year and the second the last year in which the given technology is subsidized
+*** in the given region.
+$ifThen.subsidies_teLearn not "%cm_subsidies_teLearn%" == "off"
+Parameter
+    p43_subsidies_teLearn(ttot, tall, all_regi, all_te) "auxiliary parameter to read in subsidies for a given learning technology. [$(2015)/kW]" / %cm_subsidies_teLearn% /
+;
+$endIf.subsidies_teLearn
+
 *LM* Define parameter and set to set an upper bound to ICE vehicles
 $ifThen.upboundICE not "%cm_upboundICE%" == "off"
 Parameter

@@ -1935,6 +1935,7 @@ alias(t,t3);
 alias(tall,tall2);
 alias(tall,tall3);
 alias(ttot,ttot2);
+alias(ttot,ttot3);
 alias(opTimeYr,opTimeYr2);
 alias(teVRE,teVRE2);
 alias(teLoc,teLoc2);

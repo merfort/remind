@@ -459,6 +459,12 @@ q_costTeCapital(t,regi,teLearn) ..
 	
 ***  floor costs - calculated such that they coincide for all regions   
   + pm_data(regi,"floorcost",teLearn)
+
+*LM* Subtract costs that are explicitly subsidized for a given technology
+*** These costs will be added to the somewhere else to enter the budget 
+*** XXXXXXXXXXXXXXXXXXXXXXXXXXXXX TODO XXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+*** This was introduced for the DIPOL project
+  - pm_subsidies_teLearn(t, regi, teLearn)
 ;
 
 

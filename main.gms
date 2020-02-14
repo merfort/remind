@@ -259,12 +259,13 @@ cm_peakBudgYr       "date of net-zero CO2 emissions for peak budget runs without
 cm_taxCO2inc_after_peakBudgYr "annual increase of CO2 price after the Peak Budget Year in $ per tCO2"
 cm_CO2priceRegConvEndYr      "Year at which regional CO2 prices converge in module 45 realization diffPhaseIn2LinFlex"
 
-cm_upboundICE        "upper bound on the share of ICE vehicles"
 c_etaElCar           "Switch for changing the efficiency of electric cars globally"
+cm_subsidies_teLearn "switch that allows for subsidizing learning technologies by reducing inco0 for a given time and region"
 c_inco0ElCarEUR      "Switch for changing the (initial) investment costs of electric cars in EUR"
+cm_upboundICE        "upper bound on the share of ICE vehicles"
 cm_bounds_tdh2t_EUR  "Switch for turning on lower bounds for vm_cap of tdh2t in EUR between 2020 and 2050"
-cm_bounds_tdelt_EUR  "Switch for turning on lower bounds for vm_cap of tdelt in EUR between 2020 and 2050"
 cm_regiNoBioImport   "Switch defining regions where biomass impport is disabled"
+cm_bounds_tdelt_EUR  "Switch for turning on lower bounds for vm_cap of tdelt in EUR between 2020 and 2050"
 cm_factorStorageMult "Multitplicative factor for the scaling of curtailment and storage requirements for renewables"
 ;
 
@@ -375,13 +376,14 @@ cm_DiscRateScen = 0;!! def = 0
 cm_noReboundEffect = 0;
 $setGlobal cm_EsubGrowth  low  !! def = low
 
-$setGlobal cm_upboundICE  off          !! def = off
 c_etaElCar                   = 0;      !! def = 0
+$setGlobal cm_subsidies_teLearn off    !! def = off
 c_inco0ElCarEUR              = 1;      !! def = 1
+$setGlobal cm_upboundICE  off          !! def = off
 cm_bounds_tdh2t_EUR          = 0;      !! def = 0
+$setGlobal cm_regiNoBioImport  none    !! def = "none"
 cm_bounds_tdelt_EUR          = 0;      !! def = 0
-$setGlobal cm_regiNoBioImport  none    !! def <- "none"
-cm_factorStorageMult         = 1;      !! def <- 1
+cm_factorStorageMult         = 1;      !! def = 1
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ***                           YOU ARE IN THE WARNING ZONE (DON'T DO CHANGES HERE)
