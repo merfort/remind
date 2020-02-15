@@ -41,6 +41,7 @@
     + v21_taxrevSO2(t,regi)
     + v21_taxrevBio(t,regi)
     - vm_costSubsidizeLearning(t,regi)
+    - vm_costSubsidizePolicy(t,regi)
     + v21_implicitDiscRate(t,regi)
     
  ;

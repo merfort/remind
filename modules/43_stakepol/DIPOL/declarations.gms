@@ -6,6 +6,9 @@
 *** |  Contact: remind@pik-potsdam.de
 *** SOF ./modules/43_stakepol/DIPOL/declarations.gms
 
+equations
+    q43_costSubsidizePolicy(ttot,all_regi)    "Subsidy for technologies explicitely introduced by a policy - total"
+;
 
 *LM* Define parameter to read subsidies directly from the config file. The first entry defines
 *** the starting year and the second the last year in which the given technology is subsidized

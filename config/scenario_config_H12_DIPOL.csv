@@ -20,6 +20,7 @@ Base_noBioImp;0;DIPOL;0;1;off;2010;1;1;1;0;off;0;0;EUR;1;off;./config/regionmapp
 Base_RenConserv;0;DIPOL;0;1;off;2010;1;1;1;0;off;0;0;none;2;off;./config/regionmappingH12.csv;none;0;0;none;-1;nash;EUR;simple;none;1;2;2005;./config/input.gdx;;
 Base_RenRestr;0;DIPOL;0;1;off;2010;1;1;1;0;off;0;0;none;1;off;./config/regionmappingH12.csv;none;0;0;none;-1;nash;EUR;simple;none;1;2;2005;./config/input.gdx;;
 Base_RenOpt;0;DIPOL;0;1;off;2010;1;1;1;0;off;0;0;none;0.5;off;./config/regionmappingH12.csv;none;0;0;none;-1;nash;EUR;simple;none;1;2;2005;./config/input.gdx;;
-Base_subsElCar_EUR_USA;1;DIPOL;0;1;off;2010;1;1;1;0;off;0;0;none;1;2025.2035.EUR.apCarElT 4000, 2030.2040.USA.apCarElT 4500;./config/regionmappingH12.csv;none;0;0;none;-1;testOneRegi;EUR;simple;none;1;2;2005;./config/input.gdx;;
-Base_subsElCar;1;DIPOL;0;1;off;2010;1;1;1;0;off;0;0;none;1;2025.2035.EUR.apCarElT 4000;./config/regionmappingH12.csv;none;0;0;none;-1;nash;EUR;simple;none;1;2;2005;./config/input.gdx;;
-Budg600_subsElCar;1;DIPOL;0;1;off;2010;1;1;1;0;off;0;0;none;1;2025.2035.EUR.apCarElT 4000;./config/regionmappingH12.csv;rcp20;5;600;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;./output/NDC_2020-01-20_11.07.49/fulldata.gdx;./output/Base_2020-02-12_16.40.28/fulldata.gdx
+Base_subsElCar_EUR_USA;0;DIPOL;0;1;off;2010;1;1;1;0;off;0;0;none;1;2025.2035.EUR.apCarElT 4000, 2030.2040.USA.apCarElT 4500;./config/regionmappingH12.csv;none;0;0;none;-1;testOneRegi;EUR;simple;none;1;2;2005;./config/input.gdx;;
+Base_subsElCar_EUR;1;DIPOL;0;1;off;2010;1;1;1;0;off;0;0;none;1;2025.2035.EUR.apCarElT 4000;./config/regionmappingH12.csv;none;0;0;none;-1;testOneRegi;EUR;simple;none;1;2;2005;./config/input.gdx;;
+Base_subsElCar;0;DIPOL;0;1;off;2010;1;1;1;0;off;0;0;none;1;2025.2035.EUR.apCarElT 4000;./config/regionmappingH12.csv;none;0;0;none;-1;nash;EUR;simple;none;1;2;2005;./config/input.gdx;;
+Budg600_subsElCar;0;DIPOL;0;1;off;2010;1;1;1;0;off;0;0;none;1;2025.2035.EUR.apCarElT 4000;./config/regionmappingH12.csv;rcp20;5;600;expoLinear;30;nash;EUR;simple;NDC2018;9;2;2025;./config/input.gdx;./output/NDC_2020-01-20_11.07.49/fulldata.gdx;./output/Base_2020-02-12_16.40.28/fulldata.gdx
