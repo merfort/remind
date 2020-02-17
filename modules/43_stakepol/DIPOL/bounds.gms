@@ -51,7 +51,7 @@ $endIf.regiNoBioImport
 
 *LM* exogenously set upper bound for CES function for transport (switch behavioral change in transport).
 *** Values are taken from an Budg600 run.
-if(cm_boundsCEStrans eq 1,
+if((cm_boundsCEStrans eq 1) OR (cm_boundsCEStrans eq 2),
 *** transport fuel use (subgroup of entrp)
 	vm_cesIO.up("2020","EUR","fetf") = 1.298023906;
 	vm_cesIO.up("2025","EUR","fetf") = 1.449570415;
@@ -111,6 +111,11 @@ if(cm_boundsCEStrans eq 1,
 	vm_cesIO.up("2080","EUR","ueelTt") = 0.019560973;
 	vm_cesIO.up("2090","EUR","ueelTt") = 0.022404498;
 	vm_cesIO.up("2100","EUR","ueelTt") = 0.026208872;
+);
+
+*** scenario with even lower upper ces for transport
+if(cm_boundsCEStrans eq 2,
+	vm_cesIO.up(t,"EUR","fetf") = 0.9 * vm_cesIO.up(t,"EUR","fetf");
 );
 
 *** EOF ./modules/43_stakepol/DIPOL/bounds.gms
