@@ -7,22 +7,26 @@
 *** SOF ./modules/43_stakepol/DIPOL/declarations.gms
 
 equations
-    q43_costSubsidizePolicy(ttot,all_regi)    "Subsidy for technologies explicitely introduced by a policy - total"
+    q43_costSubsidizePolicy(ttot,all_regi)              "Subsidy for technologies explicitely introduced by a policy - total"
+;
+
+parameters
+    p43_deltacap0(ttot,all_regi,all_te,rlf)             "deltacap from last iteration"
 ;
 
 *LM* Define parameter to read subsidies directly from the config file. The first entry defines
 *** the starting year and the second the last year in which the given technology is subsidized
 *** in the given region.
-$ifThen.subsidies_teLearn not "%cm_subsidies_teLearn%" == "off"
+$ifThen.subsidies_te not "%cm_subsidies_te%" == "off"
 Parameter
-    p43_subsidies_teLearn(ttot, tall, all_regi, all_te) "auxiliary parameter to read in subsidies for a given learning technology. [$(2015)/kW]" / %cm_subsidies_teLearn% /
+    p43_subsidies_te(ttot, tall, all_regi, all_te) "auxiliary parameter to read in subsidies for a given technology. [$(2015)/kW]" / %cm_subsidies_te% /
 ;
-$endIf.subsidies_teLearn
+$endIf.subsidies_te
 
 *LM* Define parameter and set to set an upper bound to ICE vehicles
 $ifThen.upboundICE not "%cm_upboundICE%" == "off"
 Parameter
-	p43_upboundICE(ttot, all_regi) "upper bound for ICE share [%]" / %cm_upboundICE% /
+	p43_upboundICE(ttot, all_regi)                      "upper bound for ICE share [%]" / %cm_upboundICE% /
 ;
 
 *LM* Definine a set that contains all combinations of regions and time steps on which an upper bound on ICE

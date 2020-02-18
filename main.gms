@@ -58,7 +58,7 @@
 * 
 * Input data revision: 5.936
 * 
-* Last modification (input data): Wed Jan 29 09:52:55 2020
+* Last modification (input data): Tue Feb 18 16:08:38 2020
 * 
 *###################### R SECTION END (VERSION INFO) ###########################
 
@@ -260,7 +260,7 @@ cm_taxCO2inc_after_peakBudgYr "annual increase of CO2 price after the Peak Budge
 cm_CO2priceRegConvEndYr      "Year at which regional CO2 prices converge in module 45 realization diffPhaseIn2LinFlex"
 
 c_etaElCar           "Switch for changing the efficiency of electric cars globally"
-cm_subsidies_teLearn "switch that allows for subsidizing learning technologies by reducing inco0 for a given time and region"
+cm_subsidies_te      "switch that allows for subsidizing learning technologies by reducing inco0 for a given time and region"
 c_inco0ElCarEUR      "Switch for changing the (initial) investment costs of electric cars in EUR"
 cm_upboundICE        "upper bound on the share of ICE vehicles"
 cm_bounds_tdh2t_EUR  "Switch for turning on lower bounds for vm_cap of tdh2t in EUR between 2020 and 2050"
@@ -378,7 +378,7 @@ cm_noReboundEffect = 0;
 $setGlobal cm_EsubGrowth  low  !! def = low
 
 c_etaElCar                   = 0;      !! def = 0
-$setGlobal cm_subsidies_teLearn off    !! def = off
+$setGlobal cm_subsidies_te  off        !! def = off
 c_inco0ElCarEUR              = 1;      !! def = 1
 $setGlobal cm_upboundICE  off          !! def = off
 cm_bounds_tdh2t_EUR          = 0;      !! def = 0

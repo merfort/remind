@@ -10,8 +10,9 @@
 q43_costSubsidizePolicy(ttot,regi)$(ttot.val ge max(2010,cm_startyear))..
     vm_costSubsidizePolicy(ttot,regi)
     =e=
-    sum(teLearn,
-	   pm_subsidies_teLearn(ttot,regi,teLearn) * sum(te2rlf(teLearn,rlf), vm_deltaCap(ttot,regi,teLearn,rlf))
+    sum(te,
+	    pm_subsidies_te(ttot,regi,te) 
+        * sum(te2rlf(te,rlf), vm_deltaCap(ttot,regi,te,rlf) - p43_deltacap0(ttot,regi,te,rlf))
     )
 ; 
 
