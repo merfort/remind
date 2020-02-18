@@ -18,14 +18,14 @@ The model documentation for version 2.1 can be found at XXX.
 A most recent version of the documentation can also be extracted from the
 model source code via the R package goxygen
 (https://github.com/pik-piam/goxygen). To extract the documentation, install the
-package and run the main function (goxygen(unitPattern = c("\\[","\\]"), includeCore=T)) 
+package and run the main function `(goxygen(unitPattern = c("\\[","\\]"), includeCore=T))`
 in the main folder of the model.
 The resulting documentation can be found in the folder "doc".
 
-Please pay attentions to the REMIND Coding Etiquette when you modify the code.
-The Coding Etiquette you find as part of the documentation in the file main.gms.
-The Coding Etiquette explains also the used name conventions and other
-structural characteristics.
+Please pay attention to the REMIND Coding Etiquette when you modify the code
+(if you plan on contributing to the REMIND official repository).
+The Coding Etiquette is found in the documentation section of the file main.gms.
+It explains also the used name conventions and other structural characteristics.
 
 ## COPYRIGHT
 Copyright 2006-2019 Potsdam Institute for Climate Impact Research (PIK)
@@ -51,7 +51,7 @@ in the official main repository at https://github.com/remindmodel add a suffix
 to the name to allow distinguishing versions (format **REMIND-suffix**).
 
 ## SYSTEM REQUIREMENTS
-The model is quite resource heavy and works best on machines with high CPU clock
+The full model is quite resource heavy and works best on machines with high CPU clock
 and memory. Recommended is a machine with Windows, MacOS or Linux, with at least
 16GB of memory and a Core i7 CPU or similar.
 
@@ -67,7 +67,7 @@ In addition *R* (https://www.r-project.org/) is required for pre- and
 postprocessing and run management (needs to be added to the PATH variable
 as well).
 
-For R some packages are required to run REMIND. All except of one (`gdxrrw`) are
+Some R packages are required to run REMIND. All except of one (`gdxrrw`) are
 either distributed via the offical R CRAN or via a separate repository hosted at
 PIK (PIK-CRAN). Before proceeding PIK-CRAN should be added to the list of
 available repositories via:
@@ -75,8 +75,8 @@ available repositories via:
 options(repos = c(CRAN = "@CRAN@", pik = "https://rse.pik-potsdam.de/r/packages"))
 ```
 
-Under Windows you need to install Rtools
-(https://cran.r-project.org/bin/windows/Rtools/) and to add it to the PATH
+On Windows you need to install Rtools
+(https://cran.r-project.org/bin/windows/Rtools/) and add it to the system PATH
 variable. After that you can run the following lines of code:
 
 
@@ -114,20 +114,20 @@ Make sure that the config file has been set correctly before
 starting the model.
 
 ## HOW TO CONTRIBUTE
-We are interested in working with you! Just contact us through GitHub
-(https://github.com/remindmodel) or by mail (remind@pik-potsdam.de) if you have
+We are interested in working with you! Contact us through GitHub
+(https://github.com/remindmodel) or by E-mail (remind@pik-potsdam.de) if you have
 found and/or fixed a bug, developed a new model feature, have ideas for further
-model development, suggestions for improvements or anything else. We are open to
+model development or suggestions for improvements. We are open to
 any kind of contribution. Our aim is to develop an open, transparent and
-meaningful energy-economy-model to get a better
-understanding of the underlying processes and possible futures. Join us doing
+meaningful energy-economy-model, and to get a better
+understanding of the underlying processes and possible futures. Join us in doing
 so!
 
 ## DEPENDENCIES
 Model dependencies **must be publicly available** and should be Open Source.
 Development aim is to rather minimize than expand dependencies on non-free
 and/or non open source software. That means that besides currently existing
-dependencies on GAMS, the GDXRRW R package and the corresponding solvers there
+dependencies on GAMS, the `gdxrrw` R package and the corresponding solvers there
 should be no additional dependencies of this kind and that these existing
 dependencies should be resolved in the future if possible.
 
