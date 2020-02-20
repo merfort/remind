@@ -282,7 +282,6 @@ c_regi_capturescen			"region to apply ccapturescen to"
 
 c_etaElCar           "Switch for changing the efficiency of electric cars globally"
 cm_subsidies_te      "switch that allows for subsidizing learning technologies by reducing inco0 for a given time and region"
-c_inco0ElCarEUR      "Switch for changing the (initial) investment costs of electric cars in EUR"
 cm_upboundICE        "upper bound on the share of ICE vehicles"
 cm_bounds_tdh2t_EUR  "Switch for turning on lower bounds for vm_cap of tdh2t in EUR between 2020 and 2050"
 cm_regiNoBioImport   "Switch defining regions where biomass impport is disabled"
@@ -403,7 +402,6 @@ $setGlobal c_regi_capturescen  all !! def = all
 
 c_etaElCar                   = 0;      !! def = 0
 $setGlobal cm_subsidies_te  off        !! def = off
-c_inco0ElCarEUR              = 1;      !! def = 1
 $setGlobal cm_upboundICE  off          !! def = off
 cm_bounds_tdh2t_EUR          = 0;      !! def = 0
 $setGlobal cm_regiNoBioImport  none    !! def = "none"

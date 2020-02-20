@@ -852,10 +852,6 @@ display p_tkpremused;
 
 
 
-*LM* Change inco0 of apCarElT for EUR according to the switch c_inco0ElCarEUR
-*** To keep the floorcosts constant, the difference between inco0 before and after the change needs to be subtracted from incolearn as well
-pm_data("EUR","incolearn","apCarElT") = pm_data("EUR","incolearn","apCarElT") - (1 - c_inco0ElCarEUR) * pm_data("EUR","inco0","apCarElT");
-pm_data("EUR","inco0","apCarElT")     = c_inco0ElCarEUR * pm_data("EUR","inco0","apCarElT");
 
 pm_data(regi,"inco0",te)       = (1 + p_tkpremused(regi,te) ) * pm_data(regi,"inco0",te);
 pm_data(regi,"incolearn",te)   = (1 + p_tkpremused(regi,te) ) * pm_data(regi,"incolearn",te);
