@@ -280,6 +280,7 @@ cm_CO2priceRegConvEndYr      "Year at which regional CO2 prices converge in modu
 c_regi_nucscen				"regions to apply nucscen to"
 c_regi_capturescen			"region to apply ccapturescen to"
 
+cm_behavChangeDIPOL  "Switch to choose the behavioral change scenario"
 c_etaElCar           "Switch for changing the efficiency of electric cars globally"
 cm_subsidies_te      "switch that allows for subsidizing learning technologies by reducing inco0 for a given time and region"
 cm_upboundICE        "upper bound on the share of ICE vehicles"
@@ -400,14 +401,15 @@ $setGlobal c_scaleEmiHistorical  on  !! def = on
 $setGlobal c_regi_nucscen  all !! def = all
 $setGlobal c_regi_capturescen  all !! def = all
 
-c_etaElCar                   = 0;      !! def = 0
-$setGlobal cm_subsidies_te  off        !! def = off
-$setGlobal cm_upboundICE  off          !! def = off
-cm_bounds_tdh2t_EUR          = 0;      !! def = 0
-$setGlobal cm_regiNoBioImport  none    !! def = "none"
-cm_bounds_tdelt_EUR          = 0;      !! def = 0
-cm_factorStorageMult         = 1;      !! def = 1
-cm_boundsCEStrans            = 0;      !! def = 0
+$setGlobal cm_behavChangeDIPOL  default !! def = default
+c_etaElCar                   = 0;       !! def = 0
+$setGlobal cm_subsidies_te  off         !! def = off
+$setGlobal cm_upboundICE  off           !! def = off
+cm_bounds_tdh2t_EUR          = 0;       !! def = 0
+$setGlobal cm_regiNoBioImport  none     !! def = "none"
+cm_bounds_tdelt_EUR          = 0;       !! def = 0
+cm_factorStorageMult         = 1;       !! def = 1
+cm_boundsCEStrans            = 0;       !! def = 0
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ***                           YOU ARE IN THE WARNING ZONE (DON'T DO CHANGES HERE)

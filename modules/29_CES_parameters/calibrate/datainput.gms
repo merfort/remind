@@ -149,6 +149,9 @@ Parameter
 p29_fedemand       "final energy demand"
 /
 $ondelim
+$ifthen.behavChangeDIPOL "%cm_behavChangeDIPOL%" == "broad"
+$include "./modules/29_CES_parameters/calibrate/input/pm_fe_demand_DIPOL.cs4r"
+$else.behavChangeDIPOL
 $include "./modules/29_CES_parameters/calibrate/input/pm_fe_demand.cs4r"
 $offdelim
 /
