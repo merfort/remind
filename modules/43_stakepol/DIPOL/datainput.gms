@@ -10,9 +10,9 @@
 *** Data for transport sector
 *** ---------------------------------------------------------------------------
 
-*LM* Fill parameter pm_subsidies_te to subsidize certain learning technologies
-*** for a given set of period-region combinations. The period is defined by a start 
-*** year and an end year (ttot to ttot2, bounds included).
+*LM* Fill parameter pm_subsidies_te to subsidize certain technologies for a given set of
+*** period-region combinations. The period is defined by a start year and an end year
+*** (ttot to ttot2, bounds included).
 $ifThen.subsidies_te not "%cm_subsidies_te%" == "off"
 loop((ttot,ttot2,regi, te)$p43_subsidies_te(ttot, ttot2, regi, te),
 	loop(ttot3$((ttot3.val ge ttot.val) AND (ttot3.val le ttot2.val)),

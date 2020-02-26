@@ -118,4 +118,24 @@ if(cm_boundsCEStrans eq 2,
 	vm_cesIO.up(t,"EUR","fetf") = 0.9 * vm_cesIO.up(t,"EUR","fetf");
 );
 
+
+
+*** ---------------------------------------------------------------------------
+*** Set bounds for buildings sector
+*** ---------------------------------------------------------------------------
+*BAUSTELLE
+*LM* Set tdfosgas and tdfoshos to zero in EUR if switch is activated
+$ifThen.upboundFosBuil not "%cm_upboundFosBuil%" == "off"
+loop((ttot, regi)$t_regi_upboundFosBuil(ttot, regi),
+	loop(t$(t.val ge ttot.val),
+		loop(rlf,
+			vm_cap.up(t,regi,"tdfosgas",rlf) = p43_upboundFosBuil(ttot,regi);
+			vm_cap.up(t,regi,"tdfoshos",rlf) = p43_upboundFosBuil(ttot,regi);
+			vm_cap.up(t,regi,"tdfossos",rlf) = p43_upboundFosBuil(ttot,regi);
+		);
+	);
+);
+$endIf.upboundFosBuil
+
+
 *** EOF ./modules/43_stakepol/DIPOL/bounds.gms

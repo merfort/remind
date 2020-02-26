@@ -74,7 +74,7 @@
 * 
 * Input data revision: 5.937
 * 
-* Last modification (input data): Thu Jan 16 14:11:39 2020
+* Last modification (input data): Tue Feb 25 10:13:16 2020
 * 
 *###################### R SECTION END (VERSION INFO) ###########################
 
@@ -289,6 +289,7 @@ cm_regiNoBioImport   "Switch defining regions where biomass impport is disabled"
 cm_bounds_tdelt_EUR  "Switch for turning on lower bounds for vm_cap of tdelt in EUR between 2020 and 2050"
 cm_factorStorageMult "Multitplicative factor for the scaling of curtailment and storage requirements for renewables"
 cm_boundsCEStrans    "Switch that activates exogenous upper bounds on the transport CES inputs"
+cm_upboundFosBuil    "upper bound on the capacity of fossils in buildings for given region and start year"
 ;
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -410,6 +411,7 @@ $setGlobal cm_regiNoBioImport  none     !! def = "none"
 cm_bounds_tdelt_EUR          = 0;       !! def = 0
 cm_factorStorageMult         = 1;       !! def = 1
 cm_boundsCEStrans            = 0;       !! def = 0
+$setGlobal cm_upboundFosBuil  off       !! def = off
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ***                           YOU ARE IN THE WARNING ZONE (DON'T DO CHANGES HERE)
@@ -433,7 +435,7 @@ $setGlobal cm_magicc_temperatureImpulseResponse  off           !! def = off
 
 $setGlobal cm_damage_DiceLike_specification  HowardNonCatastrophic   !! def = HowardNonCatastrophic
 
-$setglobal cm_CES_configuration  stat_off-indu_fixed_shares-buil_simple-tran_complex-POP_pop_SSP2-GDP_gdp_SSP2-Kap_perfect-Reg_690d3718e1   !! this will be changed by start_run()
+$setglobal cm_CES_configuration  stat_off-indu_fixed_shares-buil_simple-tran_complex-POP_pop_SSP2-GDP_gdp_SSP2-Kap_perfect-beh_default-Reg_690d3718e1   !! this will be changed by start_run()
 
 $setglobal c_CES_calibration_new_structure  0    !! def =  0
 $setglobal c_CES_calibration_iterations  10    !! def = 10
