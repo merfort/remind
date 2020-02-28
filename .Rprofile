@@ -13,7 +13,7 @@ if(file.exists("~/.Rprofile")) source("~/.Rprofile")
 # default library set!
 
 
-# snapshot <- "/p/projects/rd3mod/R/libraries/snapshots/2019_02_26"
+# snapshot <- "/p/projects/rd3mod/R/libraries/snapshots/2020_02_11"
 # if(file.exists(snapshot)) {
 # cat("Set libPaths to",snapshot,"\n")
 # .libPaths(snapshot)
