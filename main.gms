@@ -290,6 +290,7 @@ cm_bounds_tdelt_EUR  "Switch for turning on lower bounds for vm_cap of tdelt in 
 cm_factorStorageMult "Multitplicative factor for the scaling of curtailment and storage requirements for renewables"
 cm_boundsCEStrans    "Switch that activates exogenous upper bounds on the transport CES inputs"
 cm_upboundFosBuil    "upper bound on the capacity of fossils in buildings for given region and start year"
+cm_secSteelScen      "Chooses secondary steel scenario, optimistic (default) or pessimistic"
 ;
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -412,6 +413,7 @@ cm_bounds_tdelt_EUR          = 0;       !! def = 0
 cm_factorStorageMult         = 1;       !! def = 1
 cm_boundsCEStrans            = 0;       !! def = 0
 $setGlobal cm_upboundFosBuil  off       !! def = off
+cm_secSteelScen              = 1;       !! def = 1
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ***                           YOU ARE IN THE WARNING ZONE (DON'T DO CHANGES HERE)
