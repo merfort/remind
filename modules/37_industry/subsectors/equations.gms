@@ -119,5 +119,13 @@ q37_arcane_FE_limits(ttot,regi,in,in2)$( p37_arcane_FE_limits(in,in2) ) ..
 ;
 *** end FIXME calibration debug
 
+*LM* Set max ratio between feel for hth and wlht processes according to parameter
+q37_balanceFeelHthWlth(t,regi,in,in2)$( p37_directElectrificationtInd(in,in2) ) .. 
+  vm_cesIO(t,regi,in) 
+  =l= 
+    p37_directElectrificationtInd(in,in2)
+  * vm_cesIO(t,regi,in2)
+;
+
 *** EOF ./modules/37_industry/subsectors/equations.gms
 

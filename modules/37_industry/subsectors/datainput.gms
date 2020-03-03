@@ -178,5 +178,14 @@ pm_calibrate_eff_scale("feh2_otherInd", "fega_otherInd", "level")     = 1.4;
 pm_calibrate_eff_scale("feh2_otherInd", "fega_otherInd", "midperiod") = 2030;
 pm_calibrate_eff_scale("feh2_otherInd", "fega_otherInd", "width")     = 22;
 
+*LM* Maximum ratio between hth and wlth production factors using feel according to direct electrification scenario
+if (cm_dirElectrIndScen eq 0,       !! (almost) no direct electrification
+  p37_directElectrificationtInd("feelhth_chemicals", "feelwlth_chemicals") = 1e-5;
+  p37_directElectrificationtInd("feelhth_otherInd",  "feelwlth_otherInd")  = 1e-5;
+elseif (cm_dirElectrIndScen eq 2),  !! max 20% of feel can be used for hth processes as compared to wlth processes
+  p37_directElectrificationtInd("feelhth_chemicals", "feelwlth_chemicals") = 0.2;
+  p37_directElectrificationtInd("feelhth_otherInd",  "feelwlth_otherInd")  = 0.2;
+);
+
 *** EOF ./modules/37_industry/subsectors/datainput.gms
 

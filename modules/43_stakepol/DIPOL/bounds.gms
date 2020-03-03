@@ -123,7 +123,7 @@ if(cm_boundsCEStrans eq 2,
 *** ---------------------------------------------------------------------------
 *** Set bounds for buildings sector
 *** ---------------------------------------------------------------------------
-*BAUSTELLE
+*FIXME (is for whole stationary but should be only for buildings)
 *LM* Set tdfosgas and tdfoshos to zero in EUR if switch is activated
 $ifThen.upboundFosBuil not "%cm_upboundFosBuil%" == "off"
 loop((ttot, regi)$t_regi_upboundFosBuil(ttot, regi),

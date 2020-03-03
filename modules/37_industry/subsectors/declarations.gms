@@ -19,6 +19,8 @@ Parameters
 
   p37_clinker_cement_ratio(ttot,all_regi)   "clinker content per unit cement used"
   p37_cesIO_base(ttot,all_regi,all_in)
+  
+  p37_directElectrificationtInd(all_in, all_in)          "max ratio between feel use for hth and wlth"
 ;
 
 Positive Variables
@@ -38,6 +40,8 @@ Equations
   q37_IndCCSCost                                    "Calculate industry CCS costs"
   q37_limit_specific_total_energy(ttot,all_regi,all_in)
   q37_arcane_FE_limits(ttot,all_regi,all_in,all_in)   "minimum ratio of feelhth/feelwlth and feh2/fega (may be needed for calibration)"
+
+  q37_balanceFeelHthWlth(tall,all_regi,all_in,all_in) "balance feel for hth and wlth processes"
 ;
 
 *** EOF ./modules/37_industry/subsectors/declarations.gms
