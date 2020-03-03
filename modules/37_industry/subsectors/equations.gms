@@ -123,8 +123,10 @@ q37_arcane_FE_limits(ttot,regi,in,in2)$( p37_arcane_FE_limits(in,in2) ) ..
 q37_balanceFeelHthWlth(t,regi,in,in2)$( p37_directElectrificationtInd(in,in2) ) .. 
   vm_cesIO(t,regi,in) 
   =l= 
-    p37_directElectrificationtInd(in,in2)
-  * vm_cesIO(t,regi,in2)
+    (p37_directElectrificationtInd(in,in2)
+    * vm_cesIO(t,regi,in2))$(p37_directElectrificationtInd(in,in2)*vm_cesIO.l(t,regi,in2) gt 1e-9)
+  +
+    (1e-9)$(p37_directElectrificationtInd(in,in2)*vm_cesIO.l(t,regi,in2) le 1e-9)
 ;
 
 *** EOF ./modules/37_industry/subsectors/equations.gms
