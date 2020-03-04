@@ -49,30 +49,4 @@ loop(t,
 p43_upboundICE(t_regi_upboundICE_43)$(p43_upboundICE(t_regi_upboundICE_43) < 0.0011) = 0;
 $endIf.upboundICE
 
-
-
-*LM* Define parameter and set to set an upper bound the capacity of fossil use in buildings
-$ifThen.upboundFosBuil not "%cm_upboundFosBuil%" == "off"
-Parameter
-	p43_upboundFosBuil(ttot, all_regi)                   "upper bound on capacity of fossils in buildings" / %cm_upboundFosBuil% /
-;
-
-*LM* Definine a set that contains all combinations of regions and time steps on which an upper bound on capacity of
-*** fossils in buildings should be applied. This set has to be defined dynamically since it is dependent on the read-in 
-*** parameter p43_upboundFosBuil. It is needed to allow for having the value "0" in p43_upboundFosBuil. Without this
-*** "trick" a "0" in p43_upboundFosBuil would disable the bound instead setting it to the number "0".
-*** In order to have exactly the value "0", use a number smaller than 0.00011 for cm_upboundFosBuil in the config.
-set t_regi_upboundFosBuil(ttot, all_regi) "time-region combinations that get an upper bound on capacity of fossils in buildings";
-
-*LM* Fill the set according to read-in parameter p43_upboundFosBuil
-loop(t,
-    loop(regi,
-        t_regi_upboundFosBuil(t, regi)$p43_upboundFosBuil(t, regi) = YES;
-	);
-);
-
-*LM* Set all values that are close to zero directly to zero.
-p43_upboundFosBuil(t_regi_upboundFosBuil)$(p43_upboundFosBuil(t_regi_upboundFosBuil) < 0.00011) = 0;
-$endIf.upboundFosBuil
-
 *** EOF ./modules/43_stakepol/DIPOL/declarations.gms

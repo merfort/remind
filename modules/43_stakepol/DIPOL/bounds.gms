@@ -123,19 +123,18 @@ if(cm_boundsCEStrans eq 2,
 *** ---------------------------------------------------------------------------
 *** Set bounds for buildings sector
 *** ---------------------------------------------------------------------------
-*FIXME (is for whole stationary but should be only for buildings)
-*LM* Set tdfosgas and tdfoshos to zero in EUR if switch is activated
-$ifThen.upboundFosBuil not "%cm_upboundFosBuil%" == "off"
-loop((ttot, regi)$t_regi_upboundFosBuil(ttot, regi),
-	loop(t$(t.val ge ttot.val),
-		loop(rlf,
-			vm_cap.up(t,regi,"tdfosgas",rlf) = p43_upboundFosBuil(ttot,regi);
-			vm_cap.up(t,regi,"tdfoshos",rlf) = p43_upboundFosBuil(ttot,regi);
-			vm_cap.up(t,regi,"tdfossos",rlf) = p43_upboundFosBuil(ttot,regi);
-		);
-	);
-);
-$endIf.upboundFosBuil
+*LM* Exogenously fade out fossils in buildings
+$ifThen.regiPhaseOutFosBuil not "%cm_regiPhaseOutFosBuil%" == "none"
+vm_cesIO.up("2040", regiPhaseOutFosBuil_43, "fegab")                    = 0.10;
+vm_cesIO.up("2045", regiPhaseOutFosBuil_43, "fegab")                    = 0.05;
+vm_cesIO.up(ttot,   regiPhaseOutFosBuil_43, "fegab")$(ttot.val ge 2050) = 1e-6;
+
+vm_cesIO.up("2040", regiPhaseOutFosBuil_43, "fehob")                    = 0.04;
+vm_cesIO.up("2045", regiPhaseOutFosBuil_43, "fehob")                    = 0.02;
+vm_cesIO.up(ttot,   regiPhaseOutFosBuil_43, "fehob")$(ttot.val ge 2050) = 1e-6;
+
+* vm_cesIO.up(ttot,   regiPhaseOutFosBuil_43, "fesob")$(ttot.val ge 2040) = 1e-6;
+$endIf.regiPhaseOutFosBuil
 
 
 *** EOF ./modules/43_stakepol/DIPOL/bounds.gms

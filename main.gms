@@ -280,18 +280,18 @@ cm_CO2priceRegConvEndYr      "Year at which regional CO2 prices converge in modu
 c_regi_nucscen				"regions to apply nucscen to"
 c_regi_capturescen			"region to apply ccapturescen to"
 
-cm_behavChangeDIPOL  "Switch to choose the behavioral change scenario"
-c_etaElCar           "Switch for changing the efficiency of electric cars globally"
-cm_subsidies_te      "switch that allows for subsidizing learning technologies by reducing inco0 for a given time and region"
-cm_upboundICE        "upper bound on the share of ICE vehicles"
-cm_bounds_tdh2t_EUR  "Switch for turning on lower bounds for vm_cap of tdh2t in EUR between 2020 and 2050"
-cm_regiNoBioImport   "Switch defining regions where biomass impport is disabled"
-cm_bounds_tdelt_EUR  "Switch for turning on lower bounds for vm_cap of tdelt in EUR between 2020 and 2050"
-cm_factorStorageMult "Multitplicative factor for the scaling of curtailment and storage requirements for renewables"
-cm_boundsCEStrans    "Switch that activates exogenous upper bounds on the transport CES inputs"
-cm_upboundFosBuil    "upper bound on the capacity of fossils in buildings for given region and start year"
-cm_secSteelScen      "Chooses secondary steel scenario, optimistic (default) or pessimistic"
-cm_dirElectrIndScen  "Choose direct electrification scenario"
+cm_behavChangeDIPOL    "Switch to choose the behavioral change scenario"
+c_etaElCar             "Switch for changing the efficiency of electric cars globally"
+cm_subsidies_te        "switch that allows for subsidizing learning technologies by reducing inco0 for a given time and region"
+cm_upboundICE          "upper bound on the share of ICE vehicles"
+cm_bounds_tdh2t_EUR    "Switch for turning on lower bounds for vm_cap of tdh2t in EUR between 2020 and 2050"
+cm_regiNoBioImport     "Switch defining regions where biomass impport is disabled"
+cm_bounds_tdelt_EUR    "Switch for turning on lower bounds for vm_cap of tdelt in EUR between 2020 and 2050"
+cm_factorStorageMult   "Multitplicative factor for the scaling of curtailment and storage requirements for renewables"
+cm_boundsCEStrans      "Switch that activates exogenous upper bounds on the transport CES inputs"
+cm_regiPhaseOutFosBuil "Switch defining regions that phase out fossils in buildings"
+cm_secSteelScen        "Chooses secondary steel scenario, optimistic (default) or pessimistic"
+cm_dirElectrIndScen    "Choose direct electrification scenario"
 ;
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -413,7 +413,7 @@ $setGlobal cm_regiNoBioImport  none     !! def = "none"
 cm_bounds_tdelt_EUR          = 0;       !! def = 0
 cm_factorStorageMult         = 1;       !! def = 1
 cm_boundsCEStrans            = 0;       !! def = 0
-$setGlobal cm_upboundFosBuil  off       !! def = off
+$setGlobal cm_regiPhaseOutFosBuil  none !! def = none
 cm_secSteelScen              = 1;       !! def = 1
 cm_dirElectrIndScen          = 1;       !! def = 1
 
