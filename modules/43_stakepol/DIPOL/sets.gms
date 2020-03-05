@@ -7,13 +7,11 @@
 *** SOF ./modules/43_stakepol/DIPOL/sets.gms
 
 *LM* Define region sets according to switches
-Sets
 $ifThen.regiNoBioImport not "%cm_regiNoBioImport%" == "none"
-    regiNoBioImport_43(all_regi)     "Set of regions that do not import biomass" / %cm_regiNoBioImport% /
+Set regiNoBioImport_43(all_regi)     "Set of regions that do not import biomass" / %cm_regiNoBioImport% /;
 $endIf.regiNoBioImport
 $ifThen.regiPhaseOutFosBuil not "%cm_regiPhaseOutFosBuil%" == "none"
-    regiPhaseOutFosBuil_43(all_regi) "Set of regions that phase out fossils in buildings" / %cm_regiPhaseOutFosBuil% /
+Set regiPhaseOutFosBuil_43(all_regi) "Set of regions that phase out fossils in buildings" / %cm_regiPhaseOutFosBuil% /;
 $endIf.regiPhaseOutFosBuil
-;
 
 *** EOF ./modules/43_stakepol/DIPOL/sets.gms
