@@ -146,8 +146,8 @@ $endIf.regiPhaseOutFosBuil
 *FIMME: potentially c_ccsinjecratescen -> cm_ccsinjecratescen
 *LM* set low CCS injection rate for EUR
 if(c_ccsinjecratescen eq 6,
-	vm_co2CCS.up(t,regi, "cco2","ico2","ccsinje","1") = pm_dataccs(regi,"quan","1") * sm_ccsinjecrate;
-	vm_co2CCS.up(t,"EUR","cco2","ico2","ccsinje","1") = pm_dataccs(regi,"quan","1") * sm_ccsinjecrate*0.2; 
+	vm_co2CCS.up(t,regi, "cco2","ico2","ccsinje","1") = pm_dataccs(regi, "quan","1") * sm_ccsinjecrate;
+	vm_co2CCS.up(t,"EUR","cco2","ico2","ccsinje","1") = pm_dataccs("EUR","quan","1") * sm_ccsinjecrate*0.2; 
 );
 
 *FIXME: EUR is hardcoded
