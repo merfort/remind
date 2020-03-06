@@ -145,9 +145,18 @@ $endIf.regiPhaseOutFosBuil
 *FIXME: sm_ccsinjecrate needs to be regional, otherwise v21_taxrevCCS will be wrong
 *FIMME: potentially c_ccsinjecratescen -> cm_ccsinjecratescen
 *LM* set low CCS injection rate for EUR
-if(c_ccsinjecratescen = 6,
-	vm_co2CCS.up(t,regi, "cco2","ico2","ccsinje","1") = pm_dataccs(regi,"quan","1") * sm_ccsinjecrate
-	vm_co2CCS.up(t,"EUR","cco2","ico2","ccsinje","1") = pm_dataccs(regi,"quan","1") * sm_ccsinjecrate*0.2 
+if(c_ccsinjecratescen eq 6,
+	vm_co2CCS.up(t,regi, "cco2","ico2","ccsinje","1") = pm_dataccs(regi,"quan","1") * sm_ccsinjecrate;
+	vm_co2CCS.up(t,"EUR","cco2","ico2","ccsinje","1") = pm_dataccs(regi,"quan","1") * sm_ccsinjecrate*0.2; 
 );
+
+*FIXME: EUR is hardcoded
+*FIXME: p30_max_pebiolc_path -> pm_max_pebiolc_path ??? Maybe rather introduce a new module interface variable
+*LM* Set bounds on bioenergy production in EUR
+if(cm_bioenergymaxscen eq 5,
+	p30_max_pebiolc_path(regi, t) = 3.2; !! just a very high number that shouldn't be crossed, equal to 100EJ (for each region)
+	p30_max_pebiolc_path("EUR",t) = 0.2; !! equal to approx. 6.3 EJ (value estimated from a run with cm_bioenergymaxscen = 1)
+);
+
 
 *** EOF ./modules/43_stakepol/DIPOL/bounds.gms
