@@ -151,11 +151,10 @@ if(c_ccsinjecratescen eq 6,
 );
 
 *FIXME: EUR is hardcoded
-*FIXME: p30_max_pebiolc_path -> pm_max_pebiolc_path ??? Maybe rather introduce a new module interface variable
-*LM* Set bounds on bioenergy production in EUR
+*LM* Set bounds on bioenergy production in EUR; overwrites values from 30_biomass/magpie_40 realization (cf. there for further information)
 if(cm_bioenergymaxscen eq 5,
-	p30_max_pebiolc_path(regi, t) = 3.2; !! just a very high number that shouldn't be crossed, equal to 100EJ (for each region)
-	p30_max_pebiolc_path("EUR",t) = 0.2; !! equal to approx. 6.3 EJ (value estimated from a run with cm_bioenergymaxscen = 1)
+	vm_fuExtr.up(t,regi, "pebiolc","1") = 3.2 + pm_pedem_res(t,regi, "biotr"); !! 3.2 TWa; just a very high number that is not crossed, equal to 100EJ (for each region)
+	vm_fuExtr.up(t,"EUR","pebiolc","1") = 0.2 + pm_pedem_res(t,"EUR","biotr"); !! 0.2 TWa; equal to ~6.3 EJ (value estimated from a run with cm_bioenergymaxscen = 1)
 );
 
 
