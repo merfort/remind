@@ -137,4 +137,17 @@ vm_cesIO.up(ttot,   regiPhaseOutFosBuil_43, "fehob")$(ttot.val ge 2050) = 1e-6;
 $endIf.regiPhaseOutFosBuil
 
 
+
+*** ---------------------------------------------------------------------------
+*** Set other bounds
+*** ---------------------------------------------------------------------------
+*FIXME: EUR is hardcoded
+*FIXME: sm_ccsinjecrate needs to be regional, otherwise v21_taxrevCCS will be wrong
+*FIMME: potentially c_ccsinjecratescen -> cm_ccsinjecratescen
+*LM* set low CCS injection rate for EUR
+if(c_ccsinjecratescen = 6,
+	vm_co2CCS.up(t,regi, "cco2","ico2","ccsinje","1") = pm_dataccs(regi,"quan","1") * sm_ccsinjecrate
+	vm_co2CCS.up(t,"EUR","cco2","ico2","ccsinje","1") = pm_dataccs(regi,"quan","1") * sm_ccsinjecrate*0.2 
+);
+
 *** EOF ./modules/43_stakepol/DIPOL/bounds.gms
