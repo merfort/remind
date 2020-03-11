@@ -23,7 +23,7 @@ if (exists("outputdirs")) {
       #list(period = "both",  set = "cpl-SDP",  dirs = c("coupled-remind_SDP-Base-rem-5",  "coupled-remind_SDP-PkBudg1300-rem-3",  "coupled-remind_SDP-PkBudg1100-rem-5",  "coupled-remind_SDP-PkBudg900-rem-5")),
     # list(period = "long",  set = "test1",  dirs = c("SSP2-Base_indSub_GDXcesfromBase_2020-02-27_09.54.13",  "SSP2-Base_indSub_GDXcesfromBase_2020-02-27_09.54.13")),
     # list(period = "long",  set = "test2",  dirs = c("SSP2-Base_secSteelBound_yearly_2020-03-02_10.34.14",  "SSP2-Base_secSteelBound_yearly_2020-03-02_10.34.14")),
-    list(period = "long",  set = "Budg600-indSub_secSteelOpt-secSteelPess",  dirs = c("SSP2-Budg600_2020-02-21_03.19.12",  "SSP2-Budg600_secSteelOpt_2020-03-04_10.40.41", "SSP2-Budg600_secSteelPess_2020-03-04_10.40.40")),
+    list(period = "long",  set = "PkBudg1300",  dirs = c("SSP2-PkBudg1300_indFS_teOffen_2020-03-09_18.58.58",  "SSP2-PkBudg1300_indFS_teSteu_2020-03-09_18.40.26", "SSP2-PkBudg1300_indFS_teKons_2020-03-09_13.34.07")),
       #list(period = "both",  set = "cpl-SSP1", dirs = c("coupled-remind_SSP1-Base-rem-5", "coupled-remind_SSP1-PkBudg1300-rem-5", "coupled-remind_SSP1-PkBudg1100-rem-5", "coupled-remind_SSP1-PkBudg900-rem-5")),
       #list(period = "both",  set = "cpl-SSP2", dirs = c("coupled-remind_SSP2-Base-rem-5", "coupled-remind_SSP2-PkBudg1300-rem-5", "coupled-remind_SSP2-PkBudg1100-rem-5", "coupled-remind_SSP2-PkBudg900-rem-5", "coupled-remind_SSP2-NDC-rem-5")),
       #list(period = "both",  set = "cpl-SSP5", dirs = c("coupled-remind_SSP5-Base-rem-5", "coupled-remind_SSP5-PkBudg1300-rem-5", "coupled-remind_SSP5-PkBudg1100-rem-5", "coupled-remind_SSP5-PkBudg900-rem-5")),

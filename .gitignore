@@ -146,3 +146,4 @@ modules/70_water/heat/input/CoolingShares_time.cs4r
 modules/70_water/heat/input/WaterConsCoef.cs4r
 modules/70_water/heat/input/WaterWithCoef.cs4r
 modules/80_optimization/nash/input/p80_eoWeights_fix.cs4r
+core/magicc/

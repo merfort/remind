@@ -12,11 +12,14 @@ if(file.exists("~/.Rprofile")) source("~/.Rprofile")
 # to the model output folder. Otherwise, the run itself will again use the
 # default library set!
 
-
+# Here the compare scenarios script works
 # snapshot <- "/p/projects/rd3mod/R/libraries/snapshots/2020_02_11"
-# if(file.exists(snapshot)) {
-# cat("Set libPaths to",snapshot,"\n")
-# .libPaths(snapshot)
-# } else {
-# cat("libPath",snapshot,"not found!\n")
-# }
+
+# This snapshot is used for all runs for the Stakeholder workshop in March 2020
+snapshot <- "/p/projects/rd3mod/R/libraries/snapshots/2020_03_10"
+if(file.exists(snapshot)) {
+cat("Set libPaths to",snapshot,"\n")
+.libPaths(snapshot)
+} else {
+cat("libPath",snapshot,"not found!\n")
+}
