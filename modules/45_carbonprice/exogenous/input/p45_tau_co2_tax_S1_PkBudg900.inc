@@ -3,10 +3,10 @@
 *=              Exogenous CO2 tax level                   =*
 *==========================================================*
 *= author: merfort@pik-potsdam.de                         =*
-*= date  :2020-03-11 16:35:04                             =*
+*= date  :2020-03-12 15:42:28                             =*
 *= generated with r_gen_co2_tax_DIPOL.r                   =*
 *= units: 10^12 US$(2005)/GtC                             =*
-*= scenario:  S1 ,  900                                =*
+*= scenario:  S1 ,  PkBudg900                                =*
 *==========================================================*
 
 p45_tau_co2_tax("2005","CAZ")=0;
