@@ -10,13 +10,13 @@
 
 # Please provide all files and paths relative to the folder where start_coupled is executed
 path_remind <- paste0(getwd(),"/")   # provide path to REMIND. Default: the actual path which the script is started from
-path_magpie <- "/p/projects/piam/runs/coupled-magpie/"
+path_magpie <- "/p/tmp/merfort/DIPOL/coupled/magpie/"
 
 # If there are existing runs you would like to take the gdxes (REMIND) or reportings (REMIND or MAgPIE) from provide the path and name prefix here. 
 # Note: the sceanrio names have to be identical to the runs that are to be started. If they differ please provide the names of the old scenarios in the 
 # file that you read in below to path_settings_coupled
-path_remind_oldruns <- paste0(path_remind,"output-20200129/")
-path_magpie_oldruns <- paste0(path_magpie,"output-20200129/")
+path_remind_oldruns <- paste0(path_remind,"output/")
+path_magpie_oldruns <- paste0(path_magpie,"output/")
 
 # The scripts automatically adds a prefix (name of your remind path) to the scenario names. This is useful because it enables 
 # using the same MAgPIE and REMIND output folders to store results of coupled runs from multiple REMIND revisions (prevents double names)
@@ -27,8 +27,8 @@ prefix_oldruns <-  "C_" # "REMIND_" # "coupled-remind_" #
 # Paths to the files where scenarios are defined
 # path_settings_remind contains the detailed configuration of the REMIND scenarios
 # path_settings_coupled defines which runs will be started, coupling infos, and optinal gdx and report inforamtion that overrides path_settings_remind
-path_settings_coupled <- paste0(path_remind,"config/scenario_config_coupled_SSPSDP.csv")
-path_settings_remind  <- paste0(path_remind,"config/scenario_config_SSPSDP.csv")
+path_settings_coupled <- paste0(path_remind,"config/scenario_config_coupled_DIPOL.csv")
+path_settings_remind  <- paste0(path_remind,"config/scenario_config_DIPOL.csv")
 
 # number of coupling iterations
 max_iterations <- 5
@@ -302,7 +302,7 @@ for(scen in common){
   }
 
   if (start_now){
-      if (!exists("test")) system(paste0("sbatch --qos=priority --job-name=",runname," --output=",runname,".log --mail-type=END --comment=REMIND-MAgPIE --tasks-per-node=",nr_of_regions," --wrap=\"Rscript start_coupled.R coupled_config=",runname,".RData\""))
+      if (!exists("test")) system(paste0("sbatch --qos=short --job-name=",runname," --output=",runname,".log --mail-type=END --comment=REMIND-MAgPIE --tasks-per-node=",nr_of_regions," --wrap=\"Rscript start_coupled.R coupled_config=",runname,".RData\""))
       else cat("Test mode: run NOT submitted to the cluster\n")
   } else {
      cat(paste0("Run ",runname," will start after preceding run ",prefix_runname,settings_remind[scen,"path_gdx_ref"]," has finished\n"))
