@@ -87,6 +87,10 @@ if(cm_bioenergymaxscen eq 5,
 	vm_fuExtr.up(t,regi, "pebiolc","1") = 3.2 + pm_pedem_res(t,regi, "biotr"); !! 3.2 TWa; just a very high number that is not crossed, equal to 100EJ (for each region)
 	vm_fuExtr.up(t,"EUR","pebiolc","1") = 0.2 + pm_pedem_res(t,"EUR","biotr"); !! 0.2 TWa; equal to ~6.3 EJ (value estimated from a run with cm_bioenergymaxscen = 1)
 );
+if(cm_bioenergymaxscen eq 6,
+	vm_fuExtr.up(t,regi, "pebiolc","1") = 3.2 + pm_pedem_res(t,regi, "biotr"); !! 3.2 TWa; just a very high number that is not crossed, equal to 100EJ (for each region)
+	vm_fuExtr.up(t,"EUR","pebiolc","1") = 0 + pm_pedem_res(t,"EUR","biotr");   !! no purpose grown biomass in EUR
+);
 
 
 *** EOF ./modules/43_stakepol/DIPOL/bounds.gms
