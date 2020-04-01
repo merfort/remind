@@ -15,24 +15,20 @@ if (exists("outputdirs")) {
 } else {
   # This is the case if this script was called directly via Rscript
   listofruns <- list( 
-      #list(period = "both",  set = "cpl-Base",       dirs = c("coupled-remind_SDP-Base-rem-5",       "coupled-remind_SSP1-Base-rem-5",       "coupled-remind_SSP2-Base-rem-5",       "coupled-remind_SSP5-Base-rem-5")),
-      #list(period = "both",  set = "cpl-PkBudg900",  dirs = c("coupled-remind_SDP-PkBudg900-rem-5",  "coupled-remind_SSP1-PkBudg900-rem-5",  "coupled-remind_SSP2-PkBudg900-rem-5",  "coupled-remind_SSP5-PkBudg900-rem-5")),
-      #list(period = "both",  set = "cpl-PkBudg1100", dirs = c("coupled-remind_SDP-PkBudg1100-rem-5", "coupled-remind_SSP1-PkBudg1100-rem-5", "coupled-remind_SSP2-PkBudg1100-rem-5", "coupled-remind_SSP5-PkBudg1100-rem-5")),
-      #list(period = "both",  set = "cpl-PkBudg1300", dirs = c("coupled-remind_SDP-PkBudg1300-rem-3", "coupled-remind_SSP1-PkBudg1300-rem-5", "coupled-remind_SSP2-PkBudg1300-rem-5", "coupled-remind_SSP5-PkBudg1300-rem-5")),
-      
-      #list(period = "both",  set = "cpl-SDP",  dirs = c("coupled-remind_SDP-Base-rem-5",  "coupled-remind_SDP-PkBudg1300-rem-3",  "coupled-remind_SDP-PkBudg1100-rem-5",  "coupled-remind_SDP-PkBudg900-rem-5")),
-    # list(period = "long",  set = "test1",  dirs = c("SSP2-Base_indSub_GDXcesfromBase_2020-02-27_09.54.13",  "SSP2-Base_indSub_GDXcesfromBase_2020-02-27_09.54.13")),
-    # list(period = "long",  set = "test2",  dirs = c("SSP2-Base_secSteelBound_yearly_2020-03-02_10.34.14",  "SSP2-Base_secSteelBound_yearly_2020-03-02_10.34.14")),
-    list(period = "long",  set = "PkBudg1300",  dirs = c("SSP2-PkBudg1300_indFS_teOffen_2020-03-09_18.58.58",  "SSP2-PkBudg1300_indFS_teSteu_2020-03-09_18.40.26", "SSP2-PkBudg1300_indFS_teKons_2020-03-09_13.34.07")),
-      #list(period = "both",  set = "cpl-SSP1", dirs = c("coupled-remind_SSP1-Base-rem-5", "coupled-remind_SSP1-PkBudg1300-rem-5", "coupled-remind_SSP1-PkBudg1100-rem-5", "coupled-remind_SSP1-PkBudg900-rem-5")),
-      #list(period = "both",  set = "cpl-SSP2", dirs = c("coupled-remind_SSP2-Base-rem-5", "coupled-remind_SSP2-PkBudg1300-rem-5", "coupled-remind_SSP2-PkBudg1100-rem-5", "coupled-remind_SSP2-PkBudg900-rem-5", "coupled-remind_SSP2-NDC-rem-5")),
-      #list(period = "both",  set = "cpl-SSP5", dirs = c("coupled-remind_SSP5-Base-rem-5", "coupled-remind_SSP5-PkBudg1300-rem-5", "coupled-remind_SSP5-PkBudg1100-rem-5", "coupled-remind_SSP5-PkBudg900-rem-5")),
-      
-      #list(period = "both",  set = "cpl-aff",  dirs = c("coupled-remind_SDP-PkBudg1000-rem-5", "coupled-remind_SDP-PkBudg1000-affInf-rem-5","coupled-remind_SDP-PkBudg1000-aff900-rem-3","coupled-remind_SDP-PkBudg1000-aff760-rem-5","coupled-remind_SDP-PkBudg1000-cost3-rem-5","coupled-remind_SDP-PkBudg1000-cost2-rem-5")),
-      #list(period = "both",  set = "cplstd-SDP",  dirs = c("coupled-remind_SDP-Base-rem-5", "SDP-Base_2019-10-23_10.40.27/")), # "coupled-remind_SDP-PkBudg1300-rem-5", "coupled-remind_SDP-PkBudg1100-rem-5", "coupled-remind_SDP-PkBudg900-rem-5", , "SDP-PkBudg1300_2019-10-23_13.54.55/", "SDP-PkBudg1100_2019-10-23_13.52.02/", "SDP-PkBudg900_2019-10-23_13.49.07/"
-      #list(period = "both",  set = "cplstd-SSP1", dirs = c("coupled-remind_SSP1-Base-rem-5", "coupled-remind_SSP1-PkBudg1300-rem-5", "coupled-remind_SSP1-PkBudg1100-rem-5", "coupled-remind_SSP1-PkBudg900-rem-5", "SSP1-Base_2019-10-23_10.36.05/", "SSP1-PkBudg1300_2019-10-23_13.42.42/", "SSP1-PkBudg1100_2019-10-23_13.40.05/", "SSP1-PkBudg900_2019-10-23_13.37.18/")),
-      #list(period = "both",  set = "cplstd-SSP2", dirs = c("coupled-remind_SSP2-Base-rem-5", "coupled-remind_SSP2-NDC-rem-5", "coupled-remind_SSP2-PkBudg1300-rem-5", "coupled-remind_SSP2-PkBudg900-rem-5", "SSP2-Base_2019-10-23_10.44.15/", "SSP2-NDC_2019-10-23_11.57.53/", "SSP2-PkBudg1300_2019-10-23_14.03.57/", "SSP2-PkBudg900_2019-10-23_13.58.02/")), # , "coupled-remind_SSP2-PkBudg1100-rem-5" "SSP2-PkBudg1100_2019-10-23_14.01.04/", 
-      #list(period = "both",  set = "cplstd-SSP5", dirs = c("coupled-remind_SSP5-Base-rem-5", "SSP5-Base_2019-10-23_10.47.50/")), # , "coupled-remind_SSP5-PkBudg1300-rem-5", "coupled-remind_SSP5-PkBudg1100-rem-5", "coupled-remind_SSP5-PkBudg900-rem-5" , "SSP5-PkBudg1300_2019-10-23_14.16.09/", "SSP5-PkBudg1100_2019-10-23_14.13.22/", "SSP5-PkBudg900_2019-10-23_14.10.35/"
+    # list(period = "long",  set = "C_PkBudg1300",  dirs = c("C_SSP2-PkBudg1300_S1-rem-5",
+    #                                                        "C_SSP2-PkBudg1300_S2-rem-5",
+    #                                                        "C_SSP2-PkBudg1300_S3-rem-5",
+    #                                                        "C_SSP2-PkBudg1300_S4-rem-5",
+    #                                                        "C_SSP2-PkBudg1300_S5-rem-5",
+    #                                                        "C_SSP2-PkBudg1300_S6-rem-5",
+    #                                                        "C_SSP2-PkBudg1300_S7-rem-5")),
+    # list(period = "long",  set = "C_PkBudg900",  dirs = c("C_SSP2-PkBudg900_S1-rem-5",
+    #                                                       "C_SSP2-PkBudg900_S2-rem-5",
+    #                                                       "C_SSP2-PkBudg900_S3-rem-5",
+    #                                                       "C_SSP2-PkBudg900_S4-rem-5",
+    #                                                       "C_SSP2-PkBudg900_S5-rem-5",
+    #                                                       "C_SSP2-PkBudg900_S6-rem-5",
+    #                                                       "C_SSP2-PkBudg900_S7-rem-5")),
       NULL)
 }
 
