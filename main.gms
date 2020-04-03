@@ -287,6 +287,8 @@ cm_taxCO2inc_after_peakBudgYr "annual increase of CO2 price after the Peak Budge
 cm_CO2priceRegConvEndYr      "Year at which regional CO2 prices converge in module 45 realization diffPhaseIn2LinFlex"
 c_regi_nucscen				"regions to apply nucscen to"
 c_regi_capturescen			"region to apply ccapturescen to"
+
+cm_bioen_coemi_factor       "Switch to enable an additional tax on bioenergy depending on a co-emission factor"
 ;
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -398,6 +400,8 @@ $setGlobal cm_EDGEtr_scen  Conservative_liquids  !! def = Conservative_liquids
 
 $setGlobal c_regi_nucscen  all !! def = all
 $setGlobal c_regi_capturescen  all !! def = all
+
+cm_bioen_coemi_factor  = 0;  !! def = 0
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ***                           YOU ARE IN THE WARNING ZONE (DON'T DO CHANGES HERE)

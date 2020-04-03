@@ -23,7 +23,12 @@ if (exists("outputdirs")) {
       
       #list(period = "both",  set = "cpl-SDP",  dirs = c("C_SDP-Base-rem-5",  "C_SDP-NPi-rem-5",  "C_SDP-PkBudg1300-rem-5",  "C_SDP-PkBudg1100-rem-5",  "C_SDP-PkBudg1000-rem-5")),
       #list(period = "both",  set = "cpl-SSP1", dirs = c("C_SSP1-Base-rem-5", "C_SSP1-NPi-rem-5", "C_SSP1-PkBudg1300-rem-5", "C_SSP1-PkBudg1100-rem-5", "C_SSP1-PkBudg900-rem-5")),
-      list(period = "both",  set = "cpl-SSP2", dirs = c("C_SSP2-Base-rem-5", "C_SSP2-NPi-rem-5", "C_SSP2-PkBudg1300-rem-5", "C_SSP2-PkBudg1100-rem-5", "C_SSP2-PkBudg900-rem-5")), #, "C_SSP2-NDC-rem-5"
+    # list(period = "both",  set = "cpl-SSP2", dirs = c("C_SSP2-Base-rem-5", "C_SSP2-NPi-rem-5", "C_SSP2-PkBudg1300-rem-5", "C_SSP2-PkBudg1100-rem-5", "C_SSP2-PkBudg900-rem-5")), #, "C_SSP2-NDC-rem-5"
+    list(period = "long",  set = "cpl-SSP2-Budg600_noTaxMag", dirs = c("noPkBudg/C_SSP2-Base-rem-5", 
+                                                      "noPkBudg/C_SSP2-NDC-rem-5", 
+                                                      "noPkBudg/C_SSP2-Budg600-rem-5", 
+                                                      "noPkBudg/C_SSP2-Budg600_Mag-noTaxCO2-rem-5", 
+                                                      "noPkBudg/C_SSP2-Budg600_Mag-allTaxOff-rem-5")),
       #list(period = "both",  set = "cpl-SSP5", dirs = c("C_SSP5-Base-rem-5", "C_SSP5-NPi-rem-5", "C_SSP5-PkBudg1300-rem-5", "C_SSP5-PkBudg1100-rem-5", "C_SSP5-PkBudg900-rem-5")),
       
       #list(period = "both",  set = "cpl-PkBudg900-plant-vgl",  dirs = c("C_SDP-PkBudg900-plant-rem-5", "C_SDP-PkBudg900-rem-5", "C_SSP2-PkBudg900-plant-rem-5", "C_SSP2-PkBudg900-rem-5")),
@@ -49,7 +54,7 @@ start_comp <- function(outputdirs,shortTerm,outfilename) {
   cat("Starting ",jobname,"\n")
   on_cluster <- file.exists("/p/projects/")
   if (on_cluster) {
-    clcom <- paste0("sbatch --qos=standby --job-name=",jobname," --output=",jobname,".out --error=",jobname,".err --mail-type=END --time=200 --mem-per-cpu=8000 --wrap=\"Rscript scripts/utils/run_compareScenarios.R outputdirs=",paste(outputdirs,collapse=",")," shortTerm=",shortTerm," outfilename=",jobname,"\"")
+    clcom <- paste0("sbatch --qos=priority --job-name=",jobname," --output=",jobname,".out --error=",jobname,".err --mail-type=END --time=200 --mem-per-cpu=8000 --wrap=\"Rscript scripts/utils/run_compareScenarios.R outputdirs=",paste(outputdirs,collapse=",")," shortTerm=",shortTerm," outfilename=",jobname,"\"")
     system(clcom)
   } else {
     outfilename    <- jobname

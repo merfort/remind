@@ -10,7 +10,7 @@
 
 # Please provide all files and paths relative to the folder where start_coupled is executed
 path_remind <- paste0(getwd(),"/")   # provide path to REMIND. Default: the actual path which the script is started from
-path_magpie <- "/p/projects/piam/runs/coupled-magpie/"
+path_magpie <- "/home/merfort/paper/secondbest_biotax/magpie/"
 
 # If there are existing runs you would like to take the gdxes (REMIND) or reportings (REMIND or MAgPIE) from provide the path here and the name prefix below. 
 # Note: the sceanrio names of the old runs have to be identical to the runs that are to be started. If they differ please provide the names of the old scenarios in the 
@@ -27,8 +27,8 @@ prefix_oldruns <-  "C_"
 # Paths to the files where scenarios are defined
 # path_settings_remind contains the detailed configuration of the REMIND scenarios
 # path_settings_coupled defines which runs will be started, coupling infos, and optinal gdx and report inforamtion that overrides path_settings_remind
-path_settings_coupled <- paste0(path_remind,"config/scenario_config_coupled_SSPSDP.csv")
-path_settings_remind  <- paste0(path_remind,"config/scenario_config_SSPSDP.csv")
+path_settings_coupled <- paste0(path_remind,"config/scenario_config_coupled_SSPSDP_biotax.csv")
+path_settings_remind  <- paste0(path_remind,"config/scenario_config_SSPSDP_biotax.csv")
 
 # number of coupling iterations
 max_iterations <- 5
