@@ -11,7 +11,7 @@
 ***-------------------------------------------------------------
 *FIXME: maybe not the right position for the calculation, but it needs to be done 
 *before the preloop-solve statements are executed
-p30_bioen_price_coemi(t,regi) = p30_bioen_coemi_factor(t,regi) * pm_taxCO2eq(t, regi)
+p30_bioen_price_coemi(t,regi) = p30_bioen_coemi_factor(t,regi) * pm_taxCO2eq(t, regi);
 
 
 ***=============================================================
