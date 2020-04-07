@@ -97,4 +97,16 @@ vm_fuExtr.l(ttot,regi,"pebiolc","1")  = p30_pebiolc_demandmag(ttot,regi);
 ***  END: calculate shift factors
 ***-------------------------------------------------------------
 
+***-------------------------------------------------------------
+***  BEGIN:  Calculate bioenergy co-emissions-factor
+***-------------------------------------------------------------
+*** Calculate the additional price for bioenergy that is related 
+*** to co-emissions. This needs to be done in the preeloop, 
+*** because the carbon price is read in after the biomass module
+p30_bioen_price_coemi(t,regi) = p30_bioen_coemi_factor(t,regi) * pm_taxCO2eq(t, regi);
+***-------------------------------------------------------------
+***  END:    Calculate bioenergy co-emissions-factor
+***-------------------------------------------------------------
+
+
 *** EOF ./modules/30_biomass/magpie_4/preloop.gms
