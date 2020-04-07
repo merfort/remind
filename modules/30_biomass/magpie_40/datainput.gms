@@ -85,6 +85,10 @@ loop(ttot$( (ttot.val = 2005) OR (ttot.val = 2010) ),
 );
 display i30_bioen_price_a, i30_bioen_price_b;
 
+
+***-------------------------------------------------------------
+*** Calculate additional price for bioenergy related to co-emissions
+***-------------------------------------------------------------
 *** Read in exogenous bioenergy co-emission factors
 *LM* FIXME read in data from file and use moinput
 * if (cm_bioen_coemi_factor eq 0,
@@ -93,7 +97,10 @@ display i30_bioen_price_a, i30_bioen_price_b;
 * elseif (cm_bioen_coemi_factor eq 1,
 *     p30_bioen_coemi_factor(ttot,  all_regi) = 201.75678 * (1/1000*12/44) / (sm_EJ_2_TWa);
 * );
-*** Convert from Mt CO2/EJ to Gt C/TWa
+*** Convert co-emissions factor from Mt CO2/EJ to Gt C/TWa
 p30_bioen_coemi_factor(ttot,all_regi) = cm_bioen_coemi_factor * (1/1000*12/44) / (sm_EJ_2_TWa);
+
+*** Calculate the additional price for bioenergy that is related to co-emissions
+p30_bioen_price_coemi(t,regi) = p30_bioen_coemi_factor(t,regi) * pm_taxCO2eq(t, regi);
 
 *** EOF ./modules/30_biomass/magpie_40/datainput.gms

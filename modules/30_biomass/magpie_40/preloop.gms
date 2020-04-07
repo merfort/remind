@@ -6,14 +6,6 @@
 *** |  Contact: remind@pik-potsdam.de
 *** SOF ./modules/30_biomass/magpie_4/preloop.gms
 
-***-------------------------------------------------------------
-*** Calculate additional price for bioenergy related to co-emissions
-***-------------------------------------------------------------
-*FIXME: maybe not the right position for the calculation, but it needs to be done 
-*before the preloop-solve statements are executed
-p30_bioen_price_coemi(t,regi) = p30_bioen_coemi_factor(t,regi) * pm_taxCO2eq(t, regi);
-
-
 ***=============================================================
 ***  BEGIN: calculate shift factors for bioenergy prices 
 ***  Compare price response from MAgPIE run with emulator prices

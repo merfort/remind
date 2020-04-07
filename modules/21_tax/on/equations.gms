@@ -163,11 +163,16 @@ v21_taxrevSO2(t,regi) =g= p21_tau_so2_tax(t,regi) * vm_emiTe(t,regi,"so2")
                           - p21_taxrevSO20(t,regi);
 
 ***---------------------------------------------------------------------------
-*'  Calculation of bioenergy tax: tax rate (calculated as multiple of bioenergy price) times PE use of pebiolc
+*'  Calculation of bioenergy tax: two options
+*'     1. fixed tax rate calculated as multiple of bioenergy price
+*'     2. price according to co-emission factor (independent of bioenergy
+*'        bioenergy price)
+*'  Both tax rates (unit [T$US/TWa]) are added up and are then multiplied by
+*'  the total PE demand for purpose grown biomass
 *'  Documentation of overall tax approach is above at q21_taxrev.
 ***---------------------------------------------------------------------------
 q21_taxrevBio(t,regi)$(t.val ge max(2010,cm_startyear))..
-v21_taxrevBio(t,regi) =g= v21_tau_bio(t) * vm_fuExtr(t,regi,"pebiolc","1") * vm_pebiolc_price(t,regi)
+v21_taxrevBio(t,regi) =g= (v21_tau_bio(t)  * vm_pebiolc_price(t,regi) + p30_bioen_price_coemi(t,regi)) * vm_fuExtr(t,regi,"pebiolc","1")
                           - p21_taxrevBio0(t,regi);
 						  
 ***---------------------------------------------------------------------------

@@ -45,7 +45,6 @@ q30_pebiolc_price(ttot,regi)$(ttot.val ge cm_startyear)..
        + i30_bioen_price_a(ttot,regi) 
        + i30_bioen_price_b(ttot,regi) * (vm_fuExtr(ttot,regi,"pebiolc","1") + sm_eps) )
        * v30_pricemult(ttot,regi)
-       + p30_bioen_price_coemi(ttot,regi) !! Add tax (second best) depending on a co-emission factor
 ;
 
 *' **MAgPIE EMULATOR: COST**  
