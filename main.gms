@@ -288,7 +288,8 @@ cm_CO2priceRegConvEndYr      "Year at which regional CO2 prices converge in modu
 c_regi_nucscen				"regions to apply nucscen to"
 c_regi_capturescen			"region to apply ccapturescen to"
 
-cm_bioen_coemi_factor       "Switch to enable an additional tax on bioenergy depending on a co-emission factor"
+cm_bioen_coemi_factor_CO2   "CO2 co-emission factor related to bioenergy production that results in an additional tax [Mt CO2/EJ]"
+cm_bioen_coemi_factor_N2O   "N2O co-emission factor related to bioenergy production that results in an additional tax [kt N2O/EJ]"
 ;
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -401,7 +402,8 @@ $setGlobal cm_EDGEtr_scen  Conservative_liquids  !! def = Conservative_liquids
 $setGlobal c_regi_nucscen  all !! def = all
 $setGlobal c_regi_capturescen  all !! def = all
 
-cm_bioen_coemi_factor  = 0;  !! def = 0
+cm_bioen_coemi_factor_CO2  = 0;  !! def = 0
+cm_bioen_coemi_factor_N2O  = 0;  !! def = 0
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ***                           YOU ARE IN THE WARNING ZONE (DON'T DO CHANGES HERE)

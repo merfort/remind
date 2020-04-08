@@ -122,14 +122,11 @@ display i30_bioen_price_a, i30_bioen_price_b;
 
 
 *** Read in exogenous bioenergy co-emission factors
-*LM* FIXME read in data from file and use moinput                                               *** EOF ./modules/30_biomass/magpie_40/datainput.gms
-* if (cm_bioen_coemi_factor eq 0,
-*     p30_bioen_coemi_factor(ttot,  all_regi) = 0;
-* );
-* elseif (cm_bioen_coemi_factor eq 1,
-*     p30_bioen_coemi_factor(ttot,  all_regi) = 201.75678 * (1/1000*12/44) / (sm_EJ_2_TWa);
-* );
-*** Convert co-emissions factor from Mt CO2/EJ to Gt C/TWa
-p30_bioen_coemi_factor(ttot,all_regi) = cm_bioen_coemi_factor * (1/1000*12/44) / (sm_EJ_2_TWa);
+*LM* FIXME read in data from file and use moinput
+*** Read in and convert co-emission factors
+*** For CO2: from Mt CO2/EJ to Gt C/TWa
+*** For N2O: from kt N2O/EJ to Gt C/TWa
+p30_bioen_coemi_factor(ttot,all_regi) = (cm_bioen_coemi_factor_CO2 + cm_bioen_coemi_factor_N2O / 1000 * s_gwpN2O) 
+                                      * (1/1000*12/44) / (sm_EJ_2_TWa);
 
 *** EOF ./modules/30_biomass/magpie_40/datainput.gms
