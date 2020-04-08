@@ -288,8 +288,8 @@ cm_CO2priceRegConvEndYr      "Year at which regional CO2 prices converge in modu
 c_regi_nucscen				"regions to apply nucscen to"
 c_regi_capturescen			"region to apply ccapturescen to"
 
-cm_bioen_coemi_factor_CO2   "CO2 co-emission factor related to bioenergy production that results in an additional tax [Mt CO2/EJ]"
-cm_bioen_coemi_factor_N2O   "N2O co-emission factor related to bioenergy production that results in an additional tax [kt N2O/EJ]"
+cm_bioen_coemi_factor_CO2   "CO2 co-emission factor related to bioenergy production that results in an additional tax (in Mt CO2/EJ)"
+cm_bioen_coemi_factor_N2O   "N2O co-emission factor related to bioenergy production that results in an additional tax (in kt N2O/EJ)"
 ;
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
