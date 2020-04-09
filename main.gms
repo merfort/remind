@@ -82,9 +82,9 @@
 * 
 * Regionscode: 690d3718e151be1b450b394c1064b1c5
 * 
-* Input data revision: 5.94
+* Input data revision: 5.941
 * 
-* Last modification (input data): Thu Mar 19 16:15:13 2020
+* Last modification (input data): Thu Apr  9 15:32:33 2020
 * 
 *###################### R SECTION END (VERSION INFO) ###########################
 
@@ -288,8 +288,8 @@ cm_CO2priceRegConvEndYr      "Year at which regional CO2 prices converge in modu
 c_regi_nucscen				"regions to apply nucscen to"
 c_regi_capturescen			"region to apply ccapturescen to"
 
-cm_bioen_coemi_factor_CO2   "CO2 co-emission factor related to bioenergy production that results in an additional tax (in Mt CO2/EJ)"
-cm_bioen_coemi_factor_N2O   "N2O co-emission factor related to bioenergy production that results in an additional tax (in kt N2O/EJ)"
+cm_bioen_coemi_factor_CO2   "CO2 co-emission factor related to bioenergy production that results in an additional tax (in Mt CO2 per EJ)."
+cm_bioen_coemi_factor_N2O   "N2O co-emission factor related to bioenergy production that results in an additional tax (in kt N2O per EJ)."
 ;
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
