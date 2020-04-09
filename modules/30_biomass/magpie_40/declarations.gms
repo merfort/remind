@@ -44,7 +44,7 @@ p30_fuelex_dummy(all_regi)         "Dummy for bio-energy supply per region"
 
 *** Parameters for second best bioenergy taxation
 p30_bioen_coemi_factor(ttot,all_regi)           "Co-emissions factor for biomass production for bioenergy [Gt C/TWa]"
-p30_bioen_price_coemi(ttot,all_regi)            "Additional price on bioenergy related to (not-yet priced) co-emissions [T$/TWa]"
+p30_bioen_price_coemi(ttot,all_regi)            "Additional price on bioenergy related to (not-yet priced) co-emissions [T$US/TWa]"
 ;
 
 variables
