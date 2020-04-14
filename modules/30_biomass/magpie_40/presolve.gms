@@ -24,5 +24,8 @@ p30_demPe(ttot,regi) =
     ) * 100/40  !!! substitution method
 ;
 
+*** Calculate additional bioenergy tax that is related to (not yet priced) co-emissions
+*** Needs to be updated in every iteration according to the CO2 tax level
+p30_bioen_price_coemi(t,regi) = p30_bioen_coemi_factor(t,regi) * pm_taxCO2eq(t, regi);
 
 *** EOF ./modules/30_biomass/magpie_40/presolve.gms
