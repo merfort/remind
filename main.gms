@@ -288,8 +288,12 @@ cm_CO2priceRegConvEndYr      "Year at which regional CO2 prices converge in modu
 c_regi_nucscen				"regions to apply nucscen to"
 c_regi_capturescen			"region to apply ccapturescen to"
 
+cm_bioen_ef_scen            "Switch to choose bioenergy co-emimssion factors for CO2 and N2O based on a specific MAgPIE scenario or direct input"
 cm_bioen_coemi_factor_CO2   "CO2 co-emission factor related to bioenergy production that results in an additional tax (in Mt CO2 per EJ)."
 cm_bioen_coemi_factor_N2O   "N2O co-emission factor related to bioenergy production that results in an additional tax (in kt N2O per EJ)."
+cm_sspMagScen               "MAgPIE SSP scenario that was applied to obtain bioenergy co-emission factors"
+cm_fsMagScen                "MAgPIE feedstock scenario that was applied to obtain bioenergy co-emission factors"
+cm_irMagScen                "MAgPIE irrigation scenario that was applied to obtain bioenergy co-emission factors"
 ;
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -402,8 +406,12 @@ $setGlobal cm_EDGEtr_scen  Conservative_liquids  !! def = Conservative_liquids
 $setGlobal c_regi_nucscen  all !! def = all
 $setGlobal c_regi_capturescen  all !! def = all
 
-cm_bioen_coemi_factor_CO2  = 0;  !! def = 0
-cm_bioen_coemi_factor_N2O  = 0;  !! def = 0
+$setGlobal cm_bioen_ef_scen  directInput  !! def = off
+cm_bioen_coemi_factor_CO2  = 0;        !! def = 0
+cm_bioen_coemi_factor_N2O  = 0;        !! def = 0
+$setGlobal cm_sspMagScen  ssp2         !! def = ssp2
+$setGlobal cm_fsMagScen  TypeALL       !! def = TypeALL
+$setGlobal cm_irMagScen  WaterRAINFED  !! def = WaterRAINFED
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ***                           YOU ARE IN THE WARNING ZONE (DON'T DO CHANGES HERE)

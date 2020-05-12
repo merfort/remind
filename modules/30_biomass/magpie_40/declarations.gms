@@ -43,8 +43,9 @@ p30_max_pebiolc_dummy              "Dummy for bio energy supply at p30_pebiolc_p
 p30_fuelex_dummy(all_regi)         "Dummy for bio-energy supply per region"
 
 *** Parameters for second best bioenergy taxation
-p30_bioen_coemi_factor(ttot,all_regi)           "Co-emissions factor for biomass production for bioenergy [Gt C/TWa]"
-p30_bioen_price_coemi(ttot,all_regi)            "Additional price on bioenergy related to (not-yet priced) co-emissions [T$US/TWa]"
+p30_bioen_ef(ttot,all_regi,emiBioMag30) "Bioenergy co-emission factor for different GHGs in [Gt C/TWa] (CO2) and [Mt N/TWa] (N2O)"
+p30_bioen_ef_total(ttot,all_regi)       "Total bioenergy co-emission factor in CO2-equivalents [Gt C/TWa]"
+p30_bioen_price_coemi(ttot,all_regi)    "Additional price on bioenergy related to (potentially not-yet priced) co-emissions [T$US/TWa]"
 ;
 
 variables

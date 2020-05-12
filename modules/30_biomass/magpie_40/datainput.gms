@@ -120,13 +120,37 @@ display i30_bioen_price_a, i30_bioen_price_b;
 ***  );
 ***);
 
+*** -------------------------------------------------------------
+*** Read in bioenergy co-emission factors (for an additional tax)
+*** -------------------------------------------------------------
+*** There are basically two options (plus the default option, turning it off)
+$ifthen.bioen_ef %cm_bioen_ef_scen% == "off"
+*** By default, co-emission factors are turned off (assumes that emissions are priced in MAgPIE)
+p30_bioen_ef(ttot,all_regi,emiBioMag30) = 0;
 
-*** Read in exogenous bioenergy co-emission factors
-*LM* FIXME read in data from file and use moinput
-*** Read in and convert co-emission factors
-*** For CO2: from Mt CO2/EJ to Gt C/TWa
-*** For N2O: from kt N2O/EJ to Gt C/TWa
-p30_bioen_coemi_factor(ttot,all_regi) = (cm_bioen_coemi_factor_CO2 + cm_bioen_coemi_factor_N2O / 1000 * s_gwpN2O) 
-                                      * (1/1000*12/44) / (sm_EJ_2_TWa);
+$elseif.bioen_ef %cm_bioen_ef_scen% == "directInput"
+*** Direct input of emission factors from switches for CO2 and N2O separately
+*** Read in values from switch and convert from input units (Mt CO2/EJ and kt N2O/EJ, respectively) 
+*** to REMIND units (Gt C/TWa and Mt N/TWa)
+p30_bioen_ef(ttot,all_regi,"co2luc") = cm_bioen_coemi_factor_CO2 *(1/1000 * 12/44) /(sm_EJ_2_TWa);
+p30_bioen_ef(ttot,all_regi,"n2obio") = cm_bioen_coemi_factor_N2O *(1/1000 * 28/44) /(sm_EJ_2_TWa);
+
+$else.bioen_ef
+*** Read in values from an external file with emission factors derived from different MAgPIE scenarios
+*** Here, units are already given in REMIND units, i.e. Gt C/TWa and Mt N/TWa for CO2- and N2O-emissions, respectively. 
+table p30_bioen_ef_scen(sspMagScen30,fsMagScen30,irMagScen30,emiBioMag30,all_regi)  "Bionergy co-emission factors for different MAgPIE scenarios [Gt C/TWa] (CO2) and [Mt N/TWa] (N2O)"
+$ondelim
+$if %cm_bioen_ef_scen% == "T0-th_2020_2100-B50-global"  $include "./modules/30_biomass/magpie_40/input/f_coemiFacMagpie-T0-th_2020_2100-B50-global.cs4r";
+$if %cm_bioen_ef_scen% == "T0-th_2020_2100-B100-global" $include "./modules/30_biomass/magpie_40/input/f_coemiFacMagpie-T0-th_2020_2100-B100-global.cs4r";
+$offdelim
+;
+p30_bioen_ef(ttot,all_regi,emiBioMag30) = p30_bioen_ef_scen("%cm_sspMagScen%","%cm_fsMagScen%","%cm_irMagScen%",emiBioMag30,all_regi);
+$endif.bioen_ef
+
+
+*** Convert N2O co-emission factors to CO2-equivalents (from Mt N/TWa to Gt C/TWa) and aggregate 
+*** with CO2 co-emission factors to total bioenergy related co-emissions
+p30_bioen_ef_total(ttot,all_regi) = p30_bioen_ef(ttot,all_regi,"co2luc") 
+                                  + p30_bioen_ef(ttot,all_regi,"n2obio") * s_tgn_2_pgc;
 
 *** EOF ./modules/30_biomass/magpie_40/datainput.gms
