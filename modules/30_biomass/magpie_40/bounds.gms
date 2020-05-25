@@ -58,6 +58,11 @@ loop(t,
 *** Reduce the global upper bound on purpose grown bio-energy by residues, since the total bound applies to the sum of residues and purpose grown
 p30_max_pebiolc_path_glob(t) = p30_max_pebiolc_path_glob(t) * sm_EJ_2_TWa -  sum(regi, p30_datapebio(regi,"pebiolc","2","maxprod",t)); 
 
+*** In case purpose grown 2nd gen. bioenergy is completely forbidden, set global max production to a small value (eq. to ~0.3 EJ/yr)
+if (cm_bioenergymaxscen=6,
+     p30_max_pebiolc_path_glob(t) = 0.01;
+);
+
 display p30_max_pebiolc_path_glob;
 
 ***-------------------------------------------------------------
