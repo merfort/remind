@@ -120,7 +120,7 @@ if(cm_bioenergymaxscen>0,
 *** the amount of traditional biomass. This does not violate the EMF guideline since setting purpose
 *** grown 2nd generation bioenergy to zero anyways is a rather pathological case and only serves as a 
 *** counterfactual scenario.
-     if (cm_bioenergymaxscen=6,
+     if (cm_bioenergymaxscen=9,
           vm_fuExtr.up(t,regi,"pebiolc","1") = 0.001;
      );
 );
