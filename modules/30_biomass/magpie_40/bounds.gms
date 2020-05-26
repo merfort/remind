@@ -58,11 +58,6 @@ loop(t,
 *** Reduce the global upper bound on purpose grown bio-energy by residues, since the total bound applies to the sum of residues and purpose grown
 p30_max_pebiolc_path_glob(t) = p30_max_pebiolc_path_glob(t) * sm_EJ_2_TWa -  sum(regi, p30_datapebio(regi,"pebiolc","2","maxprod",t)); 
 
-*** In case purpose grown 2nd gen. bioenergy is completely forbidden, set global max production to a small value (eq. to ~0.3 EJ/yr)
-if (cm_bioenergymaxscen=6,
-     p30_max_pebiolc_path_glob(t) = 0.01;
-);
-
 display p30_max_pebiolc_path_glob;
 
 ***-------------------------------------------------------------
@@ -118,7 +113,16 @@ vm_fuExtr.up(t,regi,"pebiolc","2") = p30_maxprod_residue(t,regi)*1.0001;
 *** purpose-grown grade by the demand for traditional biomass.
 
 if(cm_bioenergymaxscen>0,
-vm_fuExtr.up(t,regi,"pebiolc","1") = p30_max_pebiolc_path(regi,t) + pm_pedem_res(t,regi,"biotr");
+     vm_fuExtr.up(t,regi,"pebiolc","1") = p30_max_pebiolc_path(regi,t) + pm_pedem_res(t,regi,"biotr");
+
+*** Set bound virtually to zero if respective szenario is chosen. This needs to be done here directly
+*** and not via p30_max_pebiolc_path, otherwise there would still be a non-zero bound according to
+*** the amount of traditional biomass. This does not violate the EMF guideline since setting purpose
+*** grown 2nd generation bioenergy to zero anyways is a rather pathological case and only serves as a 
+*** counterfactual scenario.
+     if (cm_bioenergymaxscen=6,
+          vm_fuExtr.up(t,regi,"pebiolc","1") = 0.001;
+     );
 );
 
 *** EOF ./modules/30_biomass/magpie_4/bounds.gms
