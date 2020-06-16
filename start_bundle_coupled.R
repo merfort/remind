@@ -29,6 +29,8 @@ prefix_oldruns <-  "C_"
 # path_settings_coupled defines which runs will be started, coupling infos, and optinal gdx and report inforamtion that overrides path_settings_remind
 path_settings_coupled <- paste0(path_remind,"config/scenario_config_coupled_secondBestBioTax.csv")
 path_settings_remind  <- paste0(path_remind,"config/scenario_config_secondBestBioTax.csv")
+# path_settings_coupled <- paste0(path_remind,"config/scenario_config_coupled_for_Alex.csv")
+# path_settings_remind  <- paste0(path_remind,"config/scenario_config_for_Alex.csv")
 
 # number of coupling iterations
 max_iterations <- 5
