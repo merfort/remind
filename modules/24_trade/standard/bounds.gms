@@ -131,5 +131,12 @@ loop(regi,
       );
 );
 
+*LM*200616
+*** disable trade of purpose grown lignocellulosic biomass according to switch
+if (cm_bioenTrdScen eq 0,
+    vm_Mport.fx(t,regi,"pebiolc") = 0;
+    vm_Xport.fx(t,regi,"pebiolc") = 0;
+);
+
 
 *** EOF ./modules/24_trade/standard/bounds.gms

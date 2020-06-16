@@ -294,6 +294,7 @@ cm_bioen_coemi_factor_N2O   "N2O co-emission factor related to bioenergy product
 cm_sspMagScen               "MAgPIE SSP scenario that was applied to obtain bioenergy co-emission factors"
 cm_fsMagScen                "MAgPIE feedstock scenario that was applied to obtain bioenergy co-emission factors"
 cm_irMagScen                "MAgPIE irrigation scenario that was applied to obtain bioenergy co-emission factors"
+cm_bioenTrdScen             "Trade scenario for lignocellulosic biomass"
 ;
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -412,6 +413,7 @@ cm_bioen_coemi_factor_N2O  = 0;        !! def = 0
 $setGlobal cm_sspMagScen  ssp2         !! def = ssp2
 $setGlobal cm_fsMagScen  TypeALL       !! def = TypeALL
 $setGlobal cm_irMagScen  WaterRAINFED  !! def = WaterRAINFED
+cm_bioenTrdScen = 1;                   !! def = 1
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ***                           YOU ARE IN THE WARNING ZONE (DON'T DO CHANGES HERE)
