@@ -82,9 +82,9 @@
 * 
 * Regionscode: 690d3718e151be1b450b394c1064b1c5
 * 
-* Input data revision: 5.941
+* Input data revision: 5.944
 * 
-* Last modification (input data): Thu Apr  9 15:32:33 2020
+* Last modification (input data): Wed Jun 17 14:10:58 2020
 * 
 *###################### R SECTION END (VERSION INFO) ###########################
 
@@ -220,6 +220,9 @@ cm_nucscen            "nuclear option choice"
 cm_ccapturescen       "carbon capture option choice"
 c_bioliqscen          "bioenergy liquids technology choise"
 c_bioh2scen           "bioenergy hydrogen technology choice"
+c_shGreenH2           "lower bound on share of green hydrogen in all hydrogen by 2030"
+c_shBioTrans          "upper bound on share of bioliquids in transport from 2025 onwards"
+cm_shSynTrans         "lower bound on share of synthetic fuels in all transport fuels by 2035"
 cm_IndCCSscen        "CCS for Industry"
 cm_optimisticMAC     "assume optimistic Industry MAC from AR5 Ch. 10?"
 cm_CCS_cement        "CCS for cement sub-sector"
@@ -317,6 +320,9 @@ cm_nucscen       = 2;        !! def = 2
 cm_ccapturescen  = 1;        !! def = 1
 c_bioliqscen     = 1;        !! def = 1
 c_bioh2scen      = 1;        !! def = 1
+c_shGreenH2      = 0;        !! def = 0
+c_shBioTrans     = 1;        !! def = 1
+cm_shSynTrans    = 0;        !! def = 0
 c_solscen        = 1;        !! def = 1
 
 cm_IndCCSscen          = 1;        !! def = 1
@@ -402,7 +408,7 @@ cm_noReboundEffect     = 0;
 $setGlobal cm_EsubGrowth         low  !! def = low
 $setGlobal c_scaleEmiHistorical  on  !! def = on
 
-$setGlobal cm_EDGEtr_scen  Conservative_liquids  !! def = Conservative_liquids
+$setGlobal cm_EDGEtr_scen  ConvCase  !! def = ConvCase
 
 $setGlobal c_regi_nucscen  all !! def = all
 $setGlobal c_regi_capturescen  all !! def = all
