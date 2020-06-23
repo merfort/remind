@@ -29,6 +29,8 @@ prefix_oldruns <-  "C_"
 # path_settings_coupled defines which runs will be started, coupling infos, and optinal gdx and report inforamtion that overrides path_settings_remind
 path_settings_coupled <- paste0(path_remind,"config/scenario_config_coupled_secondBestBioTax.csv")
 path_settings_remind  <- paste0(path_remind,"config/scenario_config_secondBestBioTax.csv")
+# path_settings_coupled <- paste0(path_remind,"config/scenario_config_coupled_secondBestBioTax_testRuns.csv")
+# path_settings_remind  <- paste0(path_remind,"config/scenario_config_secondBestBioTax_testRuns.csv")
 # path_settings_coupled <- paste0(path_remind,"config/scenario_config_coupled_for_Alex.csv")
 # path_settings_remind  <- paste0(path_remind,"config/scenario_config_for_Alex.csv")
 
@@ -217,6 +219,18 @@ for(scen in common){
       cat("Setting MAgPIE cprice_red_factor to 0.3\n")
       cfg_mag$gms$s56_cprice_red_factor <- 0.3
       cfg_mag$gms$s32_max_aff_area <- Inf
+  }
+
+  #configure MAgPIE pollutant price factor
+  if (grepl("LUtax_010",scen)){
+    cat("Setting MAgPIE pollutant price factor to 0.1")
+    cfg_mag$gms$s56_pollutant_price_factor <- 0.1
+  } else if (grepl("LUtax_020",scen)){
+    cat("Setting MAgPIE pollutant price factor to 0.2")
+    cfg_mag$gms$s56_pollutant_price_factor <- 0.2
+  } else if (grepl("LUtax_030",scen)){
+    cat("Setting MAgPIE pollutant price factor to 0.3")
+    cfg_mag$gms$s56_pollutant_price_factor <- 0.3
   }
 
   #cfg$logoption  <- 2  # Have the log output written in a file (not on the screen)
