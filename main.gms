@@ -413,7 +413,7 @@ $setGlobal cm_EDGEtr_scen  ConvCase  !! def = ConvCase
 $setGlobal c_regi_nucscen  all !! def = all
 $setGlobal c_regi_capturescen  all !! def = all
 
-$setGlobal cm_bioen_ef_scen  directInput  !! def = off
+$setGlobal cm_bioen_ef_scen  off       !! def = off
 cm_bioen_coemi_factor_CO2  = 0;        !! def = 0
 cm_bioen_coemi_factor_N2O  = 0;        !! def = 0
 $setGlobal cm_sspMagScen  ssp2         !! def = ssp2
