@@ -516,7 +516,7 @@ if(cm_iterative_target_adj eq 9,
 	
     display o_delay_increase_peakBudgYear, o_reached_until2150pricepath, pm_taxCO2eq, o_peakBudgYr_Itr, o_taxCO2eq_afterPeakShiftLoop_Itr_1regi, o_pkBudgYr_flipflop;
   ); !! if cm_emiscen eq 9,
-);   !! if cm_iterative_target_adj eq 8,
+);   !! if cm_iterative_target_adj eq 9,
 
 
 *** ---------------------------------------------------------------------------------------------------------------
@@ -533,7 +533,7 @@ if(cm_iterative_target_adj eq 10,
 *** The PeakBudgYr is found automatically by the algorithm (within the time window 2040-2100)
 
 *LM* The calculation of p_actualbudgetco2(t) is the only difference to realization 9. Here now the actual budget is set simply to the total of all GHGs
-  p_actualbudgetco2(t) =  sum(ttot$(ttot.val < t.val AND ttot.val > 2010), (sum(regi, vm_co2eq.l(t,regi)) * sm_c_2_co2 * pm_ts(ttot)))
+  p_actualbudgetco2(t) =  sum(ttot$(ttot.val < t.val AND ttot.val > 2010), (sum(regi, vm_co2eq.l(ttot,regi)) * sm_c_2_co2 * pm_ts(ttot)))
                           + sum(regi, vm_co2eq.l(t,regi))*sm_c_2_co2 * (pm_ts(t) * 0.5 + 0.5)
                           + sum(regi, vm_co2eq.l("2010",regi))*sm_c_2_co2 * 2;
   s_actualbudgetco2 = smax(t$(t.val le cm_peakBudgYr),p_actualbudgetco2(t));
@@ -717,8 +717,8 @@ if(cm_iterative_target_adj eq 10,
 	);
 	
     display o_delay_increase_peakBudgYear, o_reached_until2150pricepath, pm_taxCO2eq, o_peakBudgYr_Itr, o_taxCO2eq_afterPeakShiftLoop_Itr_1regi, o_pkBudgYr_flipflop;
-  ); !! if cm_emiscen eq 10,
-);   !! if cm_iterative_target_adj eq 8,
+  ); !! if cm_emiscen eq 9,
+);   !! if cm_iterative_target_adj eq 10,
 
 
 ***------ end of "cm_iterative_target_adj" variants-----------------------------------------
