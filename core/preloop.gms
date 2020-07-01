@@ -71,8 +71,8 @@ pm_vintage_in(regi,"6",te) = pm_vintage_in(regi,"6",te) * max(((pm_histfegrowth(
 );
 
 *RP
-*** First adjustment of CO2 price path for peakBudget runs (set by cm_iterative_target_adj eq 9)
-if(cm_iterative_target_adj eq 9,
+*** First adjustment of CO2 price path for peakBudget runs (set by cm_iterative_target_adj eq 9 or 10)
+if((cm_iterative_target_adj eq 9) OR (cm_iterative_target_adj eq 10),
 *** Save the original functional form of the CO2 price trajectory so values for all times can be accessed even if the peakBudgYr is shifted. 
 *** Then change to linear increasing CO2 price after peaking time 
   p_taxCO2eq_until2150(t,regi) = pm_taxCO2eq(t,regi);
