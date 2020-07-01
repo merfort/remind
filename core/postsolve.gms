@@ -536,7 +536,7 @@ if(cm_iterative_target_adj eq 10,
   p_actualbudgetco2(t) =  sum(ttot$(ttot.val < t.val AND ttot.val > 2010), (sum(regi, vm_co2eq.l(ttot,regi)) * sm_c_2_co2 * pm_ts(ttot)))
                           + sum(regi, vm_co2eq.l(t,regi))*sm_c_2_co2 * (pm_ts(t) * 0.5 + 0.5)
                           + sum(regi, vm_co2eq.l("2010",regi))*sm_c_2_co2 * 2;
-  s_actualbudgetco2 = smax(t,p_actualbudgetco2(t));
+  s_actualbudgetco2 = smax(t$(t.val le cm_peakBudgYr),p_actualbudgetco2(t));
   
   o_peakBudgYr_Itr(iteration) = cm_peakBudgYr;
                   
@@ -611,8 +611,8 @@ if(cm_iterative_target_adj eq 10,
 *** -------B: checking the peak timing, if cm_peakBudgYr is still correct or needs to be shifted-----------------------
 
     o_diff_to_Budg(iteration) = (c_budgetCO2 - s_actualbudgetco2);
-    o_totCO2emi_peakBudgYr(iteration) = sum(t$(t.val = cm_peakBudgYr), sum(regi2, vm_emiAll.l(t,regi2,"co2")) );
-    o_totCO2emi_allYrs(t,iteration) = sum(regi2, vm_emiAll.l(t,regi2,"co2") );
+    o_totCO2emi_peakBudgYr(iteration) = sum(t$(t.val = cm_peakBudgYr), sum(regi2, vm_co2eq.l(t,regi2)) );
+    o_totCO2emi_allYrs(t,iteration) = sum(regi2, vm_co2eq.l(t,regi2) );
 	
 *RP* calculate how fast emissions are changing around the peaking time to get an idea how close it is possible to get to 0 due to the 5(10) year time steps 	
     o_change_totCO2emi_peakBudgYr(iteration) = sum(ttot$(ttot.val = cm_peakBudgYr), (o_totCO2emi_allYrs(ttot-1,iteration) - o_totCO2emi_allYrs(ttot+1,iteration) )/4 );  !! Only gives a tolerance range, exact value not important. Division by 4 somewhat arbitrary - could be 3 or 5 as well. 
