@@ -1,0 +1,8 @@
+title;start;oldrun;path_report;magpie_scen;LU_pricing;path_gdx;path_gdx_ref;path_gdx_bau;path_gdx_opt
+SSP2-Base;1;;;SSP2,BASE;y2150;;;;
+SSP2-NPi;1;;;SSP2,NPI;y2150;;;;
+SSP2-PkBudg1300-LUmit_full;1;;;SSP2,NPI;y2020;;;;
+SSP2-PkBudg1300-LUmit_only-non-CO2;1;;;SSP2,NPI,noTaxCO2;y2020;;;;
+SSP2-PkBudg1300-LUmit_only-REDDplus;1;;;SSP2,NPI,noTaxCH4_N2O;y2020;;;;
+SSP2-PkBudg1300-LUmit_only-bioenergy;1;;;SSP2,NPI,allTaxOff;y2020;;;;
+SSP2-PkBudg1300-LUmit_off;1;;;SSP2,NPI,allTaxOff;y2020;;;;
