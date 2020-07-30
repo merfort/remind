@@ -121,7 +121,8 @@ if(cm_bioenergymaxscen>0,
 *** grown 2nd generation bioenergy to zero anyways is a rather pathological case and only serves as a 
 *** counterfactual scenario.
      if (cm_bioenergymaxscen=9,
-          vm_fuExtr.up(t,regi,"pebiolc","1") = 0.001;
+          !! vm_deltaCap.up(t,regi,tebio,       rlf)$((t.val gt 2005) AND (NOT sameas(tebio,        "biotr")))    = 1.0e-6;
+          vm_deltaCap.up(t,regi,teBioPebiolc,rlf)$((t.val gt 2005) AND (NOT sameas(teBioPebiolc, "biotr")))    = 1.0e-6;
      );
 );
 
