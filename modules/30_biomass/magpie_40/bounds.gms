@@ -122,7 +122,10 @@ if(cm_bioenergymaxscen>0,
 *** counterfactual scenario.
      if (cm_bioenergymaxscen=9,
           !! vm_deltaCap.up(t,regi,tebio,       rlf)$((t.val gt 2005) AND (NOT sameas(tebio,        "biotr")))    = 1.0e-6;
-          vm_deltaCap.up(t,regi,teBioPebiolc,rlf)$((t.val gt 2005) AND (NOT sameas(teBioPebiolc, "biotr")))    = 1.0e-6;
+          !! Set capacity additions to zero for all biotechnologies except biotr
+          vm_deltaCap.up(t,regi,teBioPebiolc,rlf)$( (t.val gt 2005) AND (NOT sameas(teBioPebiolc, "biotr")) AND (NOT sameas(teBioPebiolc, "biochp")) ) = 1.0e-6;
+          !! biochp needs to be treated separately to meet historical capacities in 2015 for some regions
+          vm_deltaCap.up(t,regi,"biochp",rlf)$( (t.val gt 2015) ) = 1.0e-6;
      );
 );
 
