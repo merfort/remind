@@ -8,8 +8,9 @@
 
 q40_ElecBioBound(t,regi)$(t.val gt 2015)..
 ***am minimum targets for certain technologies
+***ignore these bounds if lignocellulosic bioenergy is turned off completetly (cm_bioenergymaxscen = 9)
     sum(te2rlf(te,rlf)$(sameas(te,"biochp") OR sameas(te,"bioigcc") OR sameas(te,"bioigccc")), vm_cap(t,regi,te,rlf))
-      * 1000 =g= p40_ElecBioBound(t,regi);	 
+      * 1000 =g= p40_ElecBioBound(t,regi) * (cm_bioenergymaxscen ne 9);	 
 
 q40_PEgasBound(t,regi)$(t.val gt 2015 AND (sameas(regi,"CHN") OR sameas(regi,"CHA")))..
 *cb for china, gas PE must be higher than a certain share of total PE
