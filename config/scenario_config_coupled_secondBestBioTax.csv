@@ -1,5 +1,5 @@
 title;start;qos;oldrun;path_report;magpie_scen;LU_pricing;path_gdx;path_gdx_ref;path_gdx_bau;path_gdx_opt
-SSP2-Base-bio_on-LUtax_000-trd_on-ef_00;1;priority;;;SSP2,BASE;y2150;;;;
+SSP2-Base-bio_on-LUtax_000-trd_on-ef_00;1;priority;;;SSP2,NPI;y2150;;;;
 SSP2-NDC-bio_on-LUtax_000-trd_on-ef_00;1;priority;;;SSP2,NDC;y2150;;;;
 SSP2-PkBudg1300-bio_on-LUtax_000-trd_on-ef_00;1;short;;;SSP2,NDC,allTaxOff;y2020;;;;
 SSP2-PkBudg1300-bio_on-LUtax_000-trd_on-ef_10;1;short;;;SSP2,NDC,allTaxOff;y2020;;;;
@@ -24,8 +24,10 @@ SSP2-PkBudg1300-bio_on-LUtax_020-trd_on-ef_50;1;short;;;SSP2,NDC;y2020;;;;
 SSP2-PkBudg1300-bio_on-LUtax_020-trd_on-ef_60;1;short;;;SSP2,NDC;y2020;;;;
 SSP2-PkBudg1300-bio_on-LUtax_100-trd_on-ef_00;1;short;;;SSP2,NDC;y2020;;;;
 SSP2-PkBudg1300-bio_on-LUtax_100-trd_off-ef_00;1;short;;;SSP2,NDC;y2020;;;;
-SSP2-Base-bio_off-LUtax_000-trd_on-ef_00;1;priority;;;SSP2,BASE;y2150;;;;
+SSP2-Base-bio_off-LUtax_000-trd_on-ef_00;1;priority;;;SSP2,NPI;y2150;;;;
 SSP2-NDC-bio_off-LUtax_000-trd_on-ef_00;1;priority;;;SSP2,NDC;y2150;;;;
 SSP2-PkBudg1300-bio_off-LUtax_000-trd_on-ef_00;1;short;;;SSP2,NDC,allTaxOff;y2020;;;;
 SSP2-PkBudg1300-bio_off-LUtax_020-trd_on-ef_00;1;short;;;SSP2,NDC;y2020;;;;
 SSP2-PkBudg1300-bio_off-LUtax_100-trd_on-ef_00;1;short;;;SSP2,NDC;y2020;;;;
+SSP2-PkBudg1300-bio_on-LUtax_000-trd_on-ef_21;1;short;;;SSP2,NDC,allTaxOff;y2020;;;;
+SSP2-PkBudg1300-bio_on-LUtax_000-trd_on-ef_26;1;short;;;SSP2,NDC,allTaxOff;y2020;;;;
