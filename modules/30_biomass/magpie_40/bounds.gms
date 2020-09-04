@@ -138,7 +138,7 @@ $endIf.regiBioenergymax
 
 *LM* Switch off biomass import for (a) given region(s)
 $ifThen.regiNoBioImport not "%cm_regiNoBioImport%" == "none"
-vm_Mport.fx(t,regiNoBioImport43,"pebiolc") = 0;
+vm_Mport.fx(t,regiNoBioImport30,"pebiolc") = 0;
 $endIf.regiNoBioImport
 
 *** EOF ./modules/30_biomass/magpie_4/bounds.gms
