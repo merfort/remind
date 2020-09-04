@@ -124,4 +124,10 @@ if(cm_bioenergymaxscen>0,
 vm_fuExtr.up(t,regi,"pebiolc","1") = p30_max_pebiolc_path(regi,t) + pm_pedem_res(t,regi,"biotr");
 );
 
+$ifThen.regiBioenergymax (("%cm_bioenergymaxscen%" == "5") and (not "%cm_regiBioenergymax%" == "off"))
+*** Set regionally differentiated bounds on bioenergy production; overwrites all previous bounds
+vm_fuExtr.up(t,regi,"pebiolc","1")                                  = inf;
+vm_fuExtr.up(t,regi,"pebiolc","1")$(p30_regiBioenergymax(regi) > 0) = p30_regiBioenergymax(regi) * sm_EJ_2_TWa + pm_pedem_res(t,"EUR","biotr");
+$endIf.regiBioenergymax
+
 *** EOF ./modules/30_biomass/magpie_4/bounds.gms
