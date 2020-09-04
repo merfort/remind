@@ -301,6 +301,8 @@ cm_CO2priceRegConvEndYr      "Year at which regional CO2 prices converge in modu
 c_regi_nucscen				"regions to apply nucscen to"
 c_regi_capturescen			"region to apply ccapturescen to"
 cm_GDPcovid                  "GDP correction for covid"
+
+cm_regiNoBioImport     "Switch defining regions where biomass import is disabled"
 ;
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -418,6 +420,8 @@ $setGlobal cm_EDGEtr_scen  ConvCase  !! def = ConvCase
 
 $setGlobal c_regi_nucscen  all !! def = all
 $setGlobal c_regi_capturescen  all !! def = all
+
+$setGlobal cm_regiNoBioImport  none     !! def = none
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ***                           YOU ARE IN THE WARNING ZONE (DON'T DO CHANGES HERE)
