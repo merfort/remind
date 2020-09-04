@@ -302,7 +302,8 @@ c_regi_nucscen				"regions to apply nucscen to"
 c_regi_capturescen			"region to apply ccapturescen to"
 cm_GDPcovid                  "GDP correction for covid"
 
-cm_regiNoBioImport     "Switch defining regions where biomass import is disabled"
+cm_regiNoBioImport        "Switch defining regions where biomass import is disabled"
+cm_regiFactorStorageMult  "Switch enabling regional multitplicative factors for the scaling of curtailment and storage requirements for renewables"
 ;
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -421,7 +422,8 @@ $setGlobal cm_EDGEtr_scen  ConvCase  !! def = ConvCase
 $setGlobal c_regi_nucscen  all !! def = all
 $setGlobal c_regi_capturescen  all !! def = all
 
-$setGlobal cm_regiNoBioImport  none     !! def = none
+$setGlobal cm_regiNoBioImport  none        !! def = none
+$setGlobal cm_regiFactorStorageMult  none  !! def = none
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ***                           YOU ARE IN THE WARNING ZONE (DON'T DO CHANGES HERE)
