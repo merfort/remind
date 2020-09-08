@@ -132,8 +132,8 @@ $elseif.bioen_ef %cm_bioen_ef_scen% == "directInput"
 *** Direct input of emission factors from switches for CO2 and N2O separately
 *** Read in values from switch and convert from input units (Mt CO2/EJ and kt N2O/EJ, respectively) 
 *** to REMIND units (Gt C/TWa and Mt N/TWa)
-p30_bioen_ef(ttot,all_regi,"co2luc") = cm_bioen_coemi_factor_CO2 *(1/1000 * 12/44) /(sm_EJ_2_TWa);
-p30_bioen_ef(ttot,all_regi,"n2obio") = cm_bioen_coemi_factor_N2O *(1/1000 * 28/44) /(sm_EJ_2_TWa);
+p30_bioen_ef(ttot,regi_bioen_ef30,"co2luc") = cm_bioen_coemi_factor_CO2 *(1/1000 * 12/44) /(sm_EJ_2_TWa);
+p30_bioen_ef(ttot,regi_bioen_ef30,"n2obio") = cm_bioen_coemi_factor_N2O *(1/1000 * 28/44) /(sm_EJ_2_TWa);
 
 $else.bioen_ef
 *** Read in values from an external file with emission factors derived from different MAgPIE scenarios

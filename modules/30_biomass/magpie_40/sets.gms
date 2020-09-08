@@ -52,4 +52,15 @@ emiBioMag30(all_enty)        "emission types related to bioenergy production in 
 
 ;
 
+*** Define set of regions, in which bioenergy is charged with an additional tax
+*** that is motivated by co-emissions.
+$ifthen.bioen_ef %cm_bioen_ef_scen% == "directInput"
+$ifthen.regi_bioen_ef  %cm_regi_bioen_ef% == "glob"
+   set regi_bioen_ef30(all_regi) "Regions in which bioenergy will be charged with an emission factor based (additional) tax";
+   regi_bioen_ef30(all_regi) = YES;
+$else.regi_bioen_ef
+   set regi_bioen_ef30(all_regi) "Regions in which bioenergy will be charged with an emission factor based (additional) tax" / %cm_regi_bioen_ef% /;
+$endif.regi_bioen_ef
+$endif.bioen_ef
+
 *** EOF ./modules/30_biomass/magpie_4/sets.gms
