@@ -56,7 +56,7 @@ SSP2-NDC-bio_off-LUtax_000-trd_on-ef_00;0;priority;;;SSP2,NDC;y2150;;;;
 SSP2-PkBudg1300-bio_off-LUtax_000-trd_on-ef_00;0;short;;;SSP2,NDC,allTaxOff;y2020;;;;
 SSP2-PkBudg1300-bio_off-LProt_forest-trd_on-ef_00;0;short;;;SSP2,NDC,allTaxOff_protForest;y2020;;;;
 SSP2-PkBudg1300-bio_off-LProt_full-trd_on-ef_00;0;short;;;SSP2,NDC,allTaxOff_protFull;y2020;;;;
-SSP2-PkBudg1300-bio_off-LProt_primforest-trd_on-ef_00;0;short;;;SSP2,NDC,allTaxOff_protPimforest;y2020;;;;
+SSP2-PkBudg1300-bio_off-LProt_primforest-trd_on-ef_00;0;short;;;SSP2,NDC,allTaxOff_protPrimforest;y2020;;;;
 SSP2-PkBudg1300-bio_off-LProt_BH-trd_on-ef_00;0;short;;;SSP2,NDC,allTaxOff_protBH;y2020;;;;
 SSP2-PkBudg1300-bio_off-LProt_FF-trd_on-ef_00;0;short;;;SSP2,NDC,allTaxOff_protFF;y2020;;;;
 SSP2-PkBudg1300-bio_off-LProt_CPD-trd_on-ef_00;0;short;;;SSP2,NDC,allTaxOff_protCPD;y2020;;;;
