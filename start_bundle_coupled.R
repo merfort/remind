@@ -233,6 +233,15 @@ for(scen in common){
   } else if (grepl("LUtax_030",scen)){
     cat("Setting MAgPIE pollutant price factor to 0.3")
     cfg_mag$gms$s56_pollutant_price_factor <- 0.3
+  } else if (grepl("LUtax_040",scen)){
+    cat("Setting MAgPIE pollutant price factor to 0.4")
+    cfg_mag$gms$s56_pollutant_price_factor <- 0.4
+  } else if (grepl("LUtax_050",scen)){
+    cat("Setting MAgPIE pollutant price factor to 0.5")
+    cfg_mag$gms$s56_pollutant_price_factor <- 0.5
+  } else if (grepl("LUtax_070",scen)){
+    cat("Setting MAgPIE pollutant price factor to 0.7")
+    cfg_mag$gms$s56_pollutant_price_factor <- 0.7
   }
 
   #cfg$logoption  <- 2  # Have the log output written in a file (not on the screen)
