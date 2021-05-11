@@ -10,13 +10,13 @@
 
 # Please provide all files and paths relative to the folder where start_coupled is executed
 path_remind <- paste0(getwd(),"/")   # provide path to REMIND. Default: the actual path which the script is started from
-path_magpie <- "/p/projects/piam/runs/coupled-magpie/"
+path_magpie <- "/p/tmp/merfort/DeepEl_coupl_resub/magpie/"
 
 # Paths to the files where scenarios are defined
 # path_settings_remind contains the detailed configuration of the REMIND scenarios
 # path_settings_coupled defines which runs will be started, coupling infos, and optimal gdx and report information that overrides path_settings_remind
-path_settings_coupled <- paste0(path_remind,"config/scenario_config_coupled_SSPSDP.csv")
-path_settings_remind  <- paste0(path_remind,"config/scenario_config_SSPSDP.csv")
+path_settings_coupled <- paste0(path_remind,"config/scenario_config_coupled_DeepEl.csv")
+path_settings_remind  <- paste0(path_remind,"config/scenario_config_DeepEl.csv")
 
 # You can put a prefix in front of the names of your runs, this will turn e.g. "SSP2-Base" into "prefix_SSP2-Base". 
 # This allows storing results of multiple coupled runs (which have the same scenario names) in the same MAgPIE and REMIND output folders.
