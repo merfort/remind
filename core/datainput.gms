@@ -941,8 +941,9 @@ loop(teRegTechCosts$(sameas(teRegTechCosts,"spv") ),
 $if %cm_techcosts% == "REG"   pm_data(regi,"inco0",teRegTechCosts) = p_inco0("2020",regi,teRegTechCosts);
 );
 
+loop(te$(teRegTechCosts(te) ),   !! only for the technologies with regionalized costs, adjust incolearn
 $if %cm_techcosts% == "REG"   pm_data(regi,"incolearn",teLearn(te)) = pm_data(regi,"inco0",te) - pm_data(regi,"floorcost",te) ;
-
+);
 
 *** Calculate learning parameters:
 pm_data(regi,"learnExp_woFC",teLearn(te))    = log(1-pm_data(regi,"learn", te))/log(2);
@@ -951,28 +952,45 @@ pm_data(regi,"learnExp_wFC",teLearn(te))     = pm_data(regi,"inco0",te) / pm_dat
 ***parameter calculation for global level, that regional values can gradually converge to
 fm_dataglob("learnExp_wFC",teLearn(te)) = fm_dataglob("inco0",te)/fm_dataglob("incolearn",te) * log(1-fm_dataglob("learn", te))/log(2);
 
-*NB* read in vm_capCum(t0,regi,teLearn) from input.gdx to have info available for the recalibration of 2005 investment costs
-Execute_Loadpoint 'input' p_capCum = vm_capCum.l;
+*RP* I outcommented the following lines as they create feedback from runs (gdx) on the initial parameters, which should not be the case
+*** *NB* read in vm_capCum(t0,regi,teLearn) from input.gdx to have info available for the recalibration of 2005 investment costs
+*** Execute_Loadpoint 'input' p_capCum = vm_capCum.l;
 
-*** in case the technologies did not exist in the gdx, set to a non-zero value
-p_capCum(t,regi,te)$( NOT p_capCum(t,regi,te)) = sm_eps;
-display p_capCum;
-*RP overwrite p_capCum by exogenous values for 2020
-p_capCum("2020",regi,"spv")  = 0.6 / card(regi2);  !! roughly 600GW in 2020
+*** *** in case the technologies did not exist in the gdx, set to a non-zero value
+***p_capCum(t,regi,te)$( NOT p_capCum(t,regi,te)) = sm_eps;
+***display p_capCum;
+
+*RP fill p_capCum by exogenous values for 2015 and 2020 (depending on the year for which regionalized tech cost data is used
+
+p_capCum("2015",regi,"spv")  = 0.227 / card(regi2);  !! roughly 227GW in 2019
+p_capCum("2015",regi,"wind") = 0.432 / card(regi2);  !! 432 GW wind in 2015
+p_capCum("2015",regi,"csp")  = 0.0047 / card(regi2); !! 4.7 GW csp in 2015
+
+p_capCum("2020",regi,"spv")  = 0.600 / card(regi2);  !! roughly 580GW in 2019
+
+***loop(teLearn$( NOT ( sameas(teLearn,"spv") or sameas(teLearn,"wind") ) ), !! for the other technologies without new regional costs just use the original ccap0-value
+***  p_capCum("2015",regi,teLearn)  = pm_data(regi,"ccap0",teLearn);
+***);
+
 display p_capCum;
 
 pm_data(regi,"learnMult_woFC",teLearn(te))   = pm_data(regi,"incolearn",te)/sum(regi2,(pm_data(regi2,"ccap0",te))**(pm_data(regi,"learnExp_woFC",te)));
 *RP* adjust parameter learnMult_woFC to take floor costs into account
 $if %cm_techcosts% == "GLO"   pm_data(regi,"learnMult_wFC",teLearn(te))    = pm_data(regi,"incolearn",te)/(sum(regi2,pm_data(regi2,"ccap0",te))**pm_data(regi,"learnExp_wFC",te));
-*NB* this is the correction of the original parameter calibration
+*RP* first do the same for ALL learning technologies also in the "regional tech costs" case to make sure techs without regionalization have the global values:
+$if %cm_techcosts% == "REG"   pm_data(regi,"learnMult_wFC",teLearn(te))    = pm_data(regi,"incolearn",te)/(sum(regi2,pm_data(regi2,"ccap0",te))**pm_data(regi,"learnExp_wFC",te));
+*RP* Then change it ONLY for the technologies that have regionalized tech costs :
+loop(te$(teRegTechCosts(te) ),   
 $if %cm_techcosts% == "REG"   pm_data(regi,"learnMult_wFC",teLearn(te))    = pm_data(regi,"incolearn",te)/(sum(regi2,p_capCum("2015",regi2,te))**pm_data(regi,"learnExp_wFC",te));
-loop(teRegTechCosts$(sameas(teRegTechCosts,"spv") ),
+);
+loop(te$(teRegTechCosts(te) AND (sameas(te,"spv") ) ), !! PV is the only technology where we use 2020 costs
 $if %cm_techcosts% == "REG"   pm_data(regi,"learnMult_wFC",teLearn(te))    = pm_data(regi,"incolearn",te)/(sum(regi2,p_capCum("2020",regi2,te))**pm_data(regi,"learnExp_wFC",te));
 );
+
 ***parameter calculation for global level, that regional values can gradually converge to
 fm_dataglob("learnMult_wFC",teLearn(te)) = fm_dataglob("incolearn",te)/(fm_dataglob("ccap0",te) **fm_dataglob("learnExp_wFC", te));
 
-display pm_data;
+display pm_data, fm_dataglob;
 
 *RP* 2012-03-07: Markup for advanced technologies
 table p_costMarkupAdvTech(s_statusTe,tall)              "Multiplicative investment cost markup for early time periods (until 2030) on advanced technologies (CCS, Hydrogen) that are not modeled through endogenous learning"

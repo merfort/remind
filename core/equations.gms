@@ -443,7 +443,8 @@ q_costTeCapital(t,regi,teLearn) ..
         )
   	  ** pm_data(regi,"learnExp_wFC",teLearn) 
     )$( (t.val gt 2005) AND (t.val lt 2020) )
-  
+
+$IFTHEN.c_frozenTechCosts2020 %c_frozenTechCosts2020% == "off"
 ***  assuming linear convergence of regional learning curves to global values until 2050
   + ( (pm_ttot_val(t) - 2020) / 30 * fm_dataglob("learnMult_wFC",teLearn) 
     * ( sum(regi2, vm_capCum(t,regi2,teLearn)) 
@@ -463,8 +464,54 @@ q_costTeCapital(t,regi,teLearn) ..
      * (sum(regi2, vm_capCum(t,regi2,teLearn)) + pm_capCumForeign(t,regi,teLearn) )
        **(fm_dataglob("learnExp_wFC",teLearn))
 	)$(t.val gt 2050)
-	
-***  floor costs - calculated such that they coincide for all regions   
+
+$ENDIF.c_frozenTechCosts2020
+
+$IFTHEN.c_frozenTechCosts2020 %c_frozenTechCosts2020% == "on"
+***  assuming linear convergence of regional learning curves to global values until 2050
+  + ( (pm_ttot_val(t) - 2020) / 30 * fm_dataglob("learnMult_wFC",teLearn)
+    * ( sum(regi2, vm_capCum(t,regi2,teLearn))
+      + pm_capCumForeign(t,regi,teLearn)
+      )
+      ** fm_dataglob("learnExp_wFC",teLearn)
+
+    + (2050 - pm_ttot_val(t)) / 30 * pm_data(regi,"learnMult_wFC",teLearn)
+    * ( sum(regi2, vm_capCum(t,regi2,teLearn))
+      + pm_capCumForeign(t,regi,teLearn)
+      )
+          ** pm_data(regi,"learnExp_wFC",teLearn)
+    )$( ( t.val ge 2020 AND t.val le 2050 ) AND NOT (sameas(teLearn,"spv") OR sameas(teLearn,"wind") ) )
+
+*** globally harmonized costs after 2050
+  + ( fm_dataglob("learnMult_wFC",teLearn)
+     * (sum(regi2, vm_capCum(t,regi2,teLearn)) + pm_capCumForeign(t,regi,teLearn) )
+       **(fm_dataglob("learnExp_wFC",teLearn))
+        )$( (t.val gt 2050) AND NOT (sameas(teLearn,"spv") OR sameas(teLearn,"wind") ) )
+
+***  assuming fix 2020 values for PV and wind
+  + ( pm_data(regi,"learnMult_wFC",teLearn)
+    * ( sum(regi2, vm_capCum("2020",regi2,teLearn))
+      + pm_capCumForeign("2020",regi,teLearn)
+      )
+      ** pm_data(regi,"learnExp_wFC",teLearn)
+
+    )$( ( t.val ge 2020 ) AND (sameas(teLearn,"spv") OR sameas(teLearn,"wind") ) )
+
+$ENDIF.c_frozenTechCosts2020
+
+$IFTHEN.c_frozenTechCosts2020 %c_frozenTechCosts2020% == "all"
+***  assuming fix 2020 values for all techs
+  + ( pm_data(regi,"learnMult_wFC",teLearn)
+    * ( sum(regi2, vm_capCum("2020",regi2,teLearn))
+      + pm_capCumForeign("2020",regi,teLearn)
+      )
+      ** pm_data(regi,"learnExp_wFC",teLearn)
+    )$( t.val ge 2020 )
+
+$ENDIF.c_frozenTechCosts2020
+
+
+***  floor costs - calculated such that they coincide for all regions
   + pm_data(regi,"floorcost",teLearn)
 ;
 

@@ -444,6 +444,8 @@ $setGlobal c_skip_output  off        !! def = off
 $setGlobal cm_MOFEX  off        !! def = off
 $setGlobal cm_conoptv  conopt3    !! def = conopt3
 $setGlobal cm_ccsfosall  off        !! def = off
+$setGlobal c_frozenTechCosts2020  off        !! def = off
+
 
 $setGlobal cm_APscen  SSP2          !! def = SSP2
 $setGlobal cm_magicc_calibrateTemperature2000  uncalibrated  !! def=uncalibrated
