@@ -575,7 +575,7 @@ if(cm_iterative_target_adj eq 10,
                         1/ ( 2 * EXP( -0.15 * iteration.val ) + 1.01)
                 );
 
-      p_taxCO2eq_iterationdiff(t,regi) = max(1* sm_DptCO2_2_TDpGtC, pm_taxCO2eq(t,regi) * p_factorRescale_taxCO2_Funneled(iteration) ) - pm_taxCO2eq(t,regi);
+      pm_taxCO2eq_iterationdiff(t,regi) = max(1* sm_DptCO2_2_TDpGtC, pm_taxCO2eq(t,regi) * p_factorRescale_taxCO2_Funneled(iteration) ) - pm_taxCO2eq(t,regi);
       p_taxCO2eq_until2150(t,regi) = max(1* sm_DptCO2_2_TDpGtC, p_taxCO2eq_until2150(t,regi) * p_factorRescale_taxCO2_Funneled(iteration) );
       pm_taxCO2eq(t,regi) = max(1* sm_DptCO2_2_TDpGtC, pm_taxCO2eq(t,regi) * p_factorRescale_taxCO2_Funneled(iteration) );  !! rescale co2tax
       loop(t2$(t2.val eq cm_peakBudgYr),
@@ -584,7 +584,7 @@ if(cm_iterative_target_adj eq 10,
 
       display p_factorRescale_taxCO2, p_factorRescale_taxCO2_Funneled;
 
-      o_taxCO2eq_iterDiff_Itr(iteration,regi) = p_taxCO2eq_iterationdiff("2030",regi);
+      o_taxCO2eq_iterDiff_Itr(iteration,regi) = pm_taxCO2eq_iterationdiff("2030",regi);
       loop(regi, !! not a nice solution to having only the price of one regi display (for better visibility), but this way it overwrites again and again until the value from the last regi remain
 	    o_taxCO2eq_Itr_1regi(t,iteration+1) = pm_taxCO2eq(t,regi); 
 	  );
