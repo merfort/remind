@@ -154,6 +154,6 @@ $endif.bioen_ef
 *** Convert N2O co-emission factors to CO2-equivalents (from Mt N/TWa to Gt C/TWa) and aggregate 
 *** with CO2 co-emission factors to total bioenergy related co-emissions
 p30_bioen_ef_total(ttot,all_regi) = p30_bioen_ef(ttot,all_regi,"co2luc") 
-                                  + p30_bioen_ef(ttot,all_regi,"n2obio") * s_tgn_2_pgc;
+                                  + p30_bioen_ef(ttot,all_regi,"n2obio") * sm_tgn_2_pgc;
 
 *** EOF ./modules/30_biomass/magpie_40/datainput.gms
