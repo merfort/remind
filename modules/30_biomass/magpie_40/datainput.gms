@@ -1,4 +1,4 @@
-*** |  (C) 2006-2019 Potsdam Institute for Climate Impact Research (PIK)
+*** |  (C) 2006-2020 Potsdam Institute for Climate Impact Research (PIK)
 *** |  authors, and contributors see CITATION.cff file. This file is part
 *** |  of REMIND and licensed under AGPL-3.0-or-later. Under Section 7 of
 *** |  AGPL-3.0, you are granted additional permissions described in the
@@ -77,6 +77,9 @@ $offdelim
 *** Select bioenergy bioenergy supply curve according to SSP scenario
 i30_bioen_price_a(ttot,regi) = f30_bioen_price(ttot,regi,"%cm_LU_emi_scen%","%cm_rcp_scen%","a");
 i30_bioen_price_b(ttot,regi) = f30_bioen_price(ttot,regi,"%cm_LU_emi_scen%","%cm_rcp_scen%","b");
+
+*** FS: scale bioenergy supply curves of EU regions such that it matches with EUR bioenergy potential of H12/MagPIE runs
+i30_bioen_price_b(ttot,regi)$(regi_group("EUR_regi",regi)) = cm_BioSupply_Adjust_EU * i30_bioen_price_b(ttot,regi)$(regi_group("EUR_regi",regi));
 
 *RP* in 2005 and 2010, we always want to use bau values
 loop(ttot$( (ttot.val = 2005) OR (ttot.val = 2010) ),

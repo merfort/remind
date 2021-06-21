@@ -1,4 +1,4 @@
-*** |  (C) 2006-2019 Potsdam Institute for Climate Impact Research (PIK)
+*** |  (C) 2006-2020 Potsdam Institute for Climate Impact Research (PIK)
 *** |  authors, and contributors see CITATION.cff file. This file is part
 *** |  of REMIND and licensed under AGPL-3.0-or-later. Under Section 7 of
 *** |  AGPL-3.0, you are granted additional permissions described in the
@@ -38,8 +38,7 @@ peRicardian(enty)    = peBio(enty) + peEx(enty);
 en2se(enty,enty2,te) = pe2se(enty,enty2,te) + se2se(enty,enty2,te);
 
 en2en(enty,enty2,te) = pe2se(enty,enty2,te) + se2se(enty,enty2,te) + se2fe(enty,enty2,te) + fe2ue(enty,enty2,te) + ccs2te(enty,enty2,te);
-te2rlf(te,rlf)       = teFe2rlf(te,rlf) + teSe2rlf(te,rlf) + teue2rlf(te,rlf) + teCCS2rlf(te,rlf) + teCCU2rlf2(te,rlf) +teNoTransform2rlf(te,rlf);
-
+te2rlf(te,rlf)       = teFe2rlf(te,rlf) + teSe2rlf(te,rlf) + teue2rlf(te,rlf) + teCCS2rlf(te,rlf) + teCCU2rlf2(te,rlf) +teNoTransform2rlf(te,rlf) + teFe2rlfH2BI(te,rlf);
 ***----------------------------------------------------------------------------
 *** Fill sets that were created empty and should be filled from the mappings above
 ***----------------------------------------------------------------------------
@@ -106,15 +105,14 @@ for (sm_tmp = sm_tmp downto 0,
 
 *** Compute all the elements of the CES below out, iteratively
 loop( cesOut2cesIn(out,ppf(in)),
-cesOut2cesIn_below(out,in) = YES;
+  cesOut2cesIn_below(out,in) = YES;
 );
 
 loop ((cesRev2cesIO(counter,in),cesOut2cesIn(in,in2)),
-
- loop(in3,
- cesOut2cesIn_below(in,in3)$ (cesOut2cesIn_below(in2,in3)) = YES;
-);
-cesOut2cesIn_below(in,in2) = YES;
+  loop(in3,
+     cesOut2cesIn_below(in,in3)$ (cesOut2cesIn_below(in2,in3) ) = YES;
+  );
+  cesOut2cesIn_below(in,in2) = YES;
 );
 
 in_below_putty(in) = NO;
@@ -168,6 +166,11 @@ loop (fe2es(entyFe,esty,teEs),
 );
 
 display "ES layer sets:", ppfenFromEs, feForEs, feViaEs2ppfen;
+
+
+loop ( se2fe(entySe,entyFe,te),
+fete(entyFe,te) = YES;
+);
 
 *** MAGICC related sets
 t_magiccttot(tall) = ttot(tall) + t_extra(tall);

@@ -1,4 +1,4 @@
-*** |  (C) 2006-2019 Potsdam Institute for Climate Impact Research (PIK)
+*** |  (C) 2006-2020 Potsdam Institute for Climate Impact Research (PIK)
 *** |  authors, and contributors see CITATION.cff file. This file is part
 *** |  of REMIND and licensed under AGPL-3.0-or-later. Under Section 7 of
 *** |  AGPL-3.0, you are granted additional permissions described in the
@@ -168,6 +168,9 @@ vm_cap.fx(t,regi,"gridspv","1")$(t.val > 2070)           = 0;
 vm_cap.fx(t,regi,"gridcsp","1")$(t.val > 2070)           = 0;
 vm_cap.fx(t,regi,"storcsp","1")$(t.val > 2070)           = 0;
 vm_cap.fx(t,regi,"storwind","1")$(t.val > 2070)           = 0;
+$IFTHEN.WindOff %cm_wind_offshore% == "1"
+vm_cap.fx(t,regi,"storwindoff","1")$(t.val > 2070)           = 0;
+$ENDIF.WindOff
 
 $if %cm_Full_Integration% == "on" vm_cap.fx(t,regi,"storspv","1")               = 0;
 $if %cm_Full_Integration% == "on" vm_deltaCap.fx(t,regi,"storspv","1")           = 0;

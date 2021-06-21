@@ -1,4 +1,4 @@
-*** |  (C) 2006-2019 Potsdam Institute for Climate Impact Research (PIK)
+*** |  (C) 2006-2020 Potsdam Institute for Climate Impact Research (PIK)
 *** |  authors, and contributors see CITATION.cff file. This file is part
 *** |  of REMIND and licensed under AGPL-3.0-or-later. Under Section 7 of
 *** |  AGPL-3.0, you are granted additional permissions described in the
@@ -87,6 +87,12 @@ fe2es_dyn35(all_enty,all_esty,all_teEs)    "map FE carriers to ES via appliances
     fegat.esgat_frgt_sm.te_esgat_frgt_sm
 /
 
+es_lo35(all_esty) "energy services long distance (bunkers)"
+/
+    esdie_pass_lo
+    esdie_frgt_lo
+/
+
 fe2ces_dyn35(all_enty,all_in,all_teEs)    "map FE carriers to CES nodes via appliances"
 /
     fepet.entrp_pass_sm.te_espet_pass_sm
@@ -123,7 +129,7 @@ HydrHypeWise
 EDGE_scenario(EDGE_scenario_all) "Selected EDGE-T scenario"
 
 *** sets for the reporting, to be consistent with *complex* realisation
-FE_Transp_fety35(all_enty) "FEs used in the transport module"  / fepet, fedie, feh2t, feelt /
+FE_Transp_fety35(all_enty) "FEs used in the transport module"  / fepet, fedie, feh2t, feelt, fegat/
 FE_Elec_fety35(all_enty)   "FE electricity sets (should be moved to core/sets asap)"  / feels, feelt /
 
 *** nat. gas is not used in complex, that's why these elements have to be defined here and not in core
@@ -131,6 +137,7 @@ se2fe_dyn35(all_enty,all_enty,all_te) "nat. gas techs for transport, missing in 
 /
 segabio.fegat.tdbiogat
 segafos.fegat.tdfosgat
+segasyn.fegat.tdsyngat
 /
 
 enty_dyn35(all_enty) "nat. gas FE used for transport, see comment above"
@@ -155,6 +162,10 @@ segabio.fegat.tdbiogat.ch4
 segafos.fegat.tdfosgat.ch4
 /
 
+entyFe2Sector_dyn35(all_enty,emi_sectors)   "mapping final energy to transport sector"
+/
+    fegat.trans
+/
 ;
 
 alias(teEs_dyn35,teEs_dyn35_2);
@@ -172,6 +183,7 @@ se2fe(se2fe_dyn35) = YES;
 enty(enty_dyn35) = YES;
 entyFeTrans(entyFeTrans_dyn35) = YES;
 emi2te(emi2te_dyn35) = YES;
+entyFe2Sector(entyFe2Sector_dyn35) = YES;
 
 cesOut2cesIn(ces_transport_dyn35)            = YES;
 

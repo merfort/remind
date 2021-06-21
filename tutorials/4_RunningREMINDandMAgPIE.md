@@ -11,7 +11,8 @@ David Klein (<dklein@pik-potsdam.de>)
     + [Configure start_bundle_coupled.R](#configure-start-bundle-coupledr)
     + [Configure the scenario_config_coupled.csv of your choice](#configure-the-scenario-config-coupledcsv-of-your-choice)
     + [Perform test start before actually submitting runs](#perform-test-start-before-actually-submitting-runs)
-    + [After checking that coupling scripts finds all gdxes and mifs start runs](#after-checking-that-coupling-scripts-finds-all-gdxes-and-mifs-start-runs)
+    + [Start runs after checking that coupling scripts finds all gdxes and mifs ](#Start-runs-after-checking-that-coupling-scripts-finds-all-gdxes-and-mifs)
+- [Check the convergence](#Check-the-convergence) 
 - [Technical concept](#technical-concept)
     + [Dynamic](#dynamic)
     + [Static](#static)
@@ -46,7 +47,7 @@ bash /p/projects/rd3mod/R/libraries/Scripts/create_snapshot_with_day.sh
 
 ### Activate snapshot for REMIND and MAgPIE
 
-Direct the models to the snapshot you just created above by editing .Rprofile in both REMIND's and MAgPIE's main folder respectively. Uncomment these lines:
+Direct the models to the snapshot you just created above by editing .Rprofile in both REMIND's and MAgPIE's main folder respectively. Uncomment these lines and change the date to today:
 
 ```bash
 # snapshot <- "/p/projects/rd3mod/R/libraries/snapshots/2019_02_26"
@@ -55,7 +56,6 @@ Direct the models to the snapshot you just created above by editing .Rprofile in
 # .libPaths(snapshot)
 # }
 ```
-and change the date to today.
 
 ### Configure start_bundle_coupled.R 
 
@@ -68,19 +68,42 @@ for coupled runs (e.g. which run should be started). All other settings are take
 
 ### Perform test start before actually submitting runs
 
+The test start shows if the scripts find all information that are crucial for starting the coupled runs, such as gdxes, mifs, model code. It also indicates if a run that crashed previously can be continuned and where (which model, which iteration).
+
 ```bash
 Rscript start_bundle_coupled.R test
 ```
 
-### After checking that coupling scripts finds all gdxes and mifs start runs
+### Start runs after checking that coupling scripts finds all gdxes and mifs
 
 ```bash
 Rscript start_bundle_coupled.R
 ```
 
+# Check the convergence
+
+There is no automatic abort criterion for the coupling iterations. The number of coupling iterations is given by the user (`max_iterations` in start_bundle_coupled.R) and will be performed regardless of the quality of convergence. The convergence can be checked, however, by tracking the changes of crucial coupling variables (such as bioenergy demand and prices, GHG emissions and prices) across coupling iterations. To create the pdf showing these changes please execute in the REMIND main folder:
+
+```bash
+Rscript scripts/output/comparison/plot_compare_iterations.R
+```
+
+This creates a pdf for each coupled scenario that can be found in the common `output` folder of REMIND and saves it to the common `output` folder. If you want to create this pdf for one or more scenarios specifically please provide the names of these runs as follows:
+
+
+```bash
+Rscript scripts/output/comparison/plot_compare_iterations.R runs=SSP1-Base,SSP2-Base,...
+```
+
+If the iterations you want to inspect are located in an output folder different from `output` please provide the path to this folder:
+
+```bash
+Rscript scripts/output/comparison/plot_compare_iterations.R folder=another-output-folder
+```
+
 # Technical concept
 
-There are two components of the REMIND-MAgPIE coupling: the prominent dynamic part (models solve iteratively and exchange data via coupling script), the more hidden static part (exogenous assumptions derived from the other model, updated manually from time to time via moinput).
+There are two components of the REMIND-MAgPIE coupling: the prominent dynamic part (models solve iteratively and exchange data via coupling script), the more hidden static part (exogenous assumptions derived from the other model, updated manually from time to time via mrremind).
 
 ### Dynamic part
 
@@ -105,6 +128,8 @@ There are two components of the REMIND-MAgPIE coupling: the prominent dynamic pa
 ### The coupling scripts
 
 The meta scripts for coupled runs that configure the models, start the runs, and perform the iteration loop are located in the REMIND main folder.
+
+<img src="figures/coupling-scripts.png" style="display: block; margin: auto;" />
 
 * `start_bundle_coupled.R`
   * reads scenario_config_coupled.csv and scenario_config.csv files and updates model cfgs accordingly

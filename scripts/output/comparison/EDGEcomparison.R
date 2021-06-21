@@ -1,4 +1,4 @@
-# |  (C) 2006-2019 Potsdam Institute for Climate Impact Research (PIK)
+# |  (C) 2006-2020 Potsdam Institute for Climate Impact Research (PIK)
 # |  authors, and contributors see CITATION.cff file. This file is part
 # |  of REMIND and licensed under AGPL-3.0-or-later. Under Section 7 of
 # |  AGPL-3.0, you are granted additional permissions described in the
@@ -6,14 +6,18 @@
 # |  Contact: remind@pik-potsdam.de
 
 require(rmarkdown)
-require(lucode)
+library(gms)
+library(lucode2)
 require(quitte)
 require(data.table)
 require(rmndt)
-require(moinput)
+require(mrremind)
 require(edgeTrpLib)
+require(gdx)
+require(gdxdt)
+require(stringr)
 setConfig(forcecache = TRUE)
-
+setConfig(regionmapping = "regionmappingH12.csv")
 if(!exists("source_include")) {
   ## Define arguments that can be read from command line
   readArgs("outputdirs")
@@ -32,102 +36,99 @@ for (outputdir in outputdirs) {
 gdx_name = "fulldata.gdx"
 
 
-emi_all = NULL
-salescomp_all = NULL
-fleet_all = NULL
-EJLDV_all = NULL
-EJmode_all = NULL
-ESmodecap_all = NULL
-CO2km_int_newsales_all = NULL
-EJfuels_all = NULL
-emidem_all = NULL
+## create list to save
+alltosave = list(fleet_all = NULL,
+                 salescomp_all = NULL,
+                 EJroad_all = NULL,
+                 EJmode_all = NULL,
+                 EJModeFuel_all = NULL,
+                 ESmodecap_all = NULL,
+                 emidem_all = NULL,
+                 emiDemMode_all = NULL,
+                 EJfuelsPass = NULL,
+                 EJfuelsFrgt = NULL,
+                 costs_all = NULL,
+                 pref_FV_all = NULL,
+                 demgdpcap_all = NULL)
 
 scenNames <- getScenNames(outputdirs)
 EDGEdata_path  <- path(outputdirs, paste("EDGE-T/"))
 gdx_path  <- path(outputdirs,gdx_name)
 scenNames <- getScenNames(outputdirs)
-
+setConfig(regionmapping = gsub("(.*/\\s*(.*$))", "\\2", cfg$regionmapping))
 names(gdx_path) <- scenNames
 names(EDGEdata_path) <- scenNames
 
-REMIND2ISO_MAPPING <- fread("config/regionmappingH12.csv")[, .(iso = CountryCode, region = RegionCode)]
-
-
-
 SalesFun = function(shares_LDV, newcomp, sharesVS1){
-  ## I need the total demand for each region to get the average composition in Europe (sales are on a country level)
+  ## I need the total demand for each region to get the average composition in the region (sales are on a country level)
   ## First I calculate the total demand for new sales using the shares on FV level (in newcomp) and on VS1 level
-  newcomp = merge(newcomp, sharesVS1[,.(shareVS1 = share, iso, year, vehicle_type, subsector_L1)], all.x=TRUE, by = c("iso", "year", "vehicle_type", "subsector_L1"))
+  newcomp = merge(newcomp, sharesVS1[,.(shareVS1 = share, region, year, vehicle_type, subsector_L1)], all.x=TRUE, by = c("region", "year", "vehicle_type", "subsector_L1"))
   newcomp[, newdem := totdem*sharetech_new*shareVS1]
-  newcomp = newcomp[,.(value = sum(newdem)), by = c("iso", "year", "subsector_L1")]
+  newcomp = newcomp[,.(value = sum(newdem)), by = c("region", "year", "subsector_L1")]
   ## I have to interpolate in time the sales nto to loose the sales composition annual values
   newcomp=approx_dt(dt=newcomp, unique(shares_LDV$year),
                     xcol= "year",
                     ycol = "value",
-                    idxcols=c("iso","subsector_L1"),
+                    idxcols=c("region","subsector_L1"),
                     extrapolate=T)
-  
+
   setnames(newcomp, new = "newdem", old = "value")
-  
+
   ## I calculate the sales composition (disrespective to the vehicle type)
-  shares_LDV = unique(shares_LDV[,c("iso","year", "technology", "shareFS1")])
-  shares_LDV <- shares_LDV[,.(shareFS1=sum(shareFS1)),by=c("iso","technology","year")]
-  
+  shares_LDV = unique(shares_LDV[,c("region","year", "technology", "shareFS1")])
+  shares_LDV <- shares_LDV[,.(shareFS1=sum(shareFS1)),by=c("region","technology","year")]
+
   ## I calculate the weighted regional sales (depending on the total volume of sales per country in each region)
   shares_LDV = merge(shares_LDV, newcomp)
-  shares_LDV = merge(shares_LDV, REMIND2ISO_MAPPING, by = "iso")
-  shares_LDV[, demfuel := shareFS1*newdem, by = c("year", "iso", "technology")]
+  shares_LDV[, demfuel := shareFS1*newdem, by = c("year", "region", "technology")]
   shares_LDV = shares_LDV[, .(demfuel = sum(demfuel)), by = c("year", "region", "technology")]
   shares_LDV[, shareFS1 := demfuel/sum(demfuel), by = c("year", "region")]
-  
+
   ## plot features
-  shares_LDV[, technology := factor(technology, levels = c("BEV", "Hybrid Electric", "FCEV", "Hybrid Liquids", "Liquids", "NG"))]
-  
+  shares_LDV[, technology := factor(technology, levels = c("BEV", "Hybrid Electric", "FCEV", "Liquids", "NG"))]
+
   return(shares_LDV)
 }
 
 
-fleetFun = function(vintcomp, newcomp, sharesVS1){
-  vintcomp = vintcomp[,.(totdem, iso, subsector_L1, year, technology,vehicle_type, sector, sharetech_vint)]
-  newcomp = newcomp[,.(iso, subsector_L1, year, technology,vehicle_type, sector, sharetech_new)]
-  
-  allfleet = merge(newcomp, vintcomp, all =TRUE, by = c("iso", "sector", "subsector_L1", "vehicle_type", "technology",  "year"))
-  allfleet = merge(allfleet, sharesVS1[,.(shareVS1 = share, iso, year, vehicle_type, subsector_L1)], all.x=TRUE, by = c("iso", "year", "vehicle_type", "subsector_L1"))
+fleetFun = function(vintcomp, newcomp, sharesVS1, loadFactor){
+  vintcomp = vintcomp[,.(totdem, region, subsector_L1, year, technology,vehicle_type, sector, sharetech_vint)]
+  newcomp = newcomp[,.(region, subsector_L1, year, technology,vehicle_type, sector, sharetech_new)]
+
+  allfleet = merge(newcomp, vintcomp, all =TRUE, by = c("region", "sector", "subsector_L1", "vehicle_type", "technology",  "year"))
+  allfleet = merge(allfleet, sharesVS1[,.(shareVS1 = share, region, year, vehicle_type, subsector_L1)], all.x=TRUE, by = c("region", "year", "vehicle_type", "subsector_L1"))
   allfleet[,vintdem:=totdem*sharetech_vint*shareVS1]
   allfleet[,newdem:=totdem*sharetech_new*shareVS1]
-  allfleet=melt(allfleet, id.vars = c("iso", "sector", "subsector_L1", "vehicle_type", "technology",
+  allfleet=melt(allfleet, id.vars = c("region", "sector", "subsector_L1", "vehicle_type", "technology",
                                       "year"), measure.vars = c("vintdem", "newdem"))
   allfleet[,alpha:=ifelse(variable == "vintdem", 0, 1)]
-  
-  load_factor = 1.5
-  annual_mileage = 15000
-  allfleet = allfleet[,.(value = sum(value/load_factor/annual_mileage)), by = c("iso", "technology", "variable", "year")]
-  
-  allfleet = merge(allfleet, REMIND2ISO_MAPPING, by = "iso")
+
+  allfleet = merge(allfleet, loadFactor, all.x = TRUE, by = c("region", "vehicle_type", "year"))
+  annual_mileage = 13000
+  allfleet = allfleet[,.(value = sum(value/1.5/annual_mileage)), by = c("region", "technology", "variable", "year")]
+
   allfleet = allfleet[,.(value = sum(value)), by = c("region", "technology", "variable", "year")]
   allfleet[,alphaval := ifelse(variable =="vintdem", 1,0)]
-  allfleet[, technology := factor(technology, levels = c("BEV", "Hybrid Electric", "FCEV", "Hybrid Liquids", "Liquids", "NG"))]
-  
+  allfleet[, technology := factor(technology, levels = c("BEV", "Hybrid Electric", "FCEV", "Liquids", "NG"))]
+
   return(allfleet)
 }
 
 
-EJLDVFun <- function(demandEJ){
-  demandEJ = demandEJ[subsector_L1 == "trn_pass_road_LDV_4W",]
-  demandEJ <- demandEJ[, c("sector", "subsector_L3", "subsector_L2", "subsector_L1", "vehicle_type", "technology", "iso", "year", "demand_EJ")]
-  
-  demandEJ = merge(demandEJ, REMIND2ISO_MAPPING, by = "iso")
-  demandEJ[technology == "Hybrid Liquids", technology := "Liquids"]
+EJroadFun <- function(demandEJ){
+  demandEJ = demandEJ[subsector_L3 %in% c("trn_pass_road", "trn_freight_road"),]
+  demandEJ <- demandEJ[, c("sector", "subsector_L3", "subsector_L2", "subsector_L1", "vehicle_type", "technology", "region", "year", "demand_EJ")]
   demandEJ[technology == "FCEV", technology := "Hydrogen"]
-  demandEJ[technology == "BEV", technology := "Electricity"]
-  demandEJ = demandEJ[, .(demand_EJ = sum(demand_EJ)), by = c("region", "year", "technology")]
+  demandEJ[technology %in% c("BEV", "Electric"), technology := "Electricity"]
+  demandEJ[subsector_L1 %in% c("trn_pass_road_bus_tmp_subsector_L1", "Bus_tmp_subsector_L1"), subsector_L1 := "Bus_tmp_subsector_L1"]
+  demandEJ = demandEJ[, .(demand_EJ = sum(demand_EJ)), by = c("region", "year", "technology", "subsector_L1")]
   return(demandEJ)
-  
+
 }
 
 
 EJmodeFun = function(demandEJ){
-  
+
   demandEJ[, aggr_mode := ifelse(subsector_L2 == "trn_pass_road_LDV", "LDV", NA)]
   demandEJ[, aggr_mode := ifelse(subsector_L3 %in% c("Passenger Rail", "HSR", "International Aviation", "Domestic Aviation"), "Pass non LDV", aggr_mode)]
   demandEJ[, aggr_mode := ifelse(subsector_L2 %in% c("trn_pass_road_bus", "Bus"), "Pass non LDV", aggr_mode)]
@@ -144,32 +145,30 @@ EJmodeFun = function(demandEJ){
   demandEJ[, veh := ifelse(subsector_L3 == "Domestic Aviation", subsector_L3, veh)]
   demandEJ[, veh := ifelse(subsector_L3 == "International Aviation", subsector_L3, veh)]
   demandEJ[, veh := ifelse(is.na(veh), vehicle_type, veh)]
-  demandEJ = demandEJ[,.(demand_EJ = sum(demand_EJ)), by = c("iso", "year", "aggr_mode", "veh")]
-  
+  demandEJ_fuel = copy(demandEJ)
+  demandEJ = demandEJ[,.(demand_EJ = sum(demand_EJ)), by = c("region", "year", "aggr_mode", "veh")]
+
   demandEJ[, vehicle_type_plot := factor(veh, levels = c("LDV","Freight Rail", "Truck","Domestic Shipping", "International Shipping",
                                                          "Motorbikes", "Small Cars", "Large Cars", "Van",
                                                          "Domestic Aviation", "International Aviation", "Bus", "Passenger Rail",
                                                          "Freight", "Freight (Inland)", "Pass non LDV", "Pass non LDV (Domestic)"))]
-  
-  demandEJ = merge(demandEJ, REMIND2ISO_MAPPING, by = "iso")
-  demandEJ = demandEJ[,.(demand_EJ= sum(demand_EJ)), by = c("region", "year", "vehicle_type_plot", "aggr_mode")]
-  
-  
-  return(demandEJ)
+
+
+  return(list(demandEJ = demandEJ, demandEJ_fuel = demandEJ_fuel))
 }
 
 
-ESmodecapFun = function(demandkm, POP){
+ESmodeFun = function(demandkm, POP){
   ## REMIND-EDGE results
   demandkm <- demandkm[,c("sector","subsector_L3","subsector_L2",
-                            "subsector_L1","vehicle_type","technology", "iso","year","demand_F")]
+                          "subsector_L1","vehicle_type","technology", "region","year","demand_F")]
 
   ## attribute aggregated mode and vehicle names for plotting purposes, and aggregate
   demandkm[, aggr_mode := ifelse(subsector_L1 %in% c("Three-Wheeler", "trn_pass_road_LDV_4W"), "LDV", NA)]
   demandkm[, aggr_mode := ifelse(sector %in% c("trn_freight", "trn_shipping_intl"), "Freight", aggr_mode)]
   demandkm[, aggr_mode := ifelse(sector %in% c("trn_aviation_intl"), "Pass. non LDV", aggr_mode)]
   demandkm[, aggr_mode := ifelse(subsector_L2 %in% c("trn_pass_road_bus", "HSR_tmp_subsector_L2", "Passenger Rail_tmp_subsector_L2", "Cycle_tmp_subsector_L2", "Walk_tmp_subsector_L2", "Domestic Aviation_tmp_subsector_L2", "Bus") | subsector_L1 %in% c("trn_pass_road_LDV_2W"), "Pass. non LDV", aggr_mode)]
-  
+
   demandkm[, veh := ifelse(grepl("Truck", vehicle_type) & vehicle_type != "Light Truck and SUV" | vehicle_type == "3W Rural", "Truck", NA)]
   demandkm[, veh := ifelse(grepl("Large|SUV|Midsize|Multipurpose Vehicle|Van|Light Truck and SUV", vehicle_type), "Large Cars", veh)]
   demandkm[, veh := ifelse(grepl("Subcompact|Compact|Mini|Three-Wheeler_tmp_vehicletype", vehicle_type), "Small Cars", veh)]
@@ -183,231 +182,369 @@ ESmodecapFun = function(demandkm, POP){
   demandkm[, veh := ifelse(grepl("Passenger Rail|HSR", vehicle_type), "Passenger Rail", veh)]
   demandkm[, veh := ifelse(grepl("Ship", vehicle_type), "Shipping", veh)]
   demandkm[, veh := ifelse(grepl("Cycle|Walk", subsector_L3), "Non motorized", veh)]
-  demandkm = demandkm[,.(demand_F = sum(demand_F)), by = c("iso", "year", "aggr_mode", "veh")]
+  demandkm = demandkm[,.(demand_F = sum(demand_F)), by = c("region", "year", "aggr_mode", "veh", "technology")]
   setnames(demandkm, old = "veh", new = "vehicle_type")
-  
-  
+
+
   demandkm[, vehicle_type_plot := factor(vehicle_type, levels = c("LDV","Freight Rail", "Truck", "Domestic Ship", "International Ship",
-                                                                   "Motorbikes", "Small Cars", "Large Cars", "Van",
-                                                                   "Domestic Aviation", "International Aviation","Bus", "Passenger Rail",
-                                                                   "Freight", "Non motorized", "Shipping"))]
-  
+                                                                  "Motorbikes", "Small Cars", "Large Cars", "Van",
+                                                                  "Domestic Aviation", "International Aviation","Bus", "Passenger Rail",
+                                                                  "Freight", "Non motorized", "Shipping"))]
+
   ## attribute aggregate mode (passenger, freight)
   demandkm[, mode := ifelse(vehicle_type %in% c("Freight", "Freight Rail", "Truck", "Shipping") ,"freight", "pass")]
-  
+
   ## aggregate to regions
-  POP = merge(POP, REMIND2ISO_MAPPING, all.x = TRUE, by = c("iso"))
-  POP = POP[, .(pop = sum(value)), by = c("region", "year")]
-  demandkm = merge(demandkm, REMIND2ISO_MAPPING, by = "iso")
+  demandkm = demandkm[, .(demand_F = sum(demand_F)), by = c("region", "year", "vehicle_type_plot", "aggr_mode", "mode", "technology")]
+
+  ## save separately the total demand
+  demandkm_abs = copy(demandkm)
+  demandkm_abs = demandkm_abs[year >= 2015 & year <= 2100]
+  demandkm_abs[, demand_F := demand_F/    ## in million km
+                 1e6]         ## in trillion km
+  ## calculate per capita demand
   demandkm = demandkm[, .(demand_F = sum(demand_F)), by = c("region", "year", "vehicle_type_plot", "aggr_mode", "mode")]
-  
   demandkm = merge(demandkm, POP, all.x = TRUE, by =c("year", "region"))
-  
+
   ## calculate per capita values
   demandkm = demandkm[order(aggr_mode)]
   demandkm[, cap_dem := demand_F/    ## in million km
-                         pop]         ## in million km/million people=pkm/person
-  
+             value]         ## in million km/million people=pkm/person
+
   demandkm = demandkm[year >= 2015 & year <= 2100]
-  
-  return(demandkm)
-  
+
+  return(list(demandkm = demandkm, demandkm_abs = demandkm_abs))
+
 }
 
-FEliq_sourceFun = function(FEliq_source, gdp){
-    ## Attribute oil and biodiesel (TODO Coal2Liquids is accounted for as Oil!
-  FEliq_source[, technology := ifelse(variable %in% c("FE|Transport|Liquids|Oil", "FE|Transport|Liquids|Coal"), "Oil", NA)]
-  FEliq_source[, technology := ifelse(variable %in% c("FE|Transport|Liquids|Biomass"), "Biodiesel", technology)]
-  FEliq_source[, technology := ifelse(variable %in% c("FE|Transport|Liquids|Hydrogen"), "Synfuel", technology)]
+FEliq_sourceFun = function(FEliq_source){
+  FEliq_source = FEliq_source[variable %in% c("FE|Transport|Liquids|LDV|Fossil|New Reporting", "FE|Transport|Liquids|LDV|Biomass|New Reporting", "FE|Transport|Liquids|LDV|Synthetic|New Reporting")]
+#print(FEliq_source)
+  ## Attribute oil and biodiesel (TODO Coal2Liquids is accounted for as Oil!
+  FEliq_source[, technology := ifelse(variable %in% c("FE|Transport|Liquids|LDV|Fossil|New Reporting", "FE|Transport|Pass|Road|LDV|Liquids"), "Oil", NA)]
+  FEliq_source[, technology := ifelse(variable %in% c("FE|Transport|Liquids|LDV|Biomass|New Reporting"), "Biomass", technology)]
+  FEliq_source[, technology := ifelse(variable %in% c("FE|Transport|Liquids|LDV|Synthetic|New Reporting"), "Synfuel", technology)]
   FEliq_source = FEliq_source[,.(value = sum(value)), by = c("model", "scenario", "region", "year", "unit", "technology")]
-  
-  FEliq_sourceR = FEliq_source[][, shareliq := value/sum(value),by=c("region", "year")]
-  ## to ISO level
-  FEliq_sourceISO <- disaggregate_dt(FEliq_source, REMIND2ISO_MAPPING,
-                                           valuecol="value",
-                                           datacols=c("model","scenario", "unit","technology"),
-                                           weights=gdp)
-  ## calculate share
-  FEliq_sourceISO[, shareliq := value/sum(value),by=c("iso", "year")]
+#print(FEliq_source)
+  FEliq_sourceR = FEliq_source[, shareliq := value/sum(value),by=c("region", "year")]
+#print(FEliq_sourceR)
 
-  return(list(FEliq_sourceISO = FEliq_sourceISO, FEliq_sourceR = FEliq_sourceR))
-}
-
-CO2km_int_newsales_Fun = function(shares_LDV, mj_km_data, sharesVS1, FEliq_source, gdp){
-  ## energy intensity https://en.wikipedia.org/wiki/Energy_density
-  # emi_petrol = 45 ## MJ/gFUEL
-  # emi_biodiesel = 42 ## MJ/gFUEL
-  # emi_cng = 54 ## MJ/gFUEL
-  # 
-  # ## CO2 content
-  # CO2_petrol = 3.1 ## gCO2/gFUEL
-  # CO2_biodiesel = 2.7 ## TODO this number is made up! gCO2/gFUEL
-  # CO2_cng = 2.7 ## gCO2/gFUEL
-  
-  ## TODO of CO2 content of biodiesel is made up! gCO2/gFUEL Same for Synfuels! and for PHEVs!
-  emi_fuel = data.table(technology = c("Oil", "Biodiesel", "NG", "Synfuel", "Hybrid Liquids", "Hybrid Electric"), ei_gF_MJ = c(20, 20, 20, 20, 20, 10), emi_cGO2_gF = c(3.1, 3.1, 2.7, 2.7, 3.1, 3.1))
-  
-  emi_liquids = merge(FEliq_source, emi_fuel, all.x = TRUE, by = "technology")
-  emi_liquids = emi_liquids[, .(ei_gF_MJ = sum(shareliq*ei_gF_MJ), emi_cGO2_gF = sum(shareliq*emi_cGO2_gF)), by = c("iso", "year")][, technology := "Liquids"]
-  emi_NG = cbind(emi_fuel[technology == "NG"], unique(FEliq_source[,c("year", "iso")]))
-  
-  emi_fuel = rbind(emi_NG, emi_liquids)
-  emi_fuel[, gCO2_MJ := ei_gF_MJ*emi_cGO2_gF]
-  ## merge emissions factor with energy intensity for LDVs
-  emi_fuel = merge(mj_km_data[subsector_L1 == "trn_pass_road_LDV_4W" & year %in% unique(FEliq_source$year)], emi_fuel, all.x = TRUE, by = c("iso", "year", "technology"))
-  emi_fuel[is.na(gCO2_MJ) & !technology %in% c("Liquids", "NG"), gCO2_MJ := 0]
-  emi_fuel[, gCO2_km := MJ_km * gCO2_MJ]
-  
-  ## merge with sales composition
-  intemi = merge(emi_fuel, shares_LDV, all.y = TRUE, by = c("iso", "year", "technology", "vehicle_type", "subsector_L1"), all.x = TRUE)
-  intemi = intemi[!is.na(share) & !is.na(gCO2_km)]
-  ## find average emission intensity
-  intemi[, gCO2_km_ave := gCO2_km*share]
-  intemi = intemi[,.(gCO2_km_ave = sum(gCO2_km_ave)), by = c("year", "iso", "vehicle_type")]
-  ## find average emissions across fleet (all vehicle types)
-  intemi = merge(intemi, sharesVS1, all.x = TRUE, by = c("iso", "year", "vehicle_type"))
-  intemi = intemi[,.(gCO2_km_ave = sum(gCO2_km_ave*share)), by = c("iso", "year", "subsector_L1")]
-  ## find regional values
-  intemi = merge(intemi, REMIND2ISO_MAPPING, by="iso")
-  intemi = merge(intemi, gdp, all.x=TRUE, by = c("iso", "year"))
-  intemi[, share := weight/sum(weight), by = c("year", "region")]
-  intemi = intemi[,.(gCO2_km_ave = sum(gCO2_km_ave*share)), by = c("year", "region")]
-  intemi = intemi[year >= 2015 & year <= 2100]
-  
-  return(intemi)
+  return(list(FEliq_sourceR = FEliq_sourceR))
 }
 
 
-EJfuelsFun = function(demandEJ, FEliq_source){
+EJfuelsFun = function(demandEJ, FEliq_source_val){
   ## find the composition of liquid fuels
-  FEliq_source = FEliq_source[,.(value = sum(value)), by = c("region", "year", "technology")]
+  FEliq_source = FEliq_source_val[,.(value = sum(value)), by = c("region", "year", "technology")]
   ## renmae technology not to generate confusion with all technologies (non liquids)
-  setnames(FEliq_source, old = "technology", new = "subtech")
-  FEliq_source[, technology := "Liquids"]
+  setnames(FEliq_source_val, old = "technology", new = "subtech")
+  FEliq_source_val[, technology := "Liquids"]
   ## find shares
-  FEliq_source[, shareliq := value/sum(value),by=c("region", "year")]
-  ## merge with regional mapping
-  demandEJ = merge(demandEJ, REMIND2ISO_MAPPING, by = "iso")
-  ## attribute "liquids" to hybrid liquids
-  demandEJ[, technology := ifelse(technology %in% c("Liquids", "Hybrid Liquids"), "Liquids", technology)]
-  demandEJ[, technology := ifelse(technology %in% c("BEV", "LA-BEV", "Electric"), "Electricity", technology)]
-  demandEJ[, technology := ifelse(technology %in% c("FCEV"), "Hydrogen", technology)]  
-  ## aggregate
-  demandEJ = demandEJ[, .(demand_EJ = sum(demand_EJ)), by = c("region", "year","technology")]
+  FEliq_source_val[, shareliq := value/sum(value),by=c("region", "year")]
+  ## attribute technology name
+  demandEJ[, technology := ifelse(technology %in% c("BEV", "Electric"), "Electricity", technology)]
+  demandEJ[, technology := ifelse(technology %in% c("FCEV"), "Hydrogen", technology)]
+
+  demandEJ = demandEJ[, .(demand_EJ = sum(demand_EJ)), by = c("region", "year","technology", "sector")]
   ## merge with liquids composition
-  demandEJ = merge(demandEJ, FEliq_source, all = TRUE, by = c("region", "year", "technology"), allow.cartesian=TRUE)
+  demandEJ = merge(demandEJ, FEliq_source_val, all = TRUE, by = c("region", "year", "technology"), allow.cartesian=TRUE)
   ## fuels that are not Liquids need a 1 as a share, otherwie would have an NA
   demandEJ[, shareliq := ifelse(is.na(shareliq), 1, shareliq)]
   demandEJ[, subtech := ifelse(is.na(subtech), technology, subtech)]
+  demandEJModeFuel = copy(demandEJ)
   ## calculate demand by fuel including oil types
-  demandEJ = demandEJ[,.(demand_EJ = demand_EJ*shareliq), by = c("region", "year", "subtech")]
+  demandEJ = demandEJ[,.(demand_EJ = demand_EJ*shareliq), by = c("region", "year", "subtech", "sector")]
   ## filter out years
   demandEJ = demandEJ[year >= 2015 & year <= 2100]
-  
+
+  ## save separately passenger and freight
+  demandEJpass = demandEJ[sector %in% c("trn_pass", "trn_aviation_intl")]
+  demandEJfrgt = demandEJ[sector %in% c("trn_freight", "trn_shipping_intl")]
+
+  demandEJ = list(demandEJpass = demandEJpass, demandEJfrgt = demandEJfrgt)
   return(demandEJ)
 }
 
-emidemFun = function(emidem){
-  emidem = emidem[region!="World" & year >= 2015 & year <= 2100]
-  emidem[, variable := as.character(variable)]
+emidemFun = function(miffile){
+  emidem = miffile[variable %in% c("Emi|CO2|Transport|Freight|Demand", "Emi|CO2|Transport|Pass|Rail|Demand","Emi|CO2|Transport|Pass|Road|Demand", "Emi|CO2|Transport|Pass|Aviation|Domestic|Demand", "Emi|CO2|Transport|Pass|Aviation|International|Demand"),]
   return(emidem)
 }
 
+emiDemModeFun = function(miffile){
+ emiDem = miffile[variable %in% c("Emi|CO2|Transport|Pass|Road|Bus|Demand",
+                                  "Emi|CO2|Transport|Pass|Road|LDV|Demand",
+                                  "Emi|CO2|Transport|Pass|Rail|Demand",
+                                  "Emi|CO2|Transport|Pass|Aviation|Domestic|Demand",
+                                  "Emi|CO2|Transport|Pass|Aviation|International|Demand",
+                                  "Emi|CO2|Transport|Freight|International Shipping|Demand",
+                                  "Emi|CO2|Transport|Freight|Road|Demand",
+                                  "Emi|CO2|Transport|Freight|Navigation|Demand",
+                                  "Emi|CO2|Transport|Freight|Rail|Demand"),]
+ return(emiDem)
+}
+
+
+#FEFun = function(miffile){
+# FEMWh = miffile[variable %in% c(),]
+# FEMWh[, value := value*   ## in EJ
+#                  ]        ## in MWh
+# return(FEMWh)
+#}
+
+
+costscompFun = function(newcomp, sharesVS1,  pref_FV, capcost4Wall, capcost4W_BEVFCEV, nonf, totp){
+
+  ## First I calculate the total demand for new sales using the shares on FV level (in newcomp) and on VS1 level
+  newcomp = merge(newcomp, sharesVS1[,.(shareVS1 = share, region, year, vehicle_type, subsector_L1)], all.x=TRUE, by = c("region", "year", "vehicle_type", "subsector_L1"))
+  newcomp[, newdem := totdem*sharetech_new*shareVS1]
+  newcomp = newcomp[,.(value = sum(newdem)), by = c("region", "year", "subsector_L1")]
+
+  ## inconvenience components
+
+  ## I calculate the inconvenience cost value (disrespective to the vehicle type)
+  inc = sharesVS1[subsector_L1 == "trn_pass_road_LDV_4W",.(shareVS1 = share, region, year, vehicle_type, subsector_L1)]
+  inc = merge(inc, pref_FV, by = c("region", "year", "vehicle_type"))
+  ## average car (lost small, large dimension) in each region
+  inc = inc[,.(cost = sum(value*shareVS1)), by = c("region", "technology", "year", "logit_type")]
+  inc = inc[,.(cost, year, technology, region, logit_type)]
+
+  ##  fuel prices
+
+  ## fuel prices are only available in the total price dt
+  fp = totp[subsector_L1 == "trn_pass_road_LDV_4W", c("region", "year", "technology","vehicle_type", "fuel_price_pkm")]
+  ## I calculate the fuel price value (disrespective to the vehicle type)
+  fp = merge(fp, sharesVS1[subsector_L1 == "trn_pass_road_LDV_4W",.(shareVS1 = share, region, year, vehicle_type, subsector_L1)], all.y = TRUE, by = c("region", "year", "vehicle_type"))
+
+  ## average car (lost small, large dimension) in each region
+  fp = fp[,.(fp = sum(fuel_price_pkm*shareVS1)), by = c("region", "technology", "year")]
+  fp[, variable := "fuel_price"]
+  fp=fp[,.(cost = sum(fp)), by = c("year", "technology", "region", "variable")]
+  setnames(fp, old = "variable", new = "logit_type")
+
+  nonf = nonf[, .(non_fuel_price = sum(non_fuel_price)), by = c("region", "year", "technology", "vehicle_type")]
+
+  ## merge capital cost for BEVs and FCEVs with technologies without learning
+  capc = rbind(capcost4Wall, capcost4W_BEVFCEV[, c("region", "year", "technology", "type", "price_component", "vehicle_type", "non_fuel_price")])
+  capc = capc[, .(purchase = sum(non_fuel_price)), by = c("region", "year", "technology", "vehicle_type")]
+
+  ## find non-capital component as a difference between total and purchase
+  nonf = merge(nonf, capc, by = c("region", "year", "vehicle_type", "technology"))
+  nonf[, other := non_fuel_price-purchase]
+  nonf[, non_fuel_price := NULL]
+  nonf= melt(nonf, id.vars = c("region", "year", "technology", "vehicle_type"))
+
+  ## I calculate the non fuel costs value (disrespective to the vehicle type)
+  nonf = merge(nonf, sharesVS1[subsector_L1 == "trn_pass_road_LDV_4W",.(shareVS1 = share, region, year, vehicle_type, subsector_L1)], by = c("region", "year", "vehicle_type"))
+
+  ## average car in region
+  nonf = nonf[,.(nonf = sum(value*shareVS1)), by = c("region", "technology", "year", "variable")]
+  nonf=nonf[,.(cost = sum(nonf)), by = c("year", "technology", "region", "variable")]
+  setnames(nonf, old = "variable", new = "logit_type")
+
+  ## dt containing all cost components
+  tmp = rbindlist(list(nonf, inc, fp), use.names=TRUE)
+
+  ## attribute factors
+  tmp[, technology := factor(technology, levels = c("BEV", "Hybrid Electric", "FCEV", "Liquids", "NG"))]
+
+  return(tmp)
+}
+
+
+demgdpcap_Fun = function(demkm, GDPcap) {
+  demkm = demkm[,.(demand_F = sum(demand_F)), by = c("region", "year", "sector", "subsector_L3", "subsector_L2", "subsector_L1")]
+  demcap_gdp = merge(demkm, GDPcap, by = c("region", "year"))
+
+  ## define if land, water or air application
+  demcap_gdp[, appl := ifelse(subsector_L3 %in% c("Domestic Aviation", "International Aviation"), "Air", NA)]
+  demcap_gdp[, appl := ifelse(subsector_L3 %in% c("Domestic Ship", "International Ship"), "Marine", appl)]
+  demcap_gdp[, appl := ifelse(is.na(appl) & sector %in% c("trn_pass", "trn_aviation_intl"), "Land-Pass", appl)]
+  demcap_gdp[, appl := ifelse(is.na(appl) & sector %in% c("trn_freight", "trn_shipping_intl"), "Land-Freight", appl)]
+
+  ## define most disaggregated values to plot
+  demcap_gdp[, type := ifelse(subsector_L2 %in% c("Bus"), subsector_L2, NA)]
+  demcap_gdp[, type := ifelse(subsector_L2 %in% c("Domestic Aviation_tmp_subsector_L2", "International Aviation_tmp_subsector_L2"), "Aviation (international+domestic)", type)]
+  demcap_gdp[, type := ifelse(subsector_L2 %in% c("Domestic Ship_tmp_subsector_L2", "International Ship_tmp_subsector_L2"), "Shipping (international+domestic)", type)]
+  demcap_gdp[, type := ifelse(subsector_L2 %in% c("Passenger Rail_tmp_subsector_L2", "HSR_tmp_subsector_L2"), "Passenger Rail (normal+HSR)", type)]
+  demcap_gdp[, type := ifelse(subsector_L2 %in% c("trn_pass_road_bus"), "Bus", type)]
+  demcap_gdp[, type := ifelse(subsector_L2 %in% c("Freight Rail_tmp_subsector_L2", "Walk_tmp_subsector_L2", "Cycle_tmp_subsector_L2"), gsub("_tmp_subsector_L2","", subsector_L2), type)]
+  demcap_gdp[, type := ifelse(subsector_L2 == "trn_pass_road_LDV", "LDV", type)]
+  demcap_gdp[, type := ifelse(subsector_L2 == "trn_freight_road_tmp_subsector_L2", "Road freight", type)]
+
+  ## partial sums
+  demcap_gdp = demcap_gdp[, demsec := sum(demand_F), by = .(region, sector, year)]
+  demcap_gdp = demcap_gdp[, demappl := sum(demand_F), by = .(region, appl, year)]
+  demcap_gdp = demcap_gdp[, demtype := sum(demand_F), by = .(region, type, year)]
+
+  ## per capita values
+  demcap_gdp[, demsec := demsec/    ## in million km
+               POP_val]                 ## in million km/million people=pkm/person
+
+  demcap_gdp[, demappl := demappl/  ## in million km
+               POP_val]                 ## in million km/million people=pkm/person
+
+  demcap_gdp[, demtype := demtype/  ## in million km
+               POP_val]    ## in million km/million people=pkm/person
+
+  demcap_gdp = unique(demcap_gdp[, c("region", "year", "demsec", "demappl", "demtype", "appl", "type", "sector", "GDP_cap")])
+
+  return(demcap_gdp)
+}
 
 for (outputdir in outputdirs) {
   ## load mif file
   name_mif = list.files(path = outputdir, pattern = "REMIND_generic", full.names = F)
   name_mif = name_mif[!grepl("withoutPlu", name_mif)]
   miffile <- as.data.table(read.quitte(paste0(outputdir, "/", name_mif)))
-  miffile[, region:=as.character(region)]
+  miffile[, region := as.character(region)]
   miffile[, year := period]
-  miffile[, period:=NULL]
-  miffile = miffile[region != "World"]
+  miffile[, period := NULL]
+  miffile = miffile[year >= 2015 & year <= 2100]
+  miffile[, variable := as.character(variable)]
+  ## load gdx file
+  gdx = paste0(outputdir, "/fulldata.gdx")
 
   ## load RDS files
-  sharesVS1 = readRDS(paste0(outputdir, "/EDGE-T/", "shares.RDS"))[["VS1_shares"]]
-  newcomp = readRDS(paste0(outputdir, "/EDGE-T/", "newcomp.RDS"))
-  vintcomp = readRDS(paste0(outputdir, "/EDGE-T/", "vintcomp.RDS"))
-  shares_LDV = readRDS(paste0(outputdir, "/EDGE-T/", "annual_sales.RDS"))
-  demandEJ = readRDS(paste0(outputdir, "/EDGE-T/", "demandF_plot_EJ.RDS"))
-  demandkm = readRDS(paste0(outputdir, "/EDGE-T/", "demandF_plot_pkm.RDS"))
-  mj_km_data = readRDS(paste0(outputdir, "/EDGE-T/", "mj_km_data.RDS"))
+  sharesVS1 = readRDS(paste0(outputdir, "/EDGE-T/shares.RDS"))[["VS1_shares"]]
+  newcomp = readRDS(paste0(outputdir, "/EDGE-T/newcomp.RDS"))
+  vintcomp = readRDS(paste0(outputdir, "/EDGE-T/vintcomp.RDS"))
+  shares_LDV = readRDS(paste0(outputdir, "/EDGE-T/annual_sales.RDS"))
+  demandEJ = readRDS(paste0(outputdir, "/EDGE-T/demandF_plot_EJ.RDS"))
+  demandkm = readRDS(paste0(outputdir, "/EDGE-T/demandF_plot_pkm.RDS"))
+  mj_km_data = readRDS(paste0(outputdir, "/EDGE-T/mj_km_data.RDS"))
+  loadFactor = readRDS(paste0(outputdir, "/EDGE-T/loadFactor.RDS"))
+  pref_FV = readRDS(paste0(outputdir, "/EDGE-T/pref_output.RDS"))[["FV_final_pref"]]
+  ## if learning is ON, load the corresponding costs
+  if (file.exists(paste0(outputdir, "/nonfuel_costs_learning.RDS")) ) {
+    nonf = readRDS(paste0(outputdir, "/nonfuel_costs_learning.RDS"))
+  } else {
+    nonf = readRDS(paste0(outputdir, "/EDGE-T/UCD_NEC_iso.RDS"))[price_component == "totalNE_cost"][,price_component := NULL] 
+  }
+  capcost4Wall = readRDS(paste0(outputdir, "/EDGE-T/UCD_NEC_iso.RDS"))[(price_component == "Capital_costs_purchase") & ((!technology %in% c("BEV", "FCEV"))|(technology %in% c("BEV", "FCEV") & year < 2020))]
+  ## if learning is ON, load the corresponding costs
+  if (file.exists(paste0(outputdir, "/capcost_learning.RDS")) ) {
+    capcost4W_BEVFCEV = readRDS(paste0(outputdir, "/capcost_learning.RDS")) ## starts at 2020
+  } else {
+      capcost4W_BEVFCEV = readRDS(paste0(outputdir, "/EDGE-T/UCD_NEC_iso.RDS"))[price_component == "Capital_costs_purchase" & technology %in% c("BEV", "FCEV") & year > 2020]
+  }
+  ## read in fuel prices
+  files<- list.files(path = paste0(outputdir, "/EDGE-T"), pattern = "REMINDprices")
+  ## only the last iteration is to be used
+  file = files[grepl(max(as.numeric(gsub("\\D", "", files))), files)]
+  if (length(file)>1){
+    file = file[grepl("Dampened", file)]
+  }
+  totp = readRDS(paste0(outputdir, "/EDGE-T/", file))
 
   ## load population and GDP
-  POP_country=calcOutput("Population", aggregate = F)[,, "pop_SSP2"]
-  POP <- magpie2dt(POP_country, regioncol = "iso",
-                     yearcol = "year", datacols = "POP")
-  gdp <- getRMNDGDP(scenario = "gdp_SSP2", usecache = T)
-  
+  POP=calcOutput("Population", aggregate = T)[,, "pop_SSP2"]
+  POP <- magpie2dt(POP, regioncol = "region",
+                   yearcol = "year", datacols = "POP")
+  GDP=calcOutput("GDPppp", aggregate = T)[,, "gdp_SSP2"]
+  GDP <- as.data.table(GDP)
+  GDP[, year := as.numeric(gsub("y", "", Year))][, Year := NULL]
+  setnames(GDP, old = c("ISO3","value"), new = c("region","weight"))
+  GDP = GDP[,.(weight = sum(weight)), by = c("region", "year")]
+
+  GDPcap=merge(GDP,POP[,.(region,year,POP_val=value)],all = TRUE,by=c("region","year"))
+  GDPcap[,GDP_cap:=weight/POP_val]
+
   ## select useful entries from mif file
-  FEliq_source = miffile[variable %in% c("FE|Transport|Liquids|Biomass", "FE|Transport|Liquids|Hydrogen", "FE|Transport|Liquids|Coal", "FE|Transport|Liquids|Oil"),]
-  emidem = miffile[variable %in% c("Emi|CO2|Transport|Demand"),]
+  FEliq_source = miffile[variable %in% c("FE|Transport|Pass|Road|LDV|Liquids",
+                                         "FE|Transport|Liquids|LDV|Biomass|New Reporting",
+                                         "FE|Transport|Liquids|LDV|Synthetic|New Reporting",
+                                         "FE|Transport|Liquids|LDV|Fossil|New Reporting",
+                                         "FE|Transport|Liquids",
+                                         "FE|Transport|Liquids|Biomass|New Reporting",
+                                         "FE|Transport|Liquids|Synthetic|New Reporting",
+                                         "FE|Transport|Liquids|Fossil|New Reporting",
+                                         "FE|Transport|Pass|Road|HDV|Liquids",
+                                         "FE|Transport|Liquids|HDV|Biomass|New Reporting",
+                                         "FE|Transport|Liquids|HDV|Synthetic|New Reporting",
+                                         "FE|Transport|Liquids|HDV|Fossil|New Reporting"),]
+
+  FEliq_source[year <= 2020 , value := ifelse(variable == "FE|Transport|Liquids|LDV|Fossil|New Reporting", value[variable == "FE|Transport|Pass|Road|LDV|Liquids"],value), by = c("region", "year")]
+  FEliq_source[year <= 2020 & variable %in% c("FE|Transport|Liquids|LDV|Biomass|New Reporting", "FE|Transport|Liquids|LDV|Synthetic|New Reporting"), value := 0]
+
+  FEliq_source[year <= 2020 , value := ifelse(variable == "FE|Transport|Liquids|HDV|Fossil|New Reporting", value[variable == "FE|Transport|Pass|Road|HDV|Liquids"],value), by = c("region", "year")]
+  FEliq_source[year <= 2020 & variable %in% c("FE|Transport|Liquids|HDV|Biomass|New Reporting", "FE|Transport|Liquids|HDV|Synthetic|New Reporting"), value := 0]
+
+  FEliq_source[year <= 2020 , value := ifelse(variable == "FE|Transport|Liquids|Fossil|New Reporting", value[variable == "FE|Transport|Liquids"],value), by = c("region", "year")]
+  FEliq_source[year <= 2020 & variable %in% c("FE|Transport|Liquids|Biomass|New Reporting", "FE|Transport|Liquids|Synthetic|New Reporting"), value := 0]
+
+  ## remove the value that was used to repair the NAs
+  FEliq_source = FEliq_source[!variable %in% c("FE|Transport|Pass|Road|LDV|Liquids", "FE|Transport|Pass|Road|HDV|Liquids", "FE|Transport|Liquids")]
+
   ## modify mif file entries to be used in the functions
-  FEliq_source = FEliq_sourceFun(FEliq_source, gdp)
-
-
+  FEliq_source = FEliq_sourceFun(FEliq_source)
   ## calculate sales
-  salescomp = SalesFun(shares_LDV, newcomp, sharesVS1)
+  salescomp = SalesFun(shares_LDV, newcomp[subsector_L1 == "trn_pass_road_LDV_4W"], sharesVS1)
   ## calculate fleet compositons
-  fleet = fleetFun(vintcomp, newcomp, sharesVS1)
+  fleet = fleetFun(vintcomp, newcomp[subsector_L1 == "trn_pass_road_LDV_4W"], sharesVS1, loadFactor)
   ## calculate EJ from LDVs by technology
-  EJLDV = EJLDVFun(demandEJ)
+  EJroad = EJroadFun(demandEJ)
   ## calculate FE demand by mode
-  EJmode = EJmodeFun(demandEJ)
+  EJmode = EJmodeFun(demandEJ)[["demandEJ"]]
+  EJModeFuel = EJmodeFun(demandEJ)[["demandEJ_fuel"]]
   ## calculate ES demand per capita
-  ESmodecap = ESmodecapFun(demandkm, POP)
-  ## calculate average emissions intensity from the LDVs fleet
-  CO2km_int_newsales = CO2km_int_newsales_Fun(shares_LDV, mj_km_data, sharesVS1, FEliq_source$FEliq_sourceISO, gdp)
+  ESmode = ESmodeFun(demandkm, POP)
+  ESmodecap = ESmode[["demandkm"]]
   ## calculate FE for all transport sectors by fuel, dividng Oil into Biofuels and Synfuels
   EJfuels = EJfuelsFun(demandEJ, FEliq_source$FEliq_sourceR)
+  EJfuelsPass = EJfuels[["demandEJpass"]]
+  EJfuelsFrgt = EJfuels[["demandEJfrgt"]]
   ## calculate demand emissions
-  emidem = emidemFun(emidem)
-  
+  emidem = emidemFun(miffile)
+  ## emissions from demand by mode
+  emiDemMode = emiDemModeFun(miffile)
+  ## calculate costs by component
+  costs = costscompFun(newcomp = newcomp[subsector_L1 == "trn_pass_road_LDV_4W"], sharesVS1 = sharesVS1, pref_FV = pref_FV, capcost4Wall = capcost4Wall, capcost4W_BEVFCEV = capcost4W_BEVFCEV, nonf = nonf, totp = totp)
+  ## per capita demand-gdp per capita
+  demgdpcap = demgdpcap_Fun(demkm = demandkm, GDPcap)
   ## add scenario dimension to the results
-  fleet[, scenario := as.character(unique(miffile$scenario))]
-  salescomp[, scenario := unique(miffile$scenario)]
-  EJLDV[, scenario := as.character(unique(miffile$scenario))]
-  EJmode[, scenario := as.character(unique(miffile$scenario))]
-  ESmodecap[, scenario := as.character(unique(miffile$scenario))]
-  CO2km_int_newsales[, scenario := as.character(unique(miffile$scenario))]
-  EJfuels[, scenario := as.character(unique(miffile$scenario))]
-  emidem[, scenario := as.character(unique(miffile$scenario))]
+  allentries = list(fleet = fleet,
+                    salescomp = salescomp,
+                    EJroad = EJroad,
+                    EJmode = EJmode,
+                    EJModeFuel = EJModeFuel,
+                    ESmodecap = ESmodecap,
+                    emidem = emidem,
+                    emiDemMode = emiDemMode,
+                    EJfuelsPass = EJfuelsPass,
+                    EJfuelsFrgt = EJfuelsFrgt,
+                    costs = costs,
+                    pref_FV = pref_FV,
+                    demgdpcap = demgdpcap)
+
+  allentries = lapply(allentries, function(x) x[,scenario := as.character(unique(miffile$scenario))])
 
   ## rbind scenarios
-  salescomp_all = rbind(salescomp_all, salescomp)
-  fleet_all = rbind(fleet_all, fleet)
-  EJLDV_all = rbind(EJLDV_all, EJLDV)
-  EJmode_all = rbind(EJmode_all, EJmode)
-  ESmodecap_all = rbind(ESmodecap_all, ESmodecap)
-  CO2km_int_newsales_all = rbind(CO2km_int_newsales_all, CO2km_int_newsales)
-  EJfuels_all = rbind(EJfuels_all, EJfuels)
-  emidem_all = rbind(emidem_all, emidem)
+
+for (i in names(allentries)) {
+  j = paste0(i, "_all")
+  alltosave[[j]] = rbind(alltosave[[j]], allentries[[i]])
 }
 
-outdir = paste0("output/comparerunEDGE", gsub(" | ^([[:alpha:]]*).*","", Sys.time()))
-dir.create(outdir)
-md_template = "EDGETransportComparison.Rmd"
-dash_template = "EDGEdashboard.Rmd"
+}
 
-saveRDS(EJmode_all, paste0(outdir, "/EJmode_all.RDS"))
-saveRDS(salescomp_all, paste0(outdir, "/salescomp_all.RDS"))
-saveRDS(fleet_all, paste0(outdir, "/fleet_all.RDS"))
-saveRDS(EJLDV_all, paste0(outdir, "/EJLDV_all.RDS"))
-saveRDS(ESmodecap_all, paste0(outdir, "/ESmodecap_all.RDS"))
-saveRDS(CO2km_int_newsales_all, paste0(outdir, "/CO2km_int_newsales_all.RDS"))
-saveRDS(EJfuels_all, paste0(outdir, "/EJfuels_all.RDS"))
-saveRDS(emidem_all, paste0(outdir, "/emidem_all.RDS"))
+## create string with date and time
+time = gsub(":",".",gsub(" ","_",Sys.time()))
+## create output folder
+outdir = paste0("output/comparerunEDGE", time)
+dir.create(outdir)
+## names of the output files
+md_template = "EDGETransportComparison.Rmd"
+## save RDS files
+lapply(names(alltosave), function(nm)
+  saveRDS(alltosave[[nm]], paste0(outdir, "/",nm,".RDS")))
+
+## create a txt file containing the run names
+write.table(outputdirs, paste0(outdir, "/run_names.txt"), append = FALSE, sep = " ", quote = FALSE,
+            row.names = FALSE, col.names = FALSE)
+
+
 file.copy(file.path("./scripts/output/comparison/notebook_templates", md_template), outdir)
 rmarkdown::render(path(outdir, md_template), output_format="pdf_document")
 
-## if it's a 4 scenarios comparison across ConvCase, SynSurge, ElecEra, and HydrHype. run the dashboard
-if (length(outputdirs) == 4 &
-    isTRUE(any(grepl("SynSurge", outputdirs))) &
-    isTRUE(any(grepl("ConvCase", outputdirs))) &
-    isTRUE(any(grepl("ElecEra", outputdirs))) &
-    isTRUE(any(grepl("HydrHype", outputdirs))) ){
- file.copy(file.path("./scripts/output/comparison/notebook_templates/helper_dashboard.R"), outdir)
- file.copy(file.path("./scripts/output/comparison/notebook_templates", dash_template), outdir)
- rmarkdown::render(path(outdir, dash_template))
-}
+
 

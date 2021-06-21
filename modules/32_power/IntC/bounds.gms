@@ -1,4 +1,4 @@
-*** |  (C) 2006-2019 Potsdam Institute for Climate Impact Research (PIK)
+*** |  (C) 2006-2020 Potsdam Institute for Climate Impact Research (PIK)
 *** |  authors, and contributors see CITATION.cff file. This file is part
 *** |  of REMIND and licensed under AGPL-3.0-or-later. Under Section 7 of
 *** |  AGPL-3.0, you are granted additional permissions described in the
@@ -10,6 +10,35 @@
 
 *** Fix capacity factors to the standard value from data
 vm_capFac.fx(t,regi,te) = pm_cf(t,regi,te);
+
+$IFTHEN.WindOff %cm_wind_offshore% == "1"
+*** CG: set wind offshore to be 10% higher than wind onshore
+*vm_capFac.fx(t,regi,"windoff") = 1.1 * pm_cf(t,regi,"wind");
+*** CG: set wind offshore to be the same as wind onshore: for testing
+vm_capFac.fx(t,regi,"windoff") = 1 * pm_cf(t,regi,"wind");
+$ENDIF.WindOff
+
+*** FS: for historically limited biomass production scenario (cm_bioprod_histlim >= 0)
+*** to avoid infeasibilities with vintage biomass capacities
+*** allow bio techs to reduce capacity factor
+if ( cm_bioprod_histlim ge 0,
+	vm_capFac.lo(t,regi_sensscen,teBioPebiolc)$(t.val ge 2030) = 0;
+);
+
+*** FS: if flexibility tax on, let capacity factor be endogenuously determined between 0.1 and 1 
+*** for technologies that get flexibility tax/subsity (teFlexTax)
+if ( cm_flex_tax eq 1,
+  if ( cm_FlexTaxFeedback eq 1,
+*** if flexibility tax feedback is on, let model choose capacity factor of flexible technologies freely
+	  vm_capFac.lo(t,regi,teFlexTax)$(t.val ge 2010) = 0.1;
+    vm_capFac.up(t,regi,teFlexTax)$(t.val ge 2010) = pm_cf(t,regi,teFlexTax);
+  else 
+*** if flexibility tax feedback is off, only flexibliity tax benefit for flexible technologies and 0.5 capacity factor
+    vm_capFac.fx(t,regi,teFlex)$(t.val ge 2010) = 0.5;
+*** electricity price of inflexible technologies the same w/o feedback
+    v32_flexPriceShare.fx(t,regi,te)$(teFlexTax(te) AND NOT(teFlex(te))) = 1;
+  );
+);
 
 *** Lower bounds on VRE use (more than 0.01% of electricity demand) after 2015 to prevent the model from overlooking solar and wind
 loop(regi,
@@ -35,5 +64,9 @@ loop(regi$(p32_factorStorage(regi,"csp") < 1),
   v32_shSeEl.lo(t,regi,"csp")$(t.val > 2050) = 1;
   v32_shSeEl.lo(t,regi,"csp")$(t.val > 2100) = 2;
 );
+
+*** Fix capacity to 0 for elh2VRE now that the equation q32_elh2VREcapfromTestor pushes elh2, not anymore elh2VRE, and capital costs are 1
+vm_cap.fx(t,regi,"elh2VRE",rlf) = 0;
+
 
 
