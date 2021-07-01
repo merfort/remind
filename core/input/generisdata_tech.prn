@@ -78,7 +78,7 @@ learn                                                   0.108      0.207        
 luse                                                                0.09                   0.021
 
 +                  elh2         dot         dhp       h2turb      h2curt       h2turbVRE  elh2VRE      h22ch4      MeOH
-tech_stat            1                                    2                                               3          3  
+tech_stat            4                                    2                                               3          3  
 inco0                400         480         360         600         700          0.1      0.1          700        800
 constrTme            2            2           1           2           2            1        1            2          2
 mix0                                                                                                                    
