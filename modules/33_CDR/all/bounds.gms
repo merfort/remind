@@ -13,12 +13,13 @@ v33_grindrock_onfield.fx(t,regi,rlf,rlf2)$(rlf2.val gt 10) = 0;
 v33_grindrock_onfield_tot.fx(t,regi,rlf,rlf2)$(rlf2.val gt 10) = 0;
 vm_emiCdr.up(t,regi,"co2")$(t.val gt 2015) = -0.0001;
 
-$ifThen.regiNoDAC not "%cm_regiNoDAC%" == "none"
-*** Switch off DAC for selected regions
-v33_emiDAC.fx(t,regiNoDAC_33) = 0.0;
-$endIf.regiNoDAC
-
 if (cm_emiscen ne 1,
     vm_cap.lo(t,regi,"dac",rlf)$(teNoTransform2rlf_dyn33("dac",rlf) AND (t.val ge max(2025,cm_startyear))) = 1e-7;  
 );
+
+$ifThen.regiNoDAC not "%cm_regiNoDAC%" == "none"
+*** Switch off DAC for selected regions
+vm_deltaCap.fx(t,regiNoDAC_33,"dac",rlf)$(teNoTransform2rlf_dyn33("dac",rlf) AND (t.val ge max(2025,cm_startyear))) = 0;
+vm_cap.lo(t,regiNoDAC_33,"dac",rlf)$(teNoTransform2rlf_dyn33("dac",rlf) AND (t.val ge max(2025,cm_startyear))) = 0;  
+$endIf.regiNoDAC
 *** EOF ./modules/33_CDR/all/bounds.gms
