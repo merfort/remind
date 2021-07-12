@@ -193,6 +193,15 @@ $offdelim
 ;
 *CG* setting regional technology cost to be the same for wind offshore as onshore
 $IFTHEN.WindOff %cm_wind_offshore% == "1"
+fm_dataglob("inco0","windoff") = 5000;
+fm_dataglob("constrTme","windoff") = 4;
+fm_dataglob("eta","windoff") = 1.00;
+fm_dataglob("omf","windoff") = 0.03;
+fm_dataglob("lifetime","windoff") = 25;
+fm_dataglob("incolearn","windoff") = 4000;
+fm_dataglob("ccap0","windoff") = 0.0007;
+fm_dataglob("learn","windoff") = 0.12;
+
 p_inco0(ttot,regi,"windoff") = p_inco0(ttot,regi,"wind");
 $ENDIF.WindOff
 
@@ -255,6 +264,10 @@ p_ccsinject_fac(regi)$(p_ccsinject_fac(regi) eq 0) = 1;
 $endif.regi_ccsinject_fac
 
 $include "./core/input/generisdata_flexibility.prn"
+$IFTHEN.WindOff %cm_wind_offshore% == "1"
+fm_dataglob("flexibility","storwindoff")  = 1.93;
+fm_dataglob("flexibility","windoff")  = -1;
+$ENDIF.WindOff
 
 fm_dataglob("inco0",te)              = sm_DpKW_2_TDpTW       * fm_dataglob("inco0",te);
 fm_dataglob("incolearn",te)          = sm_DpKW_2_TDpTW       * fm_dataglob("incolearn",te);
@@ -428,16 +441,18 @@ p_cint(regi,"co2","peoil","7")=0.2283105600;
 p_cint(regi,"co2","peoil","8")=0.4153983800;
 
 $IFTHEN.WindOff %cm_wind_offshore% == "1"
-*CG* set wind offshore (also its storage and grid) to be the same as wind onshore (later should be integrated into input data)
-fm_dataglob(char,"windoff") = fm_dataglob(char,"wind");
+*CG* set wind offshore storage and grid to be the same as wind onshore (later should be integrated into input data)
+* main difference between onshore and offshore is the difference in f32_factorStorage
 fm_dataglob(char,"storwindoff") = fm_dataglob(char,"storwind");
 fm_dataglob(char,"gridwindoff") = fm_dataglob(char,"gridwind");
+
 $ENDIF.WindOff
 
 *** Use global data as standard for regionalized data:
 pm_data(all_regi,char,te) = fm_dataglob(char,te);
 *NB* display
 
+$IFTHEN.WindOff %cm_wind_offshore% == "0"
 ** historical installed capacity
 *** read-in of pm_histCap.cs3r
 $Offlisting
@@ -446,15 +461,23 @@ $ondelim
 $include "./core/input/pm_histCap.cs3r"
 $offdelim
 ;
+$Onlisting
+$ENDIF.WindOff
+
+$IFTHEN.WindOff %cm_wind_offshore% == "1"
+*** read-in of pm_histCap_windoff.cs3r
+$Offlisting
+table   pm_histCap(tall,all_regi,all_te)     "historical installed capacity"
+$ondelim
+$include "./core/input/pm_histCap_windoff.cs3r"
+$offdelim
+;
+$Onlisting
+$ENDIF.WindOff
 
 *** calculate historic capacity additions
 pm_delta_histCap(tall,regi,te) = pm_histCap(tall,regi,te) - pm_histCap(tall-1,regi,te);
 
-$IFTHEN.WindOff %cm_wind_offshore% == "1"
-pm_histCap(tall,all_regi,"windoff") = 0;
-$ENDIF.WindOff
-
-$Onlisting
 *** historical PE installed capacity
 *** read-in of p_PE_histCap.cs3r
 table p_PE_histCap(tall,all_regi,all_enty,all_enty)     "historical installed capacity"
@@ -474,7 +497,7 @@ $offdelim
 $Onlisting
 
 
-*CG* setting wind off capacity factor to be the same as onshore here (test)
+*CG* setting wind off capacity factor to be the same as onshore here (later adjusting it in vm_capFac)
 $IFTHEN.WindOff %cm_wind_offshore% == "1"
 f_cf(ttot,regi,"windoff") = f_cf(ttot,regi,"wind");
 $ENDIF.WindOff
@@ -747,17 +770,18 @@ $offdelim
 pm_dataren(all_regi,"maxprod",rlf,"windoff") = sm_EJ_2_TWa * f_maxProdGradeRegiWindOff(all_regi,"maxprod",rlf);
 pm_dataren(all_regi,"nur",rlf,"windoff")     = f_maxProdGradeRegiWindOff(all_regi,"nur",rlf);
 
-p_shareWindPotentialOff2On(all_regi) = sum(rlf,f_maxProdGradeRegiWindOff(all_regi,"maxprod",rlf)) /
-                      sum(rlf,f_maxProdGradeRegiWindOn(all_regi,"maxprod",rlf));
+p_shareWindPotentialOff2On(all_regi) = sum(rlf,f_maxProdGradeRegiWindOff(all_regi,"maxprod",rlf)$(rlf.val le 8)) /
+                      sum(rlf,f_maxProdGradeRegiWindOn(all_regi,"maxprod",rlf)$(rlf.val le 8));
 
-p_shareWindOff(ttot)$(ttot.val le 2015) = 0;
-p_shareWindOff(ttot)$((ttot.val ge 2020) AND (ttot.val le 2025)) = 0.1;
-p_shareWindOff(ttot)$((ttot.val ge 2030) AND (ttot.val le 2035)) = 0.3;
-p_shareWindOff(ttot)$((ttot.val ge 2040) AND (ttot.val le 2045)) = 0.45;
-p_shareWindOff(ttot)$((ttot.val ge 2050) AND (ttot.val le 2060)) = 0.65;
-p_shareWindOff(ttot)$((ttot.val ge 2065) AND (ttot.val le 2080)) = 0.7;
-p_shareWindOff(ttot)$((ttot.val ge 2085) AND (ttot.val le 2100)) = 0.8;
-p_shareWindOff(ttot)$((ttot.val gt 2100)) = 0.9;
+p_shareWindOff("2010") = 0.05;
+p_shareWindOff("2015") = 0.1;
+p_shareWindOff("2020") = 0.15;
+p_shareWindOff("2025") = 0.2;
+p_shareWindOff("2030") = 0.35;
+p_shareWindOff("2035") = 0.5;
+p_shareWindOff("2040") = 0.65;
+p_shareWindOff("2045") = 0.8;
+p_shareWindOff(ttot)$((ttot.val ge 2050)) = 1;
 
 $ENDIF.WindOff
 
@@ -821,6 +845,7 @@ loop(regi,
 
 display p_aux_capToDistr, s_aux_cap_remaining, p_aux_capThisGrade, p_avCapFac2015, p_inco0;
 
+$IFTHEN.WindOff %cm_wind_offshore% == "0"
 parameter p_histCapFac(tall,all_regi,all_te)     "Capacity factor (fraction of the year that a plant is running) of installed capacity in 2015"
 /
 $ondelim
@@ -828,6 +853,17 @@ $include "./core/input/p_histCapFac.cs4r"
 $offdelim
 /
 ;
+$ENDIF.WindOff
+
+$IFTHEN.WindOff %cm_wind_offshore% == "1"
+parameter p_histCapFac(tall,all_regi,all_te)     "Capacity factor (fraction of the year that a plant is running) of installed capacity in 2015"
+/
+$ondelim
+$include "./core/input/p_histCapFac_windoff.cs4r"
+$offdelim
+/
+;
+$ENDIF.WindOff
 
 
 *** RP rescale wind capacity factors in REMIND to account for very different real-world CF (potentially partially due to assumed low-wind turbine set-ups in the NREL data)
@@ -835,15 +871,33 @@ $offdelim
 
 *cb* CF calibration analogously for wind and spv: calibrate 2015, and assume gradual phase-in of grade-based CF (until 2045 for wind, until 2030 for spv)
 p_aux_capacityFactorHistOverREMIND(regi,"wind")$p_avCapFac2015(regi,"wind") =  p_histCapFac("2015",regi,"wind") / p_avCapFac2015(regi,"wind");
+$IFTHEN.WindOff %cm_wind_offshore% == "1"
+p_aux_capacityFactorHistOverREMIND(regi,"windoff")$p_avCapFac2015(regi,"windoff") =  p_histCapFac("2015",regi,"windoff") / p_avCapFac2015(regi,"windoff");
+$ENDIF.WindOff
 
+$IFTHEN.WindOff %cm_wind_offshore% == "0"
 loop(t$(t.val ge 2015 AND t.val le 2045 ),
 pm_cf(t,regi,"wind") =
 (2045 - pm_ttot_val(t)) / 30 * p_aux_capacityFactorHistOverREMIND(regi,"wind") *pm_cf(t,regi,"wind")
 +
 (pm_ttot_val(t) - 2015) / 30 * pm_cf(t,regi,"wind")
 );
+$ENDIF.WindOff
 
-*CG* set storwindoff and gridwindoff to be the same as storwind and gridwind
+
+$IFTHEN.WindOff %cm_wind_offshore% == "1"
+loop(te$(sameas(te,"wind") OR sameas(te,"windoff")),
+loop(t$(t.val ge 2015 AND t.val le 2045 ),
+pm_cf(t,regi,te) =
+(2045 - pm_ttot_val(t)) / 30 * p_aux_capacityFactorHistOverREMIND(regi,te) *pm_cf(t,regi,te)
++
+(pm_ttot_val(t) - 2015) / 30 * pm_cf(t,regi,te)
+);
+);
+$ENDIF.WindOff
+
+
+*CG* set storage and grid of windoff to be the same as windon
 $IFTHEN.WindOff %cm_wind_offshore% == "1"
 pm_cf(t,regi,"storwindoff") = pm_cf(t,regi,"storwind");
 pm_cf(t,regi,"gridwindoff") = pm_cf(t,regi,"gridwind");
@@ -942,6 +996,11 @@ loop(ttot$(ttot.val ge 2005),
   p_adj_seed_te(ttot,regi,'apCarDiEffT')     = 0.50;
   p_adj_seed_te(ttot,regi,'apCarDiEffH2T')   = 0.50;
   p_adj_seed_te(ttot,regi,'dac')             = 0.25;
+
+$IFTHEN.WindOff %cm_wind_offshore% == "1"
+  p_adj_seed_te(ttot,regi,"windoff") = 0.5; 
+$ENDIF.WindOff 
+
 *RP: for comparison of different technologies:
 *** pm_conv_cap_2_MioLDV <- 650  # The world has slightly below 800million cars in 2005 (IEA TECO2), so with a global vm_cap of 1.2, this gives ~650
 *** ==> 1TW power plant ~ 650 million LDV
@@ -962,7 +1021,8 @@ loop(ttot$(ttot.val ge 2005),
   p_adj_coeff(ttot,regi,"wind")            = 0.08;
 
 $IFTHEN.WindOff %cm_wind_offshore% == "1"
-  p_adj_coeff(ttot,regi,"windoff")         = 0.08;
+
+  p_adj_coeff(ttot,regi,"windoff")         = 0.16;
 $ENDIF.WindOff
 
   p_adj_coeff(ttot,regi,"dac")             = 0.8;
@@ -1158,27 +1218,26 @@ loop(teNoLearn(te),
 display pm_inco0_t;
 
 ***for those technologies, for which differentiated costs are available for 2015-2040, use those
-$if %cm_techcosts% == "REG"   loop(teRegTechCosts(te)$(not teLearn(te)),
-$if %cm_techcosts% == "REG"   pm_inco0_t(ttot,regi,te)$(ttot.val ge 2015 AND ttot.val lt 2040) = p_inco0(ttot,regi,te);
-$if %cm_techcosts% == "REG"   pm_inco0_t(ttot,regi,te)$(ttot.val ge 2040) = p_inco0("2040",regi,te);
+$if %cm_techcosts% == "REG"   loop(te$(teNoLearn(te) AND teRegTechCosts(te)),
+$if %cm_techcosts% == "REG"     pm_inco0_t(ttot,regi,te)$(ttot.val ge 2015 AND ttot.val lt 2040) = p_inco0(ttot,regi,te);  !! no value after 2020 is currently used (see convergence below)
+
+***linear convergence of investment costs from 2025 on for non-learning technologies with regionally differentiated costs
+***so that in 2070 all regions again have the technology cost data that is given in generisdata.prn
+$if %cm_techcosts% == "REG"     loop(ttot$(ttot.val ge 2020 AND ttot.val le 2070),
+$if %cm_techcosts% == "REG"       pm_inco0_t(ttot,regi,te) =   ( pm_ttot_val(ttot) - 2020 ) / 50 * fm_dataglob("inco0",te)
+$if %cm_techcosts% == "REG"                                  + ( 2070 - pm_ttot_val(ttot) ) / 50 * pm_inco0_t("2020",regi,te) ;
+$if %cm_techcosts% == "REG"     );
+$if %cm_techcosts% == "REG"     pm_inco0_t(ttot,regi,te)$(ttot.val gt 2070) = fm_dataglob("inco0",te);
 $if %cm_techcosts% == "REG"   );
 
 *** re-insert effect of costMarkupAdvTech for IGCC in the regionalized cost data, as the IEA numbers have unrealistically low IGCC costs in 2005-2020
-$if %c_techcosts% == "REG"    loop(teNoLearn(te)$(sameas(te,"igcc"),
+$if %c_techcosts% == "REG" loop(teNoLearn(te)$(sameas(te,"igcc"),
 $if %c_techcosts% == "REG"      loop(ttot$(ttot.val ge 2005 AND ttot.val < 2035 ),
-$if %c_techcosts% == "REG"        pm_inco0_t(ttot,regi,te) = sum(s_statusTe$(s_statusTe.val eq pm_data(regi,"tech_stat",te) ), p_costMarkupAdvTech(s_statusTe,ttot) * pm_inco0_t(ttot,regi,te) );
+$if %c_techcosts% == "REG"        pm_inco0_t(ttot,regi,te) = sum(s_statusTe$(s_statusTe.val eq pm_data(regi,"tech_stat",te) ),
+$if %c_techcosts% == "REG" p_costMarkupAdvTech(s_statusTe,ttot) * pm_inco0_t(ttot,regi,te)
+$if %c_techcosts% == "REG"                                   );
 $if %c_techcosts% == "REG"      );
 $if %c_techcosts% == "REG"    );
-
-***linear convergence of investment costs from 2025 on for non-learning technologies,
-***so that in 2070 all regions again have the technology cost data that is given in generisdata.prn
-$if %cm_techcosts% == "REG"   loop(ttot$(ttot.val ge 2020 AND ttot.val le 2070),
-$if %cm_techcosts% == "REG"     pm_inco0_t(ttot,regi,teNoLearn(te)) = ((pm_ttot_val(ttot)-2020)*fm_dataglob("inco0",te)
-$if %cm_techcosts% == "REG"                                            + (2070-pm_ttot_val(ttot))*pm_inco0_t("2020",regi,te))/50;
-$if %cm_techcosts% == "REG"   );
-$if %cm_techcosts% == "REG"   loop(ttot$(ttot.val gt 2070),
-$if %cm_techcosts% == "REG"   pm_inco0_t(ttot,regi,teNoLearn(te)) = fm_dataglob("inco0",te);
-$if %cm_techcosts% == "REG"   );
 
 
 *** rename f_datafecostsglob
