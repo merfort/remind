@@ -136,6 +136,9 @@ loop(regi,
 if (cm_bioenTrdScen eq 0,
     vm_Mport.fx(t,regi,"pebiolc") = 0;
     vm_Xport.fx(t,regi,"pebiolc") = 0;
+elseif (cm_bioenTrdScen eq 2),
+    vm_Mport.fx(t,regiOECD,"pebiolc") = 0;
+    vm_Xport.fx(t,regiOECD,"pebiolc") = 0;
 );
 
 

@@ -88,6 +88,7 @@ SSP2-Budg1300-bio_on-LProt_CPD-trd_on-ef_00;0;short;;;SSP2,NDC,allTaxOff_protCPD
 SSP2-Budg1300-bio_on-LProt_LW-trd_on-ef_00;0;short;;;SSP2,NDC,allTaxOff_protLW;y2020;;;;
 SSP2-Budg1300-bio_on-LUtax_100OECD-trd_on-ef_00;0;short;;;SSP2,NDC,allTaxOff_nonOECD;y2020;;;;
 SSP2-Budg1300-bio_on-LUtax_100OECD-trd_off-ef_00;0;short;;;SSP2,NDC,allTaxOff_nonOECD;y2020;;;;
+SSP2-Budg1300-bio_on-LUtax_100OECD-trd_OECDoff-ef_00;0;short;;;SSP2,NDC,allTaxOff_nonOECD;y2020;;;;
 SSP2-Budg1300-bio_on-LUtax_010-trd_on-ef_00;0;short;;;SSP2,NDC;y2020;;;;
 SSP2-Budg1300-bio_on-LUtax_020-trd_on-ef_00;0;short;;;SSP2,NDC;y2020;;;;
 SSP2-Budg1300-bio_on-LUtax_030-trd_on-ef_00;0;short;;;SSP2,NDC;y2020;;;;
