@@ -299,6 +299,7 @@ cm_fsMagScen                "MAgPIE feedstock scenario that was applied to obtai
 cm_irMagScen                "MAgPIE irrigation scenario that was applied to obtain bioenergy co-emission factors"
 cm_regi_bioen_ef            "Region(s) in which bioenergy will be charged with a co-emission factor based tax"
 cm_bioenTrdScen             "Trade scenario for lignocellulosic biomass"
+cm_damp_bio_first_cpl_iter  "Switch to reduce the bioenergy demand in coupled runs within the first REMIND iteration via a cost markup"
 ;
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -422,6 +423,7 @@ $setGlobal cm_fsMagScen  TypeALL       !! def = TypeALL
 $setGlobal cm_irMagScen  WaterRAINFED  !! def = WaterRAINFED
 $setGlobal cm_regi_bioen_ef  glob      !! def = glob
 cm_bioenTrdScen = 1;                   !! def = 1
+cm_damp_bio_first_cpl_iter = 0;        !! def = 0
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ***                           YOU ARE IN THE WARNING ZONE (DON'T DO CHANGES HERE)
