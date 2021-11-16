@@ -150,6 +150,9 @@ $ifThen.regiNoBioImport not "%cm_regiNoBioImport%" == "none"
 vm_Mport.fx(t,regiNoBioImport30,"pebiolc") = 0;
 $endIf.regiNoBioImport
 
+*LM* Hot fix for DIPOL: Switch off biomass exports for EUR
+vm_Xport.fx(t,"EUR","pebiolc") = 0;
+
 *** FS: test regional bounds on pebiolc.1 production
 ***vm_fuExtr.up(t,"DEU","pebiolc","1")$(t.val ge 2030) = 0.0077;
 
