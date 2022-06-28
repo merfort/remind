@@ -262,6 +262,11 @@ SSP2-Budg1300_hrhc-bio_off-LUtax_020-trd_on-ef_00;0;medium;;;SSP2,NDC,tcHighCost
 SSP2-Budg1300_hrhc-bio_off-LUtax_030-trd_on-ef_00;0;medium;;;SSP2,NDC,tcHighCost;y2020;;;;
 SSP2-Budg1300_hrhc-bio_off-LUtax_050-trd_on-ef_00;0;medium;;;SSP2,NDC,tcHighCost;y2020;;;;
 SSP2-Budg1300_hrhc-bio_off-LUtax_100-trd_on-ef_00;0;medium;;;SSP2,NDC,tcHighCost;y2020;;;;
+___Sensitivity_Analysis_lowBioYields___;0;;;;;;;;;
+___lowBioYields_Budg1300_hr___;0;;;;;;;;;
+___lowBioYields_Budg1300_hr___bio_on___;0;;;;;;;;;
+SSP2-Budg1300_hrly75-bio_on-LUtax_100-trd_on-ef_00;1;medium;;;SSP2,NDC,bioYield75;y2020;;;;
+SSP2-Budg1300_hrly50-bio_on-LUtax_100-trd_on-ef_00;1;medium;;;SSP2,NDC,bioYield50;y2020;;;;
 ___Sensitivity_Analysis_OECD___;0;;;;;;;;;
 ___              NF = Non-oecd bio oFf;0;;;;;;;;;
 ___              NN = Non-oecd bio oN;0;;;;;;;;;
@@ -272,7 +277,7 @@ SSP2-Budg1300_hrNOff-bio_on-LUtax_100OECD-trd_on-ef_00;0;medium;;;SSP2,NDC,allTa
 ___nonOECD-bio_off_Budg1300_hr___bio_off___;0;;;;;;;;;
 SSP2-Budg1300_hrNOff-bio_off-LUtax_000-trd_on-ef_00;0;medium;;;SSP2,NDC,allTaxOff;y2020;;;;
 SSP2-Budg1300_hrNOff-bio_off-LUtax_100-trd_on-ef_00;0;medium;;;SSP2,NDC;y2020;;;;
-SSP2-Budg1300_hrNOff-bio_off-LUtax_100OECD-trd_on-ef_00;1;priority;;;SSP2,NDC,allTaxOff_nonOECD;y2020;;;;
+SSP2-Budg1300_hrNOff-bio_off-LUtax_100OECD-trd_on-ef_00;0;priority;;;SSP2,NDC,allTaxOff_nonOECD;y2020;;;;
 ___nonOECD-bio_on_Budg1300_hr___bio_on___;0;;;;;;;;;
 SSP2-Budg1300_hrNOn-bio_on-LUtax_000-trd_on-ef_00;0;medium;;;SSP2,NDC,allTaxOff;y2020;;;;
 SSP2-Budg1300_hrNOn-bio_on-LUtax_100-trd_on-ef_00;0;medium;;;SSP2,NDC;y2020;;;;
