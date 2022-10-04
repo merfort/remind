@@ -15,7 +15,13 @@ pm_taxCO2eq("2020",regi)= cm_co2_tax_2020 * sm_DptCO2_2_TDpGtC;
 pm_taxCO2eq(ttot,regi)$(ttot.val ge max(2020,cm_startyear) ) = pm_taxCO2eq("2020",regi)*cm_co2_tax_growth**(ttot.val-2020);
 *LB* use linear tax path from cm_expoLinear_yearStart on
 *** p45_tau_co2_tax_inc(regi) = sum(ttot$(ttot.val eq cm_expoLinear_yearStart),((pm_taxCO2eq(ttot, regi) - pm_taxCO2eq(ttot - 1, regi)) / (pm_ttot_val(ttot) - pm_ttot_val(ttot - 1)))); 
-p45_tau_co2_tax_inc(regi) = 6;
+*LM* Set initial carbon price increase after cm_expoLinear_yearStart 
+*** exogenously to 3 $/tCO2/yr. This is just a quick fix for NAVIGATE. Please 
+*** note that this initial slope is changed during the optimization, since the
+*** whole carbon price trajectory is stretched/compressed in order to meet the 
+*** carbon budget. Please also note that the value is converted to REMIND 
+*** internal units (T$/GtC/yr) 
+p45_tau_co2_tax_inc(regi) = 3 * 0.001 * 44/12;
 pm_taxCO2eq(ttot,regi)$(ttot.val gt cm_expoLinear_yearStart) = sum(t$(t.val eq cm_expoLinear_yearStart), pm_taxCO2eq(t, regi) +  p45_tau_co2_tax_inc(regi) * (pm_ttot_val(ttot) - pm_ttot_val(t)))  ;
 *** set carbon price constant after 2110 to prevent huge carbon prices which lead to convergence problems
 pm_taxCO2eq(ttot,regi)$(ttot.val gt 2110) = pm_taxCO2eq("2110",regi);
