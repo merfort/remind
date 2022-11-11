@@ -1,7 +1,7 @@
 title;start;oldrun;path_report;qos;magpie_scen;no_ghgprices_land_until;cm_nash_autoconverge_lastrun;path_gdx;path_gdx_ref;path_gdx_bau;path_gdx_opt
-SSP2EU-Base;0;;;priority;SSP2|NPI;y2150;;;;;
-SSP2EU-NDC;0;;;priority;SSP2|NDC;y2150;;;;;
-SSP2EU-NPi;0;;;priority;SSP2|NPI;y2150;;;;;
+SSP2EU-Base;1;;;priority;SSP2|NPI;y2150;;;;;
+SSP2EU-NDC;1;;;priority;SSP2|NDC;y2150;;;;;
+SSP2EU-NPi;1;;;priority;SSP2|NPI;y2150;;;;;
 ___cp0400___;0;;;;;;;;;;
 SSP2EU-cp0750-rst_on-prt_all-mgmt_full-bio_on;1;;;short;SSP2|NDC,rst_on,prt_all-mgmt_full;y2020;;;;;
 SSP2EU-cp0750-rst_on-prt_all-mgmt_full-bio_off;1;;;short;SSP2|NDC,rst_on,prt_all-mgmt_full;y2020;;;;;
