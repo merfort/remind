@@ -26,7 +26,8 @@ argv <- get0("argv", ifnotfound = commandArgs(trailingOnly = TRUE))
 # run updates before loading any packages
 if ("--update" %in% argv) {
   stopifnot(`--update must not be used together with --renv=...` = !any(startsWith(argv, "--renv=")))
-  source("scripts/utils/updateRenv.R")
+  installedUpdates <- piamenv::updateRenv()
+  piamenv::stopIfLoaded(names(installedUpdates))
 } else if (any(startsWith(argv, "--renv="))) {
   renvProject <- normalizePath(sub("^--renv=", "", grep("^--renv=", argv, value = TRUE)))
   renv::load(renvProject)
@@ -35,7 +36,7 @@ if ("--update" %in% argv) {
 # load landuse library
 library(lucode2)
 library(gms)
-require(stringr)
+require(stringr, quietly = TRUE)
 
 ### Define arguments that can be read from command line
 if (!exists("source_include")) {
@@ -46,14 +47,6 @@ if (!exists("source_include")) {
   flags <- NULL
 }
 
-# Setting relevant paths
-if (file.exists("/iplex/01/landuse")) { # run is performed on the cluster
-  pythonpath <- "/iplex/01/landuse/bin/python/bin/"
-  latexpath <- "/iplex/01/sys/applications/texlive/bin/x86_64-linux/"
-} else {
-  pythonpath <- ""
-  latexpath <- NA
-}
 
 choose_slurmConfig_output <- function(slurmExceptions = NULL) {
   slurm_options <- c("--qos=priority", "--qos=short", "--qos=standby",
@@ -97,12 +90,17 @@ if (! exists("output")) {
 
 # Select output directories if not defined by readArgs
 if (! exists("outputdir")) {
+  modulesNeedingMif <- c("compareScenarios2", "xlsx_IIASA", "policyCosts", "Ariadne_output",
+                         "plot_compare_iterations", "varListHtml")
+  needingMif <- any(modulesNeedingMif %in% output)
   dir_folder <- if (exists("remind_dir")) remind_dir else "./output"
   dirs <- basename(dirname(Sys.glob(file.path(dir_folder, "*", "fulldata.gdx"))))
+  if (needingMif) dirs <- intersect(dirs, unique(basename(dirname(Sys.glob(file.path(dir_folder, "*", "REMIND_generic_*.mif"))))))
   names(dirs) <- stringr::str_extract(dirs, "rem-[0-9]+$")
   names(dirs)[is.na(names(dirs))] <- ""
   selectedDirs <- chooseFromList(dirs, type = "runs to be used for output generation",
-                    userinfo = if ("policyCosts" %in% output) "The reference run will be selected separately!" else FALSE,
+                    userinfo = paste0(if ("policyCosts" %in% output) "The reference run will be selected separately! " else NULL,
+                                      if (needingMif) "Do you miss a run? Check if .mif exists and rerun reporting. " else NULL),
                     returnBoolean = FALSE, multiple = TRUE)
   outputdirs <- file.path("output", selectedDirs)
   if ("policyCosts" %in% output) {
@@ -219,7 +217,7 @@ if (comp %in% c("comparison", "export")) {
 
     # output creation for --testOneRegi was switched off in start.R in this commit:
     # https://github.com/remindmodel/remind/commit/5905d9dd814b4e4a62738d282bf1815e6029c965
-    if (all(is.na(output))) {
+    if (all(is.na(output)) || output == "NA") {
       message("\nNo output generation, as output was set to NA, as for example for --testOneRegi or --quick.")
     } else {
       message("\nStarting output generation for ", outputdir, "\n")

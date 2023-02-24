@@ -69,8 +69,9 @@ gdp_SSP5        "SSP5 fastGROWTH fastCONV"
 gdp_SSP2_lowEn  "SSP2 with low energy"
 gdp_SSP2EU_NAV_ele "NAVIGATE demand scenarios: Electrification and fuel shift"
 gdp_SSP2EU_NAV_act "NAVIGATE demand scenarios: Activity reduction and activity shift"
-gdp_SSP2EU_NAV_all "NAVIGATE demand scenarios: All measures."
 gdp_SSP2EU_NAV_tec "NAVIGATE demand scenarios: Technological improvements - energy efficiency"
+gdp_SSP2EU_NAV_lce "NAVIGATE demand scenarios: Low consumption energy (act + tec)"
+gdp_SSP2EU_NAV_all "NAVIGATE demand scenarios: All measures (ele + act + tec)"
 /
 
 all_GDPpcScen    "all possible GDP per capita scenarios (GDP and Population from the same SSP-scenario"
@@ -163,10 +164,6 @@ all_te          "all energy technologies, including from modules"
         igcc            "integrated coal gasification combined cycle"
         igccc           "integrated coal gasification combined cycle with capture"
         pc              "pulverised coal power plant"
-$ifthen setGlobal cm_ccsfosall
-        pcc             "pulverised coal power plant with capture"
-        pco             "pulverised coal power plant with oxyfuel capture"
-$endif
         coalchp         "combined heat powercoal"
         coalhp          "heating plantcoal"
         coaltr          "tranformation of coal"
@@ -330,6 +327,8 @@ $ENDIF.WindOff
         idr          "Iron direct reduction"
         eaf          "Electric-arc furnace"
         bfbof        "Blast furnace/basic-oxygen furnace"
+        pcc          "outdated technology, only here to avoid compilation errors if input data containing information for this technology are used"
+        pco          "outdated technology, only here to avoid compilation errors if input data containing information for this technology are used"
 /
 
 all_enty             "all types of quantities"
@@ -739,12 +738,9 @@ teEs(all_teEs)           "ES technologies which are actually used (to be filled 
 ***######################## R SECTION START (SETS) ###############################
 *** THIS CODE IS CREATED AUTOMATICALLY, DO NOT MODIFY THESE LINES DIRECTLY
 *** ANY DIRECT MODIFICATION WILL BE LOST AFTER NEXT INPUT DOWNLOAD
-*** CHANGES CAN BE DONE USING THE RESPECTIVE LINES IN scripts/start/prepare_and_run.R
+*** CHANGES CAN BE DONE USING THE RESPECTIVE LINES IN scripts/start/prepare.R
 
 sets
-
-   all_regi "all regions" /LAM,OAS,SSA,EUR,NEU,MEA,REF,CAZ,CHA,IND,JPN,USA/
-
    ext_regi "extended regions list (includes subsets of H12 regions)"
       /
         GLO,
@@ -755,6 +751,9 @@ LAM_regi,OAS_regi,SSA_regi,EUR_regi,NEU_regi,MEA_regi,REF_regi,CAZ_regi,CHA_regi
 LAM,OAS,SSA,EUR,NEU,MEA,REF,CAZ,CHA,IND,JPN,USA
       /
  
+
+   all_regi "all regions" /LAM,OAS,SSA,EUR,NEU,MEA,REF,CAZ,CHA,IND,JPN,USA/
+
    regi_group(ext_regi,all_regi) "region groups (regions that together corresponds to a H12 region)"
       /
       
@@ -910,7 +909,7 @@ $endif.altFeEmiFac
 ***######################## R SECTION START (MODULES) ###############################
 *** THIS CODE IS CREATED AUTOMATICALLY, DO NOT MODIFY THESE LINES DIRECTLY
 *** ANY DIRECT MODIFICATION WILL BE LOST AFTER NEXT MODEL START
-*** CHANGES CAN BE DONE USING THE RESPECTIVE LINES IN scripts/start/prepare_and_run.R
+*** CHANGES CAN BE DONE USING THE RESPECTIVE LINES IN scripts/start/prepare.R
 
 sets
 
@@ -1049,22 +1048,21 @@ ttot(tall)      "time index with spin up"
         1960, 1965, 1970, 1975, 1980, 1985,
         1990, 1995,
         2000, 2005, 2010,
-$if not setGlobal test_TS   2015,
-                            2020,
-$if not setGlobal test_TS   2025,
-                            2030,
-$if not setGlobal test_TS   2035,
-                            2040,
-$if not setGlobal test_TS   2045,
-                            2050,
-$if not setGlobal test_TS   2055,
-$if not setGlobal test_TS   2060,
-                            2070,
-$if not setGlobal test_TS   2080,
-                            2090,
-$if not setGlobal test_TS   2100,
-$if setGlobal END2110       2120
-$if not setGlobal END2110   2110, 2130, 2150
+        2015,
+        2020,
+        2025,
+        2030,
+        2035,
+        2040,
+        2045,
+        2050,
+        2055,
+        2060,
+        2070,
+        2080,
+        2090,
+        2100,
+        2110, 2130, 2150
 /
 
 *cb the content of those subsets is defined 16 lines further down
@@ -1126,10 +1124,6 @@ te(all_te)              "energy technologies"
         igcc            "integrated coal gasification combined cycle"
         igccc           "integrated coal gasification combined cycle with carbon capture"
         pc              "pulverised coal power plant"
-$ifthen setGlobal cm_ccsfosall
-        pcc             "pulverised coal power plant with capture"
-        pco             "pulverised coal power plant with oxyfuel capture"
-$endif
         coalchp         "combined heat powercoal"
         coalhp          "heating plant coal"
         coaltr          "tranformation of coal"
@@ -1235,10 +1229,6 @@ teAdj(all_te)           "technologies with adjustment costs on capacity addition
   igcc            "integrated coal gasification combined cycle"
   igccc           "integrated coal gasification combined cycle with capture"
   pc              "pulverised coal power plant"
-$ifthen setGlobal cm_ccsfosall
-  pcc             "pulverised coal power plant with capture"
-  pco             "pulverised coal power plant with oxyfuel capture"
-$endif
   coalchp         "combined heat powercoal"
   coalhp          "heating plant coal"
   coaltr          "tranformation of coal"
@@ -1347,10 +1337,6 @@ teCCS(all_te)       "Technologies with CCS"
   ngccc       "natural gas combined cycle with carbon capture"
   gash2c      "gas to hydrogen with capture"
   igccc       "integrated coal gasification combined cycle with carbon capture"
-$ifthen setGlobal cm_ccsfosall
-  pcc         "pulverized coal power plant with capture"
-  pco         "pulverized coal power plant with oxyfuel capture"
-$endif
   coalftcrec  "coal based fischer-tropsch with capture recycle"
   coalh2c     "coal to hydrogen with capture"
   biogasc     "gasification of biomass with capture"
@@ -1470,13 +1456,9 @@ $ENDIF.WindOff
 teFosCCS(all_te)    "fossil technologies with CCS"
 /
         ngccc       "natural gas combined cycle with carbon capture"
-	gash2c      "gas to hydrogen with capture"
+        gash2c      "gas to hydrogen with capture"
         gasftcrec       "gas based fischer-tropsch with capture recycle"
         igccc       "integrated coal gasification combined cycle with carbon capture"
-$ifthen setGlobal cm_ccsfosall
-        pcc         "pulverized coal power plant with capture"
-        pco         "pulverized coal power plant with oxyfuel capture"
-$endif
         coalftcrec  "coal based fischer-tropsch with capture recycle"
         coalh2c     "coal to hydrogen with capture"
 /
@@ -1497,7 +1479,7 @@ teFosNoCCS(all_te)  "fossil technologies without CCS"
         coalhp       "coal heating plant"
         coalgas      "coal gasification"
         coaltr       "transformation of coal"
-$IF %cm_OILRETIRE% == "on"   refliq
+        refliq
 /
 teBioPebiolc(all_te)      "biomass technologies using pebiolc"
 /
@@ -1538,8 +1520,6 @@ teRegTechCosts(all_te) "all technologies for which we differantiate tech costs"
        ngcc
        ngt
        gaschp
-       pcc
-       pco
        igccc
        ngccc
        tnrs
@@ -2256,7 +2236,7 @@ charPeRe(char) "characteristics of renewables"
 /
 s_statusTe   "technology status: how close a technology is to market readiness. Scale: 0-3, with 0 'I can go out and build a GW plant today' to 3 'Still some research necessary'"
 /
-      0 * 3
+      0 * 5
 /
 ;
 
@@ -2336,12 +2316,14 @@ alias(entyFe,entyFe2);
 alias(teEs,teEs2);
 alias(esty,esty2);
 alias(rlf,rlf2);
-alias(regi,regi2,regi3);
+alias(regi,regi2,regi3,regi4);
 alias(steps,steps2);
 alias(all_emiMkt,emiMkt,emiMkt2);
 alias(all_emiMktExt,emiMktExt);
 alias(emi_sectors,sector,sector2);
-alias(sector_types,type)
+alias(sector_types,type);
+alias(ext_regi,ext_regi2);
+alias(regi_group,regi_group2);
 
 ***-----------------------------------------------------------------------------
 ***-----------------------------------------------------------------------------
@@ -2371,10 +2353,6 @@ pe2se(all_enty,all_enty,all_te) "map primary energy carriers to secondary"
         pecoal.seel.igcc
         pecoal.seel.igccc
         pecoal.seel.pc
-$ifthen setGlobal cm_ccsfosall
-        pecoal.seel.pcc
-        pecoal.seel.pco
-$endif
         pecoal.seel.coalchp
         pecoal.sesofos.coaltr
         pecoal.segafos.coalgas
@@ -2571,14 +2549,6 @@ emi2te(all_enty,all_enty,all_te,all_enty)    " map emissions to technologies"
         pecoal.seel.pc.oc
         pecoal.seel.coalchp.oc
         pecoal.seel.igccc.co2
-$ifthen setGlobal cm_ccsfosall
-        pecoal.seel.pcc.co2
-        pecoal.seel.pco.co2
-        pecoal.seel.pcc.cco2
-        pecoal.seel.pco.cco2
-        pecoal.seel.pcc.n2o
-        pecoal.seel.pco.n2o
-$endif
         pecoal.seel.igccc.cco2
         pecoal.sesofos.coaltr.co2
         pecoal.sesofos.coaltr.so2
@@ -2799,9 +2769,6 @@ $ENDIF.WindOff
        igcc,igccc,pc,coaltr,coalgas,coalh2,coalh2c,coalchp,coalhp,coalftrec,coalftcrec,
        biotr,biotrmod,biogas,biogasc,bioftrec,bioftcrec,bioh2,bioh2c,biohp,biochp,bioigcc,bioigccc,
        elh2,h2turb,elh2VRE,h2turbVRE,bioethl,bioeths,biodiesel,tnrs,fnrs
-$ifthen setGlobal cm_ccsfosall
-       pcc, pco
-$endif
        ) . 1
 /
 

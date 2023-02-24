@@ -61,10 +61,13 @@ if (cm_emiscen ne 1,   !! not a BAU scenario
     * p37_BAU_industry_ETS_solids(t,regi);
 );
 
-!! Fix industry output for bal scenario
-$ifthen.bal_scenario "%cm_import_EU%" == "bal"   !! cm_import_EU
+!! Fix industry output for Bal and EnSec scenario
+$if "%cm_indstExogScen%" == "forecast_bal"   $set cm_indstExogScen_set "YES"
+$if "%cm_indstExogScen%" == "forecast_ensec" $set cm_indstExogScen_set "YES"
+$ifthen.policy_scenario "%cm_indstExogScen_set%" == "YES"
   vm_cesIO.fx(t,regi,in)$( p37_industry_quantity_targets(t,regi,in) )
   = p37_industry_quantity_targets(t,regi,in);
-$endif.bal_scenario
+$endif.policy_scenario
+$drop cm_indstExogScen_set
 
 *** EOF ./modules/37_industry/subsectors/bounds.gms
