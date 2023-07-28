@@ -29,7 +29,7 @@ start_coupled <- function(path_remind,path_magpie,cfg_rem,cfg_mag,runname,max_it
   cfg_rem <- check_config(cfg_rem,paste0(path_remind,"config/default.cfg"),paste0(path_remind,"modules")) 
   cfg_rem$slurmConfig   <- "direct"
   cm_iteration_max_tmp <- cfg_rem$gms$cm_iteration_max # save default setting
-  cfg_rem_original <- cfg_rem$output
+  cfg_rem_original <- c(setdiff(cfg_rem$output, "emulator"), "emulator") # save default remind output config and add "emulator" if missing  
 
   # retrieve MAgPIE settings
   cfg_mag <- check_config(cfg_mag,paste0(path_magpie,"config/default.cfg"),paste0(path_magpie,"modules")) 
@@ -187,6 +187,7 @@ start_coupled <- function(path_remind,path_magpie,cfg_rem,cfg_mag,runname,max_it
     }
     
     if(!all((modstat_mag==2) | (modstat_mag==7))) 
+      # print("MAgPIE modelstat is not 2 or 7 for all years. Still try to go on with next REMIND iteration.\n")
       stop("Iteration stopped! MAgPIE modelstat is not 2 or 7 for all years.\n")
 
   } # End of coupling iteration loop
