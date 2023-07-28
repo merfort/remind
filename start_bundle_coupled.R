@@ -10,13 +10,13 @@
 
 # Please provide all files and paths relative to the folder where start_coupled is executed
 path_remind <- paste0(getwd(),"/")   # provide path to REMIND. Default: the actual path which the script is started from
-path_magpie <- "/p/projects/piam/runs/coupled-magpie/"
+path_magpie <- "/p/projects/dipol/coupled/magpie/"
 
 # Paths to the files where scenarios are defined
 # path_settings_remind contains the detailed configuration of the REMIND scenarios
 # path_settings_coupled defines which runs will be started, coupling infos, and optimal gdx and report information that overrides path_settings_remind
-path_settings_coupled <- paste0(path_remind,"config/scenario_config_coupled_SSPSDP.csv")
-path_settings_remind  <- paste0(path_remind,"config/scenario_config_SSPSDP.csv")
+path_settings_coupled <- paste0(path_remind,"config/scenario_config_coupled_DIPOL.csv")
+path_settings_remind  <- paste0(path_remind,"config/scenario_config_DIPOL.csv")
 
 # You can put a prefix in front of the names of your runs, this will turn e.g. "SSP2-Base" into "prefix_SSP2-Base".
 # This allows storing results of multiple coupled runs (which have the same scenario names) in the same MAgPIE and REMIND output folders.
@@ -34,7 +34,7 @@ path_magpie_oldruns <- paste0(path_magpie,"output/")
 prefix_oldruns <-  "C_"
 
 # number of coupling iterations
-max_iterations <- 5
+max_iterations <- 8
 
 # Number of coupling iterations (before final iteration) in which MAgPIE uses higher n600 resolution.
 # Until "max_iteration - n600_iterations" iteration MAgPIE runs with n200 resolution.
@@ -147,7 +147,7 @@ for(scen in common){
       # if only remind has finished an iteration -> start with magpie in this iteration using a REMIND report
       start_iter  <- iter_rem
       path_run    <- gsub("/fulldata.gdx","",already_rem)
-      path_report <- Sys.glob(paste0(path_run,"/REMIND_generic_*"))
+      path_report <- Sys.glob(paste0(path_run,"/REMIND_generic_*","withoutPlus.mif"))
       if (identical(path_report,character(0))) stop("There is a fulldata.gdx but no REMIND_generic_.mif in",path_run)
       cat("Found REMIND report here: ",path_report,"\n")
       cat("Continuing with MAgPIE in iteration ",start_iter,"\n")
@@ -262,8 +262,8 @@ for(scen in common){
   if (!start_now) {
       # if no real file is given but a reference to another scenario (that has to run first) create path for input_ref and input_bau
       # using the scenario names given in the columns path_gdx_ref and path_gdx_ref in the REMIND standalone scenario config
-      cfg_rem$files2export$start['input_ref.gdx'] <- paste0(path_remind,"output/",prefix_runname,settings_remind[scen,"path_gdx_ref"],"-rem-",max_iterations,"/fulldata.gdx")
-      cfg_rem$files2export$start['input_bau.gdx'] <- paste0(path_remind,"output/",prefix_runname,settings_remind[scen,"path_gdx_bau"],"-rem-",max_iterations,"/fulldata.gdx")
+      cfg_rem$files2export$start['input_ref.gdx'] <- paste0(path_remind,"output/",prefix_runname,settings_remind[scen,"path_gdx_ref"],"-rem-5/fulldata.gdx")
+      cfg_rem$files2export$start['input_bau.gdx'] <- paste0(path_remind,"output/",prefix_runname,settings_remind[scen,"path_gdx_bau"],"-rem-5/fulldata.gdx")
 
       # If the preceding run has already finished (= their gdx files exist) start the current run immediately.
       # This might be the case e.g. if you started the baseline and NDC runs in a first batch and now want to start the subsequent policy runs by hand after the baselines have finished
@@ -303,7 +303,7 @@ for(scen in common){
   }
 
   # Optionally set maximum run time (currently set for qos=medium but with only 2 days instead of a week)
-  if (qos=="medium") time_max <- "02-00"
+  if (qos=="medium") time_max <- "05-00"
   else               time_max <- "01-00"
 
   if (start_now){
