@@ -11,24 +11,94 @@ if (exists("outputdirs")) {
   listofruns <- list(
   list(period = "both",  set = format(Sys.time(), "%Y-%m-%d_%H.%M.%S"),  dirs = outputdirs),  
   NULL)
-
+  
 } else {
   # This is the case if this script was called directly via Rscript
-  listofruns <- list( 
-      list(period = "both",  set = "cpl-Base",       dirs = c("C_SDP-Base-rem-5",       "C_SSP1-Base-rem-5",       "C_SSP2-Base-rem-5",       "C_SSP5-Base-rem-5")),
-      list(period = "both",  set = "cpl-PkBudg900",  dirs = c("C_SDP-PkBudg900-rem-5",  "C_SSP1-PkBudg900-rem-5",  "C_SSP2-PkBudg900-rem-5",  "C_SSP5-PkBudg900-rem-5")),
-      list(period = "both",  set = "cpl-PkBudg1100", dirs = c("C_SDP-PkBudg1100-rem-5", "C_SSP1-PkBudg1100-rem-5", "C_SSP2-PkBudg1100-rem-5", "C_SSP5-PkBudg1100-rem-5")),
-      list(period = "both",  set = "cpl-PkBudg1300", dirs = c("C_SDP-PkBudg1300-rem-5", "C_SSP1-PkBudg1300-rem-5", "C_SSP2-PkBudg1300-rem-5", "C_SSP5-PkBudg1300-rem-5")),
-      list(period = "both",  set = "cpl-NPi",        dirs = c("C_SDP-NPi-rem-5",        "C_SSP1-NPi-rem-5",        "C_SSP2-NPi-rem-5",        "C_SSP5-NPi-rem-5")),
-      
-      list(period = "both",  set = "cpl-SDP",  dirs = c("C_SDP-Base-rem-5",  "C_SDP-NPi-rem-5",  "C_SDP-PkBudg1300-rem-5",  "C_SDP-PkBudg1100-rem-5",  "C_SDP-PkBudg1000-rem-5")),
-      list(period = "both",  set = "cpl-SSP1", dirs = c("C_SSP1-Base-rem-5", "C_SSP1-NPi-rem-5", "C_SSP1-PkBudg1300-rem-5", "C_SSP1-PkBudg1100-rem-5", "C_SSP1-PkBudg900-rem-5")),
-      list(period = "both",  set = "cpl-SSP2", dirs = c("C_SSP2-Base-rem-5", "C_SSP2-NPi-rem-5", "C_SSP2-PkBudg1300-rem-5", "C_SSP2-PkBudg1100-rem-5", "C_SSP2-PkBudg900-rem-5", "C_SSP2-NDC-rem-5")), #
-      list(period = "both",  set = "cpl-SSP5", dirs = c("C_SSP5-Base-rem-5", "C_SSP5-NPi-rem-5", "C_SSP5-PkBudg1300-rem-5", "C_SSP5-PkBudg1100-rem-5", "C_SSP5-PkBudg900-rem-5")),
-      
-      #list(period = "both",  set = "cpl-PkBudg900-plant-vgl",  dirs = c("C_SDP-PkBudg900-plant-rem-5", "C_SDP-PkBudg900-rem-5", "C_SSP2-PkBudg900-plant-rem-5", "C_SSP2-PkBudg900-rem-5")),
-      #list(period = "both",  set = "cpl-PkBudg900-plant",      dirs = c("C_SDP-PkBudg900-plant-rem-5",  "C_SSP1-PkBudg900-plant-rem-5",  "C_SSP2-PkBudg900-plant-rem-5",  "C_SSP5-PkBudg900-plant-rem-5")),
-      NULL)
+  listofruns <- list(
+    # list(period = "long",  set = "cpl-DIPOL-socket400-2021_07_30-rem-8",
+    #      dirs = c(
+    #        "C_TraInd-Base-DIPOL-rem-5",
+    #        "C_TraInd-NDC-DIPOL-rem-5",
+    #        "C_TraInd-Npi-DIPOL-rem-5",
+    #        "C_TraInd-ROWcp150-socket400-S1-rem-8",
+    #        "C_TraInd-ROWcp150-socket400-S2-rem-8",
+    #        "C_TraInd-ROWcp150-socket400-S3-rem-8",
+    #        "C_TraInd-ROWcp150-socket400-S4-rem-8",
+    #        "C_TraInd-ROWcp150-socket400-S5-rem-8",
+    #        "C_TraInd-ROWcp150-socket400-S6-rem-8"
+    #      )
+    # ),
+    # list(period = "long",  set = "cpl-DIPOL-socket300-2021_07_30-rem-8",
+    #      dirs = c(
+    #        "C_TraInd-Base-DIPOL-rem-5",
+    #        "C_TraInd-NDC-DIPOL-rem-5",
+    #        "C_TraInd-Npi-DIPOL-rem-5",
+    #        "C_TraInd-ROWcp150-socket300-S1-rem-8",
+    #        "C_TraInd-ROWcp150-socket300-S2-rem-8",
+    #        "C_TraInd-ROWcp150-socket300-S3-rem-8",
+    #        "C_TraInd-ROWcp150-socket300-S4-rem-8",
+    #        "C_TraInd-ROWcp150-socket300-S5-rem-8",
+    #        "C_TraInd-ROWcp150-socket300-S6-rem-8"
+    #      )
+    # ),
+    # list(period = "both",  set = "cpl-DIPOL-socket200-2021_11_14-rem-8-woBase",
+    #      dirs = c(
+    #        # "C_TraInd-Base-DIPOL-rem-5",
+    #        # "C_TraInd-NDC-DIPOL-rem-5",
+    #        # "C_TraInd-Npi-DIPOL-rem-5",
+    #        "C_TraInd-ROWcp150-socket200-S1-rem-8",
+    #        "C_TraInd-ROWcp150-socket200-S2-rem-8",
+    #        "C_TraInd-ROWcp150-socket200-S3-rem-8",
+    #        "C_TraInd-ROWcp150-socket200-S4-rem-8",
+    #        "C_TraInd-ROWcp150-socket200-S5-rem-8",
+    #        "C_TraInd-ROWcp150-socket200-S6-rem-8"
+    #      )
+    # ),
+    list(period = "both",  set = "cpl-DIPOL-GHGneutral-2021_11_20-rem-8-woBase",
+         dirs = c(
+           "C_TraInd-ROWcp150-socket200-S1-rem-8",
+           "C_TraInd-ROWcp150-socket200-S2-rem-8",
+           "C_TraInd-ROWcp150-socket200-S3-rem-8",
+           "C_TraInd-ROWcp150-socket200-S4-rem-8",
+           "C_TraInd-ROWcp150-socket200-S5-rem-8",
+           "C_TraInd-ROWcp150-socket200-S6-rem-8"
+         )
+    ),
+    list(period = "both",  set = "cpl-DIPOL-GHGneutral-2021_11_20-rem-8-woBase-S1-S4",
+         dirs = c(
+           "C_TraInd-ROWcp150-socket200-S1-rem-8",
+           "C_TraInd-ROWcp150-socket200-S2-rem-8",
+           "C_TraInd-ROWcp150-socket200-S3-rem-8",
+           "C_TraInd-ROWcp150-socket200-S4-rem-8"
+         )
+    ),
+    list(period = "both",  set = "cpl-DIPOL-GHGneutral-2021_11_20-rem-8-woBase-S2-S4",
+         dirs = c(
+           "C_TraInd-ROWcp150-socket200-S2-rem-8",
+           "C_TraInd-ROWcp150-socket200-S3-rem-8",
+           "C_TraInd-ROWcp150-socket200-S4-rem-8"
+         )
+    ),
+    # list(period = "long",  set = "cpl-DIPOL-socket200-S5_convergence",      
+    #      dirs = c(
+    #        # "C_TraInd-ROWcp150-socket200-S5-rem-1",
+    #        "C_TraInd-ROWcp150-socket200-S5-rem-2",
+    #        "C_TraInd-ROWcp150-socket200-S5-rem-3",
+    #        "C_TraInd-ROWcp150-socket200-S5-rem-4",
+    #        "C_TraInd-ROWcp150-socket200-S5-rem-5",
+    #        "C_TraInd-ROWcp150-socket200-S5-rem-6",
+    #        "C_TraInd-ROWcp150-socket200-S5-rem-7",
+    #        "C_TraInd-ROWcp150-socket200-S5-rem-8"
+    #      )
+    # ),
+    # list(period = "long",  set = "cpl-DIPOL-S5-socket400_300_200",      
+    #      dirs = c(
+    #        "C_TraInd-ROWcp150-socket400-S5-rem-8",
+    #        "C_TraInd-ROWcp150-socket300-S5-rem-8",
+    #        "C_TraInd-ROWcp150-socket200-S5-rem-8"
+    #      )
+    # ),
+    NULL)
 }
 
 # remove the NULL element

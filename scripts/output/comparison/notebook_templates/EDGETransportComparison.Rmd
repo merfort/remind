@@ -15,6 +15,7 @@ output:
     df_print: paged
 ---
 
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(dev = 'pdf')
 ```
@@ -28,6 +29,35 @@ library(lucode2)
 library(magpie)
 library(quitte)
 library(cowplot)
+library(dplyr)
+```
+
+```{r}
+# Define new scenario names
+rename_scen_map <- as.list(c(
+  "X"  = "S1",
+  "S1" = "S2",
+  "S2" = "S3",
+  "S3" = "S4",
+  "S4" = "S5",
+  "S5" = "S6"
+))
+
+# Define new technology names
+rename_tech_map <- as.list(c(
+  "Elektrofahrzeuge"              = "BEV",
+  "Hybrid Elekrofahrzeuge"    = "Hybrid Electric",
+  "Brennstoffzellenfahrzeuge" = "FCEV",
+  "Verbrenner"                = "Liquids",
+  "Erdgasfahrzeuge"           = "NG"
+))
+```
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# Create output folder for EUR plots
+dir.create("plots_EUR")
+dir.create("plots_EUR/single_scenarios")
 ```
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
@@ -46,7 +76,9 @@ pref_FV_all = readRDS("pref_FV_all.RDS")
 dempkm_cap_all = readRDS("demgdpcap_all.RDS")
 setConfig(forcecache=T)
 
-cols <- c("NG" = "#d11141",
+cols <- c("Erdgas/H2-Fahrzeuge" = "#d11141", # For the aggregate of H2 and gas cars use gas color
+          "NG" = "#d11141",
+          "Erdgasfahrzeuge" = "#d11141",
           "Gases" = "#d11141",
           "Coal" = "#113245",
           "Hydro" = "#87cefa",
@@ -55,12 +87,16 @@ cols <- c("NG" = "#d11141",
           "Uranium" = "orchid",
           "Wind" = "#e43f5a",
           "Liquids" = "#8c8c8c",
+          "Verbrenner" = "#8c8c8c",
           "Hybrid Liquids" = "#ffc425",
           "Hybrid Electric" = "#f37735",
+          "Hybrid Elekrofahrzeuge" = "#f37735",
           "BEV" = "#00b159",
+          "Elektrofahrzeuge" = "#00b159",
           "Electricity" = "#00b159",
           "Electric" = "#00b159",
           "FCEV" = "#00aedb",
+          "Brennstoffzellenfahrzeuge" = "#00aedb",
           "Hydrogen" = "#00aedb",
           "Biodiesel" = "#66a182",
           "Biomass" = "#66a182",
@@ -93,7 +129,7 @@ cols <- c("NG" = "#d11141",
           "Motorbikes" = "#1874cd",
           "Small Cars" = "#87cefa",
           "Large Cars" = "#6495ed",
-          "Van" = " 	#40e0d0",
+          "Van" = "#40e0d0",
           "LDV" = "#00bfff",
           "Non motorized" = "#da70d6",
           "Freight"="#ff0000",
@@ -160,7 +196,27 @@ theme2use <- theme_minimal()+
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=14, fig.height=20}
 ## Vintages
 vintcomparisonpf = function(dt){
-  dt = dt[year %in% c(2015, 2050, 2100)]
+  # Rename scenarios
+  dt$scenario <- gsub("C_TraInd-ROWcp150-socket200-", "", dt$scenario)
+  dt$scenario <- gsub("-rem-8", "", dt$scenario)
+  dt$scenario <- gsub("-rem-7", "", dt$scenario)
+  
+  # Rename scenarios again (new names) and filter the scenario that was kicked 
+  # out (the former S1)
+  dt$scenario <- as.factor(dt$scenario)
+  levels(dt$scenario) <- rename_scen_map
+  dt <- dt %>% 
+    filter(scenario != "X") %>% 
+    droplevels()
+  
+  # Rename technologies
+  dt$technology <- as.factor(dt$technology)
+  print(levels(dt$technology))
+  levels(dt$technology) <- rename_tech_map
+  print(levels(dt$technology))
+  
+  # dt = dt[year %in% c(2015, 2050, 2100)]
+  dt = dt[year %in% c(2020, 2030, 2040, 2050)]
   ## add global values
   dt_glob = dt[,.(value = sum(value)), by = .(year, technology, variable, alphaval, scenario)]
   dt_glob[, region := "GLO"]
@@ -178,12 +234,108 @@ vintcomparisonpf = function(dt){
     scale_alpha_discrete(breaks = c(1,0), name = "Status", labels = c("Vintages","New additions")) +
     guides(linetype=FALSE,
            fill=guide_legend(reverse=FALSE, title="Transport mode"))+
-    scale_fill_manual(values = cols)+
+    scale_fill_manual(values = cols[names(cols) %in% unique(dt$technology)])+
     labs(y = "[million Veh]", x="", title = "LDV fleet")
-    return(plot)
+  ## only EU
+  regi_EUR = c("EUR")
+  dt_EU = dt[region %in% c(regi_EUR)]
+  dt_EU = dt_EU[,.(value = sum(value)),by = c("technology","scenario","year")]
+  
+  #maps_scenarios = data.table(scenario = c("10c_Balanced_ref_Femed_edgeT",  "10c_Electrif_EconWide-bdg43-DEUbudg8_start2025gd40_edgeT", "10c_H2_EconWide-bdg43-DEUbudg8_start2025gd40_edgeT", "10c_Synfuel_EconWide-bdg43-DEUbudg8_edgeT"),
+  #			      scen_name = c("Baseline", "Direct Electr.", "Hydrogen Electr.", "E-fuels"))
+  # dt_EU = merge(dt_EU, maps_scenarios, by = "scenario")
+  # legend_scen = c("Baseline", "Direct Electr.", "Hydrogen Electr.", "E-fuels")
+  #dt_EU[, scen_name:= factor(scen_name, levels = legend_scen)]
+  plot_EU = ggplot()+
+    geom_bar(data = dt_EU[year %in% c(2020, 2030, 2040, 2050)],
+             aes(x=year, y=value, group=technology,
+                 fill = technology), position="stack", stat = "identity", color = "black")+
+    guides(fill = guide_legend(reverse=TRUE))+
+    facet_grid(~scenario) +
+    theme2use +
+    scale_alpha_discrete(breaks = c(1,0), name = "Status", labels = c("Vintages","New additions")) +
+    guides(linetype=FALSE,
+           fill=guide_legend(reverse=FALSE, title="Verkehrsträger"))+
+    scale_fill_manual(values = cols[names(cols) %in% unique(dt_EU$technology)])+
+    labs(y = "[Mio. Fahrzeuge]", x="", title = "")
+  
+  # Save vintages for EUR
+  aspect_ratio <- 0.5
+  width <- 22
+  ggsave("plots_EUR/vintages_LDV_EUR.jpg", plot_EU, dpi=500, height = width* aspect_ratio , width = width, units = "cm")
+  
+  # New figure flippting time- and scenario axis
+  # Create new dataframe in which time ("year") is a factor
+  dt_EU2 <- dt_EU
+  dt_EU2$year <- as.factor(dt_EU2$year)
+  
+  # Merge "gas" and "H2" cars
+  names(dt_EU2)[names(dt_EU2) == "technology"] <- "variable"
+  dt_EU2 <- dt_EU2 %>% 
+    calc_addVariable("Erdgas/H2-Fahrzeuge" = "Brennstoffzellenfahrzeuge + Erdgasfahrzeuge")
+  names(dt_EU2)[names(dt_EU2) == "variable"] <- "technology"
+  dt_EU2 <- dt_EU2 %>% 
+    filter(technology != "Brennstoffzellenfahrzeuge" & technology != "Erdgasfahrzeuge")
+  
+  # Remove 2020 values for all scenarios but one
+  # dt_EU2$value[dt_EU2$year == 2020 & dt_EU2$scenario != "S1"] <- NA
+  dt_EU2 <- dt_EU2 %>% 
+    filter(year != 2020 | scenario == "S1")
+  
+  # Add an extra scenario "Hist" for 2020 value
+  levels(dt_EU2$scenario) <- c(levels(dt_EU2$scenario), "")
+  dt_EU2$scenario[dt_EU2$year == 2020] <- ""
+  
+  # Plot
+  plot_EU_flip = ggplot()+
+    geom_bar(data = dt_EU2[year %in% c(2020, 2030, 2050)],
+             aes(x=scenario, y=value, group=technology,
+                 fill = technology), position="stack", stat = "identity", color = "black", scale = "free")+
+    guides(fill = guide_legend(reverse=TRUE))+
+    facet_grid(~year, scales = "free", space = "free") +
+    # theme2use +
+    theme_bw() +
+    scale_alpha_discrete(breaks = c(1,0), name = "Status", labels = c("Vintages","New additions")) +
+    guides(linetype=FALSE,
+           fill=guide_legend(reverse=FALSE, title="Antriebsart"))+
+    scale_fill_manual(values = cols[names(cols) %in% unique(dt_EU2$technology)])+
+    theme(axis.text.x = element_text(angle = 0, size=14, vjust=0, hjust=0.5),
+          axis.ticks.x = element_blank()) +
+    labs(y = "[Mio. Fahrzeuge]", x="", title = "")
+
+    # Save vintages for EUR - new plot
+  aspect_ratio <- 0.5
+  width <- 22
+  ggsave("plots_EUR/vintages_LDV_EUR_flip.jpg", plot_EU_flip, dpi=500, height = width* aspect_ratio , width = width, units = "cm")
+  
+  # Plot same figure for each scenario
+  for (scen in unique(dt_EU$scenario)){
+    plot_EU = ggplot()+
+      geom_bar(data = dt_EU[year %in% c(2020, 2030, 2040, 2050) & scenario == scen],
+               aes(x=year, y=value, group=technology,
+                   fill = technology), position="stack", stat = "identity", color = "black")+
+      guides(fill = guide_legend(reverse=TRUE))+
+      facet_grid(~scenario) +
+      theme2use +
+      scale_alpha_discrete(breaks = c(1,0), name = "Status", labels = c("Vintages","New additions")) +
+      guides(linetype=FALSE,
+             fill=guide_legend(reverse=FALSE, title="Transport mode"))+
+      scale_fill_manual(values = cols[names(cols) %in% unique(dt_EU$technology)])+
+      labs(y = "[million Veh]", x="", title = "")
+    
+    # Save vintages for EUR
+    ggsave(paste0("plots_EUR/single_scenarios/vintages_LDV_EUR_", scen, ".jpg"), 
+           plot_EU, dpi=500, height = width* aspect_ratio , width = width/2, units = "cm")
+  }
+  
+  # Save fleet EUR to csv
+  write.csv(dt_EU,"fleet_EUR_DIPOL_scenarios.csv", row.names = FALSE, quote = F)
+  
+  return(list(plot = plot))
 }
 
-vintcomparisonpf(fleet_all)
+p = vintcomparisonpf(fleet_all)
+p
 ```
 
 ## Sales composition
@@ -191,60 +343,208 @@ vintcomparisonpf(fleet_all)
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=14, fig.height=20}
 
 salescompf = function(dt){
+  # Rename scenarios
+  dt$scenario <- gsub("C_TraInd-ROWcp150-socket200-", "", dt$scenario)
+  dt$scenario <- gsub("-rem-8", "", dt$scenario)
+  dt$scenario <- gsub("-rem-7", "", dt$scenario)
+  
+  # Rename scenarios again (new names)
+  dt$scenario <- as.factor(dt$scenario)
+  levels(dt$scenario) <- rename_scen_map
+  
+  # Plot market share of new LDC sales - Global
   plot = ggplot()+
     geom_bar(data = dt, aes(x=as.numeric(as.character(year)),y=shareFS1, group = technology, fill = technology), position = position_stack(), stat = "identity")+
     facet_grid(region ~ scenario)+
     theme2use +
-    scale_fill_manual("Technology", values = cols)+
+    scale_fill_manual("Technology", values = cols[names(cols) %in% unique(dt$technology)])+
     expand_limits(y = c(0,1))+
     scale_x_continuous(breaks = c(2015, 2030, 2050, 2100))+
     labs(x = "", y = "[%]", title = "Market share of new LDV sales")
-  return(plot)
+  
+  
+  # Plot market share of new LDC sales - Global
+  regi_EUR = c("EUR")
+  dt_EU = dt[region %in% c(regi_EUR) & year <= 2050]
+  plot_EU = ggplot()+
+    geom_bar(data = dt_EU, aes(x=as.numeric(as.character(year)),y=shareFS1, group = technology, fill = technology), position = position_stack(), stat = "identity")+
+    facet_grid(region ~ scenario)+
+    theme2use +
+    scale_fill_manual("Technology", values = cols[names(cols) %in% unique(dt_EU$technology)])+
+    expand_limits(y = c(0,1))+
+    scale_x_continuous(breaks = c(2015, 2030, 2050, 2100))+
+    labs(x = "", y = "[%]", title = "Market share of new LDV sales")
+  
+  # Save LDV market shares for EUR 
+  aspect_ratio <- 0.5
+  width <- 22
+  ggsave("plots_EUR/sales_LDV_EUR.jpg", plot_EU, dpi=500, height = width* aspect_ratio , width = width, units = "cm")
+  
+  # Plot same figure for each scenario
+  for (scen in unique(dt_EU$scenario)){
+  plot_EU = ggplot()+
+    geom_bar(data = dt_EU[scenario == scen], 
+             aes(x=as.numeric(as.character(year)),y=shareFS1, group = technology, fill = technology), position = position_stack(), stat = "identity")+
+    facet_grid(region ~ scenario)+
+    theme2use +
+    scale_fill_manual("Technology", values = cols[names(cols) %in% unique(dt_EU$technology)])+
+    expand_limits(y = c(0,1))+
+    scale_x_continuous(breaks = c(2015, 2030, 2050, 2100))+
+    labs(x = "", y = "[%]", title = "Market share of new LDV sales")
+    
+    # Save vintages for EUR
+    ggsave(paste0("plots_EUR/single_scenarios/sales_LDV_EUR_", scen, ".jpg"), 
+           plot_EU, dpi=500, height = width* aspect_ratio , width = width/2, units = "cm")
+  }
+  
+  write.csv(dt_EU,"sales_EUR_DIPOL_scenarios.csv", row.names = FALSE, quote = F)
+  
+  return(list(plot = plot))
 }
 
-salescompf(salescomp_all)
-
+p = salescompf(salescomp_all)
+p
 ```
 
 ## Final energy, road
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=14, fig.height=20}
 EJroadpf = function(dt){
-   ## add global values
+  # Rename scenarios
+  dt$scenario <- gsub("C_TraInd-ROWcp150-socket200-", "", dt$scenario)
+  dt$scenario <- gsub("-rem-8", "", dt$scenario)
+  dt$scenario <- gsub("-rem-7", "", dt$scenario)
+  
+  ## Add global values
   dt_glob = dt[,.(demand_EJ = sum(demand_EJ)), by = .(year, technology, subsector_L1, scenario)]
   dt_glob[, region := "GLO"]
   dt = rbind(dt, dt_glob)
   dt[, technology := factor(technology, levels = legend_ord)]
   dt = dt[year >= 2010]
+  
+  ## Set EUR values
+  regi_EUR <- c("EUR")
+  dt_EU <- dt[region %in% c(regi_EUR) & year <= 2050]
+  
+  # Define figure size for EUR plots
+  aspect_ratio <- 0.5
+  width <- 22
+  
+  ## Plot LDV FE demand - Global
   plotLDV = ggplot()+
     geom_area(data = dt[subsector_L1 == "trn_pass_road_LDV_4W"], aes(x=year, y=demand_EJ, group = technology, fill = technology), color = "black", size=0.05, position= position_stack())+
     labs(x = "", y = "[EJ]", title = "LDV Final Energy demand")+
     facet_grid(region~scenario, scales = "free")+
-    scale_fill_manual("Technology", values = cols, breaks=legend_ord)+
+    scale_fill_manual("Technology", values = cols[names(cols) %in% unique(dt$technology)], breaks=legend_ord)+
     expand_limits(y = c(0,1))+
     scale_x_continuous(breaks = c(2020, 2030,2050, 2100)) +
     theme2use
-
-
-   plotBus = ggplot()+
+  
+  ## Plot LDV FE demand - EUR only and save separately
+  plotLDV_EUR = ggplot()+
+    geom_area(data = dt_EU[subsector_L1 == "trn_pass_road_LDV_4W"], aes(x=year, y=demand_EJ, group = technology, fill = technology), color = "black", size=0.05, position= position_stack())+
+    labs(x = "", y = "[EJ]", title = "LDV Final Energy demand")+
+    facet_grid(region~scenario, scales = "free")+
+    scale_fill_manual("Technology", values = cols[names(cols) %in% unique(dt_EU$technology)], breaks=legend_ord)+
+    expand_limits(y = c(0,1))+
+    scale_x_continuous(breaks = c(2020, 2030,2050, 2100)) +
+    theme2use
+  ggsave("plots_EUR/LDV_FE_demand_EUR.jpg", plotLDV_EUR, dpi=500, height = width* aspect_ratio , width = width, units = "cm")
+  
+  # Plot same figure for each scenario scenario == scen
+  for (scen in unique(dt_EU$scenario)){
+    plotLDV_EUR = ggplot()+
+      geom_area(data = dt_EU[subsector_L1 == "trn_pass_road_LDV_4W" & scenario == scen], 
+                aes(x=year, y=demand_EJ, group = technology, fill = technology), color = "black", size=0.05, position= position_stack())+
+      labs(x = "", y = "[EJ]", title = "LDV Final Energy demand")+
+      facet_grid(region~scenario, scales = "free")+
+      scale_fill_manual("Technology", values = cols[names(cols) %in% unique(dt_EU$technology)], breaks=legend_ord)+
+      expand_limits(y = c(0,1))+
+      scale_x_continuous(breaks = c(2020, 2030,2050, 2100)) +
+      theme2use
+    
+    # Save vintages for EUR
+    ggsave(paste0("plots_EUR/single_scenarios/LDV_FE_demand_EUR_", scen, ".jpg"), 
+           plotLDV_EUR, dpi=500, height = width* aspect_ratio , width = width/2, units = "cm")
+  }
+  
+  ## Plot Buses FE demand - Global
+  plotBus = ggplot()+
     geom_area(data = dt[subsector_L1 %in% c("trn_pass_road_bus_tmp_subsector_L1", "Bus_tmp_subsector_L1")], aes(x=year, y=demand_EJ, group = technology, fill = technology), color = "black", size=0.05, position= position_stack())+
     labs(x = "", y = "[EJ]", title = "Buses Final Energy demand")+
     facet_grid(region~scenario, scales = "free")+
-    scale_fill_manual("Technology", values = cols, breaks=legend_ord)+
+    scale_fill_manual("Technology", values = cols[names(cols) %in% unique(dt$technology)], breaks=legend_ord)+
     expand_limits(y = c(0,1))+
     scale_x_continuous(breaks = c(2020, 2030,2050, 2100)) +
     theme2use
-
-
-   plotTruck = ggplot()+
+  
+  ## Plot Buses FE demand - EUR only and save separately
+  plotBus_EUR = ggplot()+
+    geom_area(data = dt_EU[subsector_L1 %in% c("trn_pass_road_bus_tmp_subsector_L1", "Bus_tmp_subsector_L1")], aes(x=year, y=demand_EJ, group = technology, fill = technology), color = "black", size=0.05, position= position_stack())+
+    labs(x = "", y = "[EJ]", title = "Buses Final Energy demand")+
+    facet_grid(region~scenario, scales = "free")+
+    scale_fill_manual("Technology", values = cols[names(cols) %in% unique(dt_EU$technology)], breaks=legend_ord)+
+    expand_limits(y = c(0,1))+
+    scale_x_continuous(breaks = c(2020, 2030,2050, 2100)) +
+    theme2use
+  ggsave("plots_EUR/Buses_FE_demand_EUR.jpg", plotBus_EUR, dpi=500, height = width* aspect_ratio , width = width, units = "cm")
+  
+  # Plot same figure for each scenario & scenario == scen
+  for (scen in unique(dt_EU$scenario)){
+    plotBus_EUR = ggplot()+
+      geom_area(data = dt_EU[subsector_L1 %in% c("trn_pass_road_bus_tmp_subsector_L1", "Bus_tmp_subsector_L1") & scenario == scen],
+                aes(x=year, y=demand_EJ, group = technology, fill = technology), 
+                color = "black", size=0.05, position= position_stack())+
+      labs(x = "", y = "[EJ]", title = "Buses Final Energy demand")+
+      facet_grid(region~scenario, scales = "free")+
+      scale_fill_manual("Technology", values = cols[names(cols) %in% unique(dt_EU$technology)], breaks=legend_ord)+
+      expand_limits(y = c(0,1))+
+      scale_x_continuous(breaks = c(2020, 2030,2050, 2100)) +
+      theme2use
+    
+    # Save vintages for EUR
+    ggsave(paste0("plots_EUR/single_scenarios/Buses_FE_demand_EUR_", scen, ".jpg"), 
+           plotBus_EUR, dpi=500, height = width* aspect_ratio , width = width/2, units = "cm")
+  }
+  
+  ## Plot Trucks FE demand - Global
+  plotTruck = ggplot()+
     geom_area(data = dt[subsector_L1 %in% c("trn_freight_road_tmp_subsector_L1")], aes(x=year, y=demand_EJ, group = technology, fill = technology), color = "black", size=0.05, position= position_stack())+
     labs(x = "", y = "[EJ]", title = "Trucks Final Energy demand")+
     facet_grid(region~scenario, scales = "free")+
-    scale_fill_manual("Technology", values = cols, breaks=legend_ord)+
+    scale_fill_manual("Technology", values = cols[names(cols) %in% unique(dt$technology)], breaks=legend_ord)+
     expand_limits(y = c(0,1))+
     scale_x_continuous(breaks = c(2020, 2030,2050, 2100)) +
     theme2use
-
+  
+  ## Plot Trucks FE demand - EUR only and save separately
+  plotTruck_EUR = ggplot()+
+    geom_area(data = dt_EU[subsector_L1 %in% c("trn_freight_road_tmp_subsector_L1")], aes(x=year, y=demand_EJ, group = technology, fill = technology), color = "black", size=0.05, position= position_stack())+
+    labs(x = "", y = "[EJ]", title = "Trucks Final Energy demand")+
+    facet_grid(region~scenario, scales = "free")+
+    scale_fill_manual("Technology", values = cols[names(cols) %in% unique(dt_EU$technology)], breaks=legend_ord)+
+    expand_limits(y = c(0,1))+
+    scale_x_continuous(breaks = c(2020, 2030,2050, 2100)) +
+    theme2use
+  ggsave("plots_EUR/Trucks_FE_demand_EUR.jpg", plotTruck_EUR, dpi=500, height = width* aspect_ratio , width = width, units = "cm")
+  
+  # Plot same figure for each scenario & scenario == scen
+  for (scen in unique(dt_EU$scenario)){
+    plotTruck_EUR = ggplot()+
+      geom_area(data = dt_EU[subsector_L1 %in% c("trn_freight_road_tmp_subsector_L1") & scenario == scen], 
+                aes(x=year, y=demand_EJ, group = technology, fill = technology), color = "black", size=0.05, position= position_stack())+
+      labs(x = "", y = "[EJ]", title = "Trucks Final Energy demand")+
+      facet_grid(region~scenario, scales = "free")+
+      scale_fill_manual("Technology", values = cols[names(cols) %in% unique(dt_EU$technology)], breaks=legend_ord)+
+      expand_limits(y = c(0,1))+
+      scale_x_continuous(breaks = c(2020, 2030,2050, 2100)) +
+      theme2use
+    
+    # Save vintages for EUR
+    ggsave(paste0("plots_EUR/single_scenarios/Trucks_FE_demand_EUR_", scen, ".jpg"), 
+           plotTruck_EUR, dpi=500, height = width* aspect_ratio , width = width/2, units = "cm")
+  }
+  
   return(plotlist = list(plotLDV = plotLDV, plotBus = plotBus, plotTruck = plotTruck))
 }
 
@@ -256,20 +556,65 @@ EJroadpf(EJroad_all)
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=14, fig.height=20}
 EJmodepf = function(dt){
+  # Rename scenarios
+  dt$scenario <- gsub("C_TraInd-ROWcp150-socket200-", "", dt$scenario)
+  dt$scenario <- gsub("-rem-8", "", dt$scenario)
+  dt$scenario <- gsub("-rem-7", "", dt$scenario)
+  
+  ## Add global values
+  dt$scenario <- gsub("C_TraInd-ROWcp150-socket200-", "", dt$scenario)
+  dt$scenario <- gsub("-rem-8", "", dt$scenario)
+  dt$scenario <- gsub("-rem-7", "", dt$scenario)
   dt_glob = dt[,.(demand_EJ = sum(demand_EJ)), by = .(year, aggr_mode, veh, vehicle_type_plot, scenario)]
   dt_glob[, region := "GLO"]
   dt = rbind(dt, dt_glob)
-
   dt = dt[year >= 2010]
+  
+  ## Set EUR values
+  regi_EUR <- c("EUR")
+  dt_EU <- dt[region %in% c(regi_EUR) & year <= 2050]
+  
+  # Define figure size for EUR plots
+  aspect_ratio <- 0.5
+  width <- 22
+  
+  ## Plot FE by mode - Global
   plot = ggplot()+
     geom_area(data = dt, aes(x=year, y=demand_EJ, group = interaction(vehicle_type_plot,aggr_mode), fill = vehicle_type_plot), color = "black", size=0.05, position= position_stack())+
     labs(x = "", y = "[EJ]", title = "Total transport final energy demand")+
     facet_grid(region~scenario, scales = "free")+
-    scale_fill_manual("Vehicle Type",values = cols, breaks=legend_ord)+
+    scale_fill_manual("Vehicle Type",values = cols[names(cols) %in% unique(dt$vehicle_type_plot)], breaks=legend_ord)+
     expand_limits(y = c(0,1))+
     scale_x_continuous(breaks = c(2020,2030,2050, 2100)) +
     theme2use
-
+  
+  ## Plot FE by mode - Only EUR and save
+  plot_EUR = ggplot()+
+    geom_area(data = dt_EU, aes(x=year, y=demand_EJ, group = interaction(vehicle_type_plot,aggr_mode), fill = vehicle_type_plot), color = "black", size=0.05, position= position_stack())+
+    labs(x = "", y = "[EJ]", title = "Total transport final energy demand")+
+    facet_grid(region~scenario, scales = "free")+
+    scale_fill_manual("Vehicle Type",values = cols[names(cols) %in% unique(dt_EU$vehicle_type_plot)], breaks=legend_ord)+
+    expand_limits(y = c(0,1))+
+    scale_x_continuous(breaks = c(2020,2030,2050, 2100)) +
+    theme2use
+  ggsave("plots_EUR/Total_Transport_FE_demand_EUR.jpg", plot_EUR, dpi=500, height = width* aspect_ratio , width = width, units = "cm")
+  
+  # Plot same figure for each scenario & scenario == scen
+  for (scen in unique(dt_EU$scenario)){
+    plot_EUR = ggplot()+
+      geom_area(data = dt_EU[scenario == scen], aes(x=year, y=demand_EJ, group = interaction(vehicle_type_plot,aggr_mode), fill = vehicle_type_plot), color = "black", size=0.05, position= position_stack())+
+      labs(x = "", y = "[EJ]", title = "Total transport final energy demand")+
+      facet_grid(region~scenario, scales = "free")+
+      scale_fill_manual("Vehicle Type",values = cols[names(cols) %in% unique(dt_EU$vehicle_type_plot)], breaks=legend_ord)+
+      expand_limits(y = c(0,1))+
+      scale_x_continuous(breaks = c(2020,2030,2050, 2100)) +
+      theme2use
+    
+    # Save vintages for EUR
+    ggsave(paste0("plots_EUR/single_scenarios/Total_Transport_FE_demand_EUR_", scen, ".jpg"), 
+           plot_EUR, dpi=500, height = width* aspect_ratio , width = width/1.5, units = "cm")
+  }
+  
   return(plot)
 }
 
@@ -281,26 +626,122 @@ EJmodepf(EJmode_all)
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=14, fig.height=20}
 ESmodecappf = function(dt){
+  # Rename scenarios
+  dt$scenario <- gsub("C_TraInd-ROWcp150-socket200-", "", dt$scenario)
+  dt$scenario <- gsub("-rem-8", "", dt$scenario)
+  dt$scenario <- gsub("-rem-7", "", dt$scenario)
+  
+  # Factorize data
   dt[, vehicle_type_plot := factor(vehicle_type_plot, levels = legend_ord)]
+  
+  # Define figure size for EUR plots
+  aspect_ratio <- 0.5
+  width <- 22
+  
+  # Reorder factor levels of vehicle types and change colors
+  cols_tmp <- c(
+    cols[c("Domestic Aviation", "International Aviation")], 
+    cols[setdiff(names(cols), c("Domestic Aviation", "International Aviation"))]
+  )
+  cols_tmp["Domestic Aviation"]      <- "#f6f171"
+  # cols_tmp["International Aviation"] <- "#f2de4d"
+  cols_tmp["International Aviation"] <- "#f2c14d"
+  legend_ord_tmp <- c(
+    "Domestic Aviation", "International Aviation", 
+    setdiff(legend_ord, c("Domestic Aviation", "International Aviation"))
+  )
+  dt_tmp <- dt
+  dt_tmp$vehicle_type_plot <- factor(
+    dt_tmp$vehicle_type_plot, 
+    levels = c(
+      c("Domestic Aviation", "International Aviation"), 
+      setdiff(levels(dt_tmp$vehicle_type_plot), c("Domestic Aviation", "International Aviation"))
+      )
+  )
+  
+  ## Set EUR values
+  regi_EUR <- c("EUR")
+  dt_EU <- dt_tmp[region %in% c(regi_EUR) & year <= 2050]
+  
+  # Plot freight Energy Service demand - Global
   plot_frgt = ggplot()+
     geom_area(data = dt[mode == "freight" & year >= 2020], aes(x=year, y=cap_dem, group = vehicle_type_plot, fill = vehicle_type_plot), color="black", size=0.05, position= position_stack())+
     labs(x = "", y = "Energy Services demand [tkm/cap]")+
     facet_grid(region~scenario, scales = "free")+
-    scale_fill_manual("Vehicle Type",values = cols, breaks=legend_ord)+
+    scale_fill_manual("Vehicle Type",values = cols[names(cols) %in% unique(dt$vehicle_type_plot)], breaks=legend_ord)+
     expand_limits(y = c(0,1))+
     scale_x_continuous(breaks = c(2020,2030,2050, 2100)) +
     theme2use
-
-
+  
+  # Plot freight Energy Service demand - Only EUR and save
+  dt_EU_tmp <- dt_EU[mode == "freight" & year >= 2020]
+  plot_frgt_EUR = ggplot()+
+    geom_area(data = dt_EU_tmp, aes(x=year, y=cap_dem, group = vehicle_type_plot, fill = vehicle_type_plot), color="black", size=0.05, position= position_stack())+
+    labs(x = "", y = "Energy Services demand [tkm/cap]")+
+    facet_grid(region~scenario, scales = "free")+
+    scale_fill_manual("Vehicle Type",values = cols_tmp[names(cols_tmp) %in% unique(dt_EU_tmp$vehicle_type_plot)], breaks=legend_ord_tmp)+
+    expand_limits(y = c(0,1))+
+    scale_x_continuous(breaks = c(2020,2030,2050, 2100)) +
+    theme2use
+  ggsave("plots_EUR/Energy_Services_demand_freight_EUR.jpg", plot_frgt_EUR, dpi=500, height = width* aspect_ratio , width = width, units = "cm")
+  
+  # Plot same figure for each scenario & scenario == scen
+  for (scen in unique(dt_EU$scenario)){
+    plot_frgt_EUR = ggplot()+
+      geom_area(data = dt_EU_tmp[scenario == scen], 
+                aes(x=year, y=cap_dem, group = vehicle_type_plot, fill = vehicle_type_plot), color="black", size=0.05, position= position_stack())+
+      labs(x = "", y = "Energy Services demand [tkm/cap]")+
+      facet_grid(region~scenario, scales = "free")+
+      scale_fill_manual("Vehicle Type",values = cols_tmp[names(cols_tmp) %in% unique(dt_EU_tmp$vehicle_type_plot)], breaks=legend_ord_tmp)+
+      expand_limits(y = c(0,1))+
+      scale_x_continuous(breaks = c(2020,2030,2050, 2100)) +
+      theme2use
+    
+    # Save vintages for EUR
+    ggsave(paste0("plots_EUR/single_scenarios/Energy_Services_demand_freight_EUR_", scen, ".jpg"), 
+           plot_frgt_EUR, dpi=500, height = width* aspect_ratio , width = width/1.9, units = "cm")
+  }
+  
+  # Plot passenger Energy Service demand - Global
   plot_pass = ggplot()+
     geom_area(data = dt[mode == "pass" & year >= 2020], aes(x=year, y=cap_dem, group = vehicle_type_plot, fill = vehicle_type_plot), color="black", size=0.05, position= position_stack())+
     labs(x = "", y = "Energy Services demand [pkm/cap]")+
     facet_grid(region~scenario, scales = "free")+
-    scale_fill_manual("Vehicle Type",values = cols, breaks=legend_ord)+
+    scale_fill_manual("Vehicle Type",values = cols[names(cols) %in% unique(dt$vehicle_type_plot)], breaks=legend_ord)+
     expand_limits(y = c(0,1))+
     scale_x_continuous(breaks = c(2020,2030,2050, 2100)) +
     theme2use
-    return(list(plot_pass = plot_pass, plot_frgt = plot_frgt))
+  
+  # Plot passenger Energy Service demand - EUR only and save
+  dt_EU_tmp <- dt_EU[mode == "pass" & year >= 2020]
+  plot_pass_EUR = ggplot()+
+    geom_area(data = dt_EU_tmp, aes(x=year, y=cap_dem, group = vehicle_type_plot, fill = vehicle_type_plot), color="black", size=0.05, position= position_stack())+
+    labs(x = "", y = "Energy Services demand [pkm/cap]")+
+    facet_grid(region~scenario, scales = "free")+
+    scale_fill_manual("Vehicle Type",values = cols_tmp[names(cols_tmp) %in% unique(dt_EU_tmp$vehicle_type_plot)], breaks=legend_ord_tmp)+
+    expand_limits(y = c(0,1))+
+    scale_x_continuous(breaks = c(2020,2030,2050, 2100)) +
+    theme2use
+  ggsave("plots_EUR/Energy_Services_demand_passenger_EUR.jpg", plot_pass_EUR, dpi=500, height = width* aspect_ratio , width = width, units = "cm")
+  
+  # Plot same figure for each scenario & scenario == scen
+  for (scen in unique(dt_EU$scenario)){
+    plot_pass_EUR = ggplot()+
+      geom_area(data = dt_EU_tmp[scenario == scen], aes(x=year, y=cap_dem, group = vehicle_type_plot, fill = vehicle_type_plot), color="black", size=0.05, position= position_stack())+
+      labs(x = "", y = "Energy Services demand [pkm/cap]")+
+      facet_grid(region~scenario, scales = "free")+
+      scale_fill_manual("Vehicle Type",values = cols_tmp[names(cols_tmp) %in% unique(dt_EU_tmp$vehicle_type_plot)], breaks=legend_ord_tmp)+
+      expand_limits(y = c(0,1))+
+      scale_x_continuous(breaks = c(2020,2030,2050, 2100)) +
+      theme2use
+    
+    # Save vintages for EUR
+    ggsave(paste0("plots_EUR/single_scenarios/Energy_Services_demand_passenger_EUR_", scen, ".jpg"), 
+           plot_pass_EUR, dpi=500, height = width* aspect_ratio , width = width/1.5, units = "cm")
+  }
+  
+  # Return dataframe
+  return(list(plot_pass = plot_pass, plot_frgt = plot_frgt))
 }
 
 p = ESmodecappf(ESmodecap_all)
@@ -361,21 +802,69 @@ EJfuelsMod_pf(dt_all = EJModeFuel_all)
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=14, fig.height=20}
 ## by  fuel, transport aggregated
 EJfuels_pf = function(dt_p, dt_f){
+  # Rename scenarios
+  dt_p$scenario <- gsub("C_TraInd-ROWcp150-socket200-", "", dt_p$scenario)
+  dt_p$scenario <- gsub("-rem-8", "", dt_p$scenario)
+  dt_p$scenario <- gsub("-rem-7", "", dt_p$scenario)
+  dt_f$scenario <- gsub("C_TraInd-ROWcp150-socket200-", "", dt_f$scenario)
+  dt_f$scenario <- gsub("-rem-8", "", dt_f$scenario)
+  dt_f$scenario <- gsub("-rem-7", "", dt_f$scenario)
+  
+  # Define figure size for EUR plots
+  aspect_ratio <- 0.5
+  width <- 22
+  
+  # Load data - Passengers
   dt_p = dt_p[year >= 2020]
   dt_p = dt_p[, .(demand_EJ = sum(demand_EJ)), by = c("subtech", "year", "region", "scenario", "sector")]
   dt_p_glo = dt_f[,.(demand_EJ = sum(demand_EJ)), by = c("subtech", "year", "scenario", "sector")]
   dt_p_glo[, region := "GLO"]
   dt_p = rbind(dt_p, dt_p_glo)
-
+  
+  # Set EUR values - Passengers
+  regi_EUR <- c("EUR")
+  dt_p_EU <- dt_p[region %in% c(regi_EUR) & year <= 2050]
+  
+  # Plot Passenger transport FE demand by fuel, no bunkers - Global
   plotp = ggplot()+
     geom_area(data = dt_p[sector=="trn_pass"], aes(x=year, y=demand_EJ, group = subtech, fill = subtech), color="black", size=0.05, position= position_stack())+
     labs(x = "", y = "[EJ]", title = "Passenger transport FE demand by fuel, no bunkers")+
     facet_grid(region~scenario, scales = "free")+
-    scale_fill_manual("Technology",values = cols, breaks=legend_ord)+
+    scale_fill_manual("Technology",values = cols[names(cols) %in% unique(dt_p$subtech)], breaks=legend_ord)+
     expand_limits(y = c(0,1))+
     scale_x_continuous(breaks = c(2020, 2030,2050, 2100)) +
     theme2use
-
+  
+  # Plot Passenger transport FE demand by fuel, no bunkers - EUR only and save
+  plotp_EUR = ggplot()+
+    geom_area(data = dt_p_EU[sector=="trn_pass"], aes(x=year, y=demand_EJ, group = subtech, fill = subtech), color="black", size=0.05, position= position_stack())+
+    labs(x = "", y = "[EJ]", title = "Passenger transport FE demand by fuel, no bunkers")+
+    facet_grid(region~scenario, scales = "free")+
+    scale_fill_manual("Technology",values = cols[names(cols) %in% unique(dt_p_EU$subtech)], breaks=legend_ord)+
+    expand_limits(y = c(0,1))+
+    scale_x_continuous(breaks = c(2020, 2030,2050, 2100)) +
+    theme2use
+  ggsave("plots_EUR/Passenger_transport_FE_demand_by_fuel_no_bunkers_EUR.jpg", 
+         plotp_EUR, dpi=500, height = width* aspect_ratio , width = width, units = "cm")
+  
+  # Plot same figure for each scenario & scenario == scen
+  for (scen in unique(dt_EU$scenario)){
+    plotp_EUR = ggplot()+
+      geom_area(data = dt_p_EU[sector=="trn_pass" & scenario == scen], 
+                aes(x=year, y=demand_EJ, group = subtech, fill = subtech), color="black", size=0.05, position= position_stack())+
+      labs(x = "", y = "[EJ]", title = "Passenger transport FE demand by fuel, no bunkers")+
+      facet_grid(region~scenario, scales = "free")+
+      scale_fill_manual("Technology",values = cols[names(cols) %in% unique(dt_p_EU$subtech)], breaks=legend_ord)+
+      expand_limits(y = c(0,1))+
+      scale_x_continuous(breaks = c(2020, 2030,2050, 2100)) +
+      theme2use
+    
+    # Save vintages for EUR
+    ggsave(paste0("plots_EUR/single_scenarios/Passenger_transport_FE_demand_by_fuel_no_bunkers_EUR_", scen, ".jpg"), 
+           plotp_EUR, dpi=500, height = width* aspect_ratio , width = width/2, units = "cm")
+  }
+  
+  # Plot Passenger transport international aviation FE demand by fuel, no bunkers - Global
   plotp_LO = ggplot()+
     geom_area(data = dt_p[sector=="trn_aviation_intl"], aes(x=year, y=demand_EJ, group = subtech, fill = subtech), color="black", size=0.05, position= position_stack())+
     labs(x = "", y = "[EJ]", title = "Passenger transport FE demand by fuel, no bunkers")+
@@ -384,53 +873,182 @@ EJfuels_pf = function(dt_p, dt_f){
     expand_limits(y = c(0,1))+
     scale_x_continuous(breaks = c(2020, 2030,2050, 2100)) +
     theme2use
-
-    dt_f = dt_f[year >= 2020]
-    dt_f = dt_f[, .(demand_EJ = sum(demand_EJ)), by = c("subtech", "year", "region", "scenario", "sector")]
-    dt_f_glo = dt_f[,.(demand_EJ = sum(demand_EJ)), by = c("subtech", "year", "scenario", "sector")]
-    dt_f_glo[, region := "GLO"]
-    dt_f = rbind(dt_f, dt_f_glo)
-
-
+  
+  # Load data - Freight
+  dt_f = dt_f[year >= 2020]
+  dt_f = dt_f[, .(demand_EJ = sum(demand_EJ)), by = c("subtech", "year", "region", "scenario", "sector")]
+  dt_f_glo = dt_f[,.(demand_EJ = sum(demand_EJ)), by = c("subtech", "year", "scenario", "sector")]
+  dt_f_glo[, region := "GLO"]
+  dt_f = rbind(dt_f, dt_f_glo)
+  
+  # Set EUR values - Freight
+  dt_f_EU <- dt_f[region %in% c(regi_EUR) & year <= 2050]
+  
+  # Plot International freight FE demand by fuel - Global
   plotf_lo = ggplot()+
     geom_area(data = dt_f[sector == "trn_shipping_intl"], aes(x=year, y=demand_EJ, group = subtech, fill = subtech), color="black", size=0.05, position= position_stack())+
     labs(x = "", y = "[EJ]", title = "International freight FE demand by fuel")+
     facet_grid(region~scenario, scales = "free")+
-    scale_fill_manual("Technology",values = cols, breaks=legend_ord)+
+    scale_fill_manual("Technology",values = cols[names(cols) %in% unique(dt_f$subtech)], breaks=legend_ord)+
     expand_limits(y = c(0,1))+
     scale_x_continuous(breaks = c(2020, 2030,2050, 2100)) +
     theme2use
-
+  
+  # Plot International freight FE demand by fuel - EUR only and save
+  plotf_lo_EUR = ggplot()+
+    geom_area(data = dt_f_EU[sector == "trn_shipping_intl"], aes(x=year, y=demand_EJ, group = subtech, fill = subtech), color="black", size=0.05, position= position_stack())+
+    labs(x = "", y = "[EJ]", title = "International freight FE demand by fuel")+
+    facet_grid(region~scenario, scales = "free")+
+    scale_fill_manual("Technology",values = cols[names(cols) %in% unique(dt_f_EU$subtech)], breaks=legend_ord)+
+    expand_limits(y = c(0,1))+
+    scale_x_continuous(breaks = c(2020, 2030,2050, 2100)) +
+    theme2use
+  ggsave("plots_EUR/International_freight_FE_demand_by_fuel_EUR.jpg", 
+         plotf_lo_EUR, dpi=500, height = width* aspect_ratio , width = width, units = "cm")
+  
+  # Plot same figure for each scenario & scenario == scen
+  for (scen in unique(dt_EU$scenario)){
+    plotf_lo_EUR = ggplot()+
+      geom_area(data = dt_f_EU[sector == "trn_shipping_intl" & scenario == scen], 
+                aes(x=year, y=demand_EJ, group = subtech, fill = subtech), color="black", size=0.05, position= position_stack())+
+      labs(x = "", y = "[EJ]", title = "International freight FE demand by fuel")+
+      facet_grid(region~scenario, scales = "free")+
+      scale_fill_manual("Technology",values = cols[names(cols) %in% unique(dt_f_EU$subtech)], breaks=legend_ord)+
+      expand_limits(y = c(0,1))+
+      scale_x_continuous(breaks = c(2020, 2030,2050, 2100)) +
+      theme2use
+    
+    # Save vintages for EUR
+    ggsave(paste0("plots_EUR/single_scenarios/International_freight_FE_demand_by_fuel_EUR_", scen, ".jpg"), 
+           plotf_lo_EUR, dpi=500, height = width* aspect_ratio , width = width/2, units = "cm")
+  }
+  
+  # Plot Short-medium freight FE demand by fuel - Global
   plotf_sm = ggplot()+
     geom_area(data = dt_f[sector == "trn_freight"], aes(x=year, y=demand_EJ, group = subtech, fill = subtech), color="black", size=0.05, position= position_stack())+
     labs(x = "", y = "[EJ]", title = "Short-medium freight FE demand by fuel")+
     facet_grid(region~scenario, scales = "free")+
-    scale_fill_manual("Technology",values = cols, breaks=legend_ord)+
+    scale_fill_manual("Technology",values = cols[names(cols) %in% unique(dt_f$subtech)], breaks=legend_ord)+
     expand_limits(y = c(0,1))+
     scale_x_continuous(breaks = c(2020, 2030,2050, 2100)) +
     theme2use
-  dt_all = rbind(dt_f, dt_p)
-  dt_all_b = dt_all[, .(demand_EJ = sum(demand_EJ)), by = c("subtech", "year", "region", "scenario")]
+  
+  # Plot Short-medium freight FE demand by fuel - EUR only and save
+  plotf_sm_EUR = ggplot()+
+    geom_area(data = dt_f_EU[sector == "trn_freight"], aes(x=year, y=demand_EJ, group = subtech, fill = subtech), color="black", size=0.05, position= position_stack())+
+    labs(x = "", y = "[EJ]", title = "Short-medium freight FE demand by fuel")+
+    facet_grid(region~scenario, scales = "free")+
+    scale_fill_manual("Technology",values = cols[names(cols) %in% unique(dt_f_EU$subtech)], breaks=legend_ord)+
+    expand_limits(y = c(0,1))+
+    scale_x_continuous(breaks = c(2020, 2030,2050, 2100)) +
+    theme2use
+  ggsave("plots_EUR/Short-medium_freight_FE_demand_by_fuel_EUR.jpg", 
+         plotf_sm_EUR, dpi=500, height = width* aspect_ratio , width = width, units = "cm")
+  
+  # Plot same figure for each scenario & scenario == scen
+  for (scen in unique(dt_EU$scenario)){
+    plotf_sm_EUR = ggplot()+
+      geom_area(data = dt_f_EU[sector == "trn_freight" & scenario == scen], 
+                aes(x=year, y=demand_EJ, group = subtech, fill = subtech), color="black", size=0.05, position= position_stack())+
+      labs(x = "", y = "[EJ]", title = "Short-medium freight FE demand by fuel")+
+      facet_grid(region~scenario, scales = "free")+
+      scale_fill_manual("Technology",values = cols[names(cols) %in% unique(dt_f_EU$subtech)], breaks=legend_ord)+
+      expand_limits(y = c(0,1))+
+      scale_x_continuous(breaks = c(2020, 2030,2050, 2100)) +
+      theme2use
+    
+    # Save vintages for EUR
+    ggsave(paste0("plots_EUR/single_scenarios/Short-medium_freight_FE_demand_by_fuel_EUR_", scen, ".jpg"), 
+           plotf_sm_EUR, dpi=500, height = width* aspect_ratio , width = width/2, units = "cm")
+  }
+  
+  # Create data freight and passenger data - always also for EUR
+  dt_all        <- rbind(dt_f, dt_p)
+  dt_all_EU     <- dt_all[region %in% c(regi_EUR) & year <= 2050]
+  dt_all_b      <- dt_all[, .(demand_EJ = sum(demand_EJ)), by = c("subtech", "year", "region", "scenario")]
+  dt_all_b_EU   <- dt_all_b[region %in% c(regi_EUR) & year <= 2050]
+  dt_all_nob    <- dt_all[sector %in% c("trn_pass", "trn_freight")][, .(demand_EJ = sum(demand_EJ)), by = c("subtech", "year", "region", "scenario")]
+  dt_all_nob_EU <- dt_all_nob[region %in% c(regi_EUR) & year <= 2050]
+  
+  # Plot FE demand by fuel, all transport modes - Global
   plot_all = ggplot()+
     geom_area(data = dt_all_b, aes(x=year, y=demand_EJ, group = subtech, fill = subtech), color="black", size=0.05, position= position_stack())+
     labs(x = "", y = "[EJ]", title = "FE demand by fuel, all transport modes")+
     facet_grid(region~scenario, scales = "free")+
-    scale_fill_manual("Technology",values = cols, breaks=legend_ord)+
+    scale_fill_manual("Technology",values = cols[names(cols) %in% unique(dt_all_b$subtech)], breaks=legend_ord)+
     expand_limits(y = c(0,1))+
     scale_x_continuous(breaks = c(2020, 2030,2050, 2100)) +
     theme2use
-  dt_all_nob = dt_all[sector %in% c("trn_pass", "trn_freight")][, .(demand_EJ = sum(demand_EJ)), by = c("subtech", "year", "region", "scenario")]
-
-  plot_all_nobunkers = ggplot()+
-    geom_area(data = dt_all_nob, aes(x=year, y=demand_EJ, group = subtech, fill = subtech), color="black", size=0.05, position= position_stack())+
+  
+  # Plot FE demand by fuel, all transport modes - EUR only and save
+  plot_all_EUR = ggplot()+
+    geom_area(data = dt_all_b_EU, aes(x=year, y=demand_EJ, group = subtech, fill = subtech), color="black", size=0.05, position= position_stack())+
     labs(x = "", y = "[EJ]", title = "FE demand by fuel, all transport modes")+
     facet_grid(region~scenario, scales = "free")+
-    scale_fill_manual("Technology",values = cols, breaks=legend_ord)+
+    scale_fill_manual("Technology",values = cols[names(cols) %in% unique(dt_all_b_EU$subtech)], breaks=legend_ord)+
     expand_limits(y = c(0,1))+
     scale_x_continuous(breaks = c(2020, 2030,2050, 2100)) +
     theme2use
-
-
+  ggsave("plots_EUR/FE_demand_by_fuel_all_modes_EUR.jpg", 
+         plot_all_EUR, dpi=500, height = width* aspect_ratio , width = width, units = "cm")
+  
+  # Plot same figure for each scenario & scenario == scen
+  for (scen in unique(dt_EU$scenario)){
+    plot_all_EUR = ggplot()+
+      geom_area(data = dt_all_b_EU[scenario == scen], 
+                aes(x=year, y=demand_EJ, group = subtech, fill = subtech), color="black", size=0.05, position= position_stack())+
+      labs(x = "", y = "[EJ]", title = "FE demand by fuel, all transport modes")+
+      facet_grid(region~scenario, scales = "free")+
+      scale_fill_manual("Technology",values = cols[names(cols) %in% unique(dt_all_b_EU$subtech)], breaks=legend_ord)+
+      expand_limits(y = c(0,1))+
+      scale_x_continuous(breaks = c(2020, 2030,2050, 2100)) +
+      theme2use
+    
+    # Save vintages for EUR
+    ggsave(paste0("plots_EUR/single_scenarios/FE_demand_by_fuel_all_modes_EUR_", scen, ".jpg"), 
+           plot_all_EUR, dpi=500, height = width* aspect_ratio , width = width/2, units = "cm")
+  }
+  
+  # Plot FE demand by fuel, all transport modes, no bunkers - Global
+  plot_all_nobunkers = ggplot()+
+    geom_area(data = dt_all_nob, aes(x=year, y=demand_EJ, group = subtech, fill = subtech), color="black", size=0.05, position= position_stack())+
+    labs(x = "", y = "[EJ]", title = "FE demand by fuel, all transport modes, no bunkers")+
+    facet_grid(region~scenario, scales = "free")+
+    scale_fill_manual("Technology",values = cols[names(cols) %in% unique(dt_all_nob$subtech)], breaks=legend_ord)+
+    expand_limits(y = c(0,1))+
+    scale_x_continuous(breaks = c(2020, 2030,2050, 2100)) +
+    theme2use
+  
+  # Plot FE demand by fuel, all transport modes, no bunkers - EUR only and save
+  plot_all_nobunkers_EUR = ggplot()+
+    geom_area(data = dt_all_nob_EU, aes(x=year, y=demand_EJ, group = subtech, fill = subtech), color="black", size=0.05, position= position_stack())+
+    labs(x = "", y = "[EJ]", title = "FE demand by fuel, all transport modes, no bunkers")+
+    facet_grid(region~scenario, scales = "free")+
+    scale_fill_manual("Technology",values = cols[names(cols) %in% unique(dt_all_nob_EU$subtech)], breaks=legend_ord)+
+    expand_limits(y = c(0,1))+
+    scale_x_continuous(breaks = c(2020, 2030,2050, 2100)) +
+    theme2use
+  ggsave("plots_EUR/FE_demand_by_fuel_all_modes_no_bunkers_EUR.jpg", 
+         plot_all_nobunkers_EUR, dpi=500, height = width* aspect_ratio , width = width, units = "cm")
+  
+  # Plot same figure for each scenario & scenario == scen
+  for (scen in unique(dt_EU$scenario)){
+    plot_all_nobunkers_EUR = ggplot()+
+      geom_area(data = dt_all_nob_EU[scenario == scen], 
+                aes(x=year, y=demand_EJ, group = subtech, fill = subtech), color="black", size=0.05, position= position_stack())+
+      labs(x = "", y = "[EJ]", title = "FE demand by fuel, all transport modes, no bunkers")+
+      facet_grid(region~scenario, scales = "free")+
+      scale_fill_manual("Technology",values = cols[names(cols) %in% unique(dt_all_nob_EU$subtech)], breaks=legend_ord)+
+      expand_limits(y = c(0,1))+
+      scale_x_continuous(breaks = c(2020, 2030,2050, 2100)) +
+      theme2use
+    
+    # Save vintages for EUR
+    ggsave(paste0("plots_EUR/single_scenarios/FE_demand_by_fuel_all_modes_no_bunkers_EUR_", scen, ".jpg"), 
+           plot_all_nobunkers_EUR, dpi=500, height = width* aspect_ratio , width = width/2, units = "cm")
+  }
+  
+  
   plot = list(plotf_lo = plotf_lo, plotf_sm = plotf_sm, plotp = plotp, plotp_LO, plot_all = plot_all, plot_all_nobunkers = plot_all_nobunkers)
   return(plot)
 }
@@ -534,5 +1152,239 @@ p = list(psec = psec, pappl = pappl, ptype = ptype, psectime = psectime, papplti
 return(p)
 }
 demcapgdpcap_pf(dempkm_cap_all)
+```
+
+
+
+# Plot passenger transport by vehicle and fuel
+```{r}
+library(tidyr)
+
+# Filter region and passenger modes
+tmp <- EJModeFuel_all %>% 
+  filter(region == "EUR", sector == "trn_pass")
+
+# Rename scenarios
+tmp$scenario <- tmp$scenario %>% 
+  gsub("C_TraInd-ROWcp150-socket200-", "", ., fixed=T) %>% 
+  gsub("-rem-[1-9]", "", .)
+
+# Combine LDVs
+tmp$veh[tmp$veh == "Large Cars" | tmp$veh == "Small Cars" | tmp$veh == "Motorbikes"] <- "LDV"
+
+# Combine different vehicle types and subsectors
+tmp <- tmp %>% 
+  group_by_at(setdiff(names(EJModeFuel_all), c("vehicle_type", "subsector_L3", "subsector_L2", "subsector_L1", "demand_EJ", "demand_F"))) %>%
+  summarise(demand_EJ = sum(demand_EJ), demand_F = sum(demand_F))
+
+# Rename BEV and FCEV to match fuel types Electric and Hydrogen
+tmp$technology[tmp$technology == "FCEV"] <- "Hydrogen"
+tmp$technology[tmp$technology == "BEV"]  <- "Electric"
+
+# Unite Technology and Vehicle columns
+tmp2 <- unite(tmp, "technology_veh", c(technology, veh))
+
+# Define colors and ordering
+# colour_scenarios_by_tech <- c(
+#   # `Electric_Motorbikes`        = 'green',
+#   `Electric_Motorbikes`        = '#ffee94',
+#   `Electric_Small Cars`        = '#ffea7a',
+#   `Electric_Large Cars`        = '#ffe55a',
+#   `Electric_Bus`               = '#ffdf32',
+#   `Electric_Passenger Rail`    = '#ffd700',
+#   `Hydrogen_Small Cars`        = '#cfccfe',
+#   `Hydrogen_Large Cars`        = '#a099ff',
+#   `Hydrogen_Bus`               = '#7166ff',
+#   `Hydrogen_Domestic Aviation` = '#4233ff',
+#   `Liquids_Motorbikes`         = '#b3b3b3',
+#   `Liquids_Small Cars`         = '#999999',
+#   `Liquids_Large Cars`         = '#808080',
+#   `Liquids_Bus`                = '#666666',
+#   `Liquids_Passenger Rail`     = '#4d4d4d',
+#   `Liquids_Domestic Aviation`  = 'black',
+#   `NG_Small Cars`              = '#e58272',
+#   `NG_Large Cars`              = '#ea492e',
+#   `NG_Bus`                     = '#892d1d'
+# )
+# colour_scenarios_by_veh <- c(
+#   `Electric_Motorbikes`        = '#ffee94',
+#   `Liquids_Motorbikes`         = '#b3b3b3',
+#   `Electric_Small Cars`        = '#ffea7a',
+#   `Hydrogen_Small Cars`        = '#cfccfe',
+#   `Liquids_Small Cars`         = '#999999',
+#   `NG_Small Cars`              = '#e58272',
+#   `Electric_Large Cars`        = '#ffe55a',
+#   `Hydrogen_Large Cars`        = '#a099ff',
+#   `Liquids_Large Cars`         = '#808080',
+#   `NG_Large Cars`              = '#ea492e',
+#   `Electric_Bus`               = '#ffdf32',
+#   `Hydrogen_Bus`               = '#7166ff',
+#   `Liquids_Bus`                = '#666666',
+#   `NG_Bus`                     = '#892d1d',
+#   `Electric_Passenger Rail`    = '#ffd700',
+#   `Liquids_Passenger Rail`     = '#4d4d4d',
+#   `Hydrogen_Domestic Aviation` = '#4233ff',
+#   `Liquids_Domestic Aviation`  = 'black'
+# )
+
+
+
+colour_scenarios_by_tech <- c(
+  `Electric_LDV`               = '#ffee94',
+  `Electric_Bus`               = '#ffe55a',
+  `Electric_Passenger Rail`    = '#ffd700',
+  `Hydrogen_LDV`               = '#a099ff',
+  `Hydrogen_Bus`               = '#7166ff',
+  `Hydrogen_Domestic Aviation` = '#4233ff',
+  `Liquids_LDV`                = '#808080',
+  `Liquids_Bus`                = '#666666',
+  `Liquids_Passenger Rail`     = '#4d4d4d',
+  `Liquids_Domestic Aviation`  = 'black',
+  `NG_LDV`                     = '#ea492e',
+  `NG_Bus`                     = '#892d1d'
+)
+
+# Reorder technology_vehicle column
+tmp2$technology_veh <- factor(tmp2$technology_veh, levels = names(colour_scenarios_by_tech), ordered = T)
+# tmp2$technology_veh <- factor(tmp2$technology_veh, levels = names(colour_scenarios_by_veh), ordered = T)
+
+
+tmp2 %>% 
+  filter(year >= 2015, year <= 2050) %>% 
+  ggplot(aes(x=year, y=demand_EJ, fill=technology_veh)) + 
+  geom_area() +
+  scale_fill_manual(values = colour_scenarios_by_tech) +
+  facet_wrap("scenario", scales="fixed") +
+  ggtitle("Final Energy Demand Passenger Transport") +
+  ylim("[EJ]") +
+  theme(axis.text.x = element_text(angle = 40))
+ggsave("plots_EUR/Final_Energy_Demand_Passenger_Transport_by_Fuel_and_Vehicle.png", width=6, height = 4)
+```
+
+# 4 Plots: ...
+```{r}
+# Choose scenarios
+scens_tmp <- c(
+  # "S1",
+  "S2",
+  # "S3",
+  "S4",
+  # "S5",
+  # "S6",
+  NULL
+)
+
+# Filter region
+tmp <- EJModeFuel_all %>% 
+  filter(region == "EUR") %>% 
+  filter(year >= 2020, year <= 2050)
+
+# Rename scenarios
+tmp$scenario <- tmp$scenario %>% 
+  gsub("C_TraInd-ROWcp150-socket200-", "", ., fixed=T) %>% 
+  gsub("-rem-[1-9]", "", .)
+
+# Filter scenarios
+tmp <- tmp %>% 
+  filter(scenario %in% scens_tmp)
+
+# Get rid of sector
+tmp$sector <- NULL
+
+# Combine LDVs
+tmp$veh[tmp$veh == "Large Cars" | tmp$veh == "Small Cars" | tmp$veh == "Motorbikes"] <- "LDV"
+
+# Combine bus and passenger rail
+tmp$veh[tmp$veh == "Bus" | tmp$veh == "Passenger Rail"] <- "Bus and passenger rail"
+
+# Combine Domestic and International aviation
+tmp$veh[tmp$veh == "Domestic Aviation" | tmp$veh == "International Aviation"] <- "Aviation"
+
+# Combine Truck, Freight Rail, Domestic Shipping and  International Shipping
+tmp$veh[tmp$veh == "Truck" | tmp$veh == "Freight Rail" | tmp$veh == "Domestic Shipping" | tmp$veh == "International Shipping"] <- "Freight"
+
+# Combine Train and Bus
+
+# Combine different vehicle types and subsectors
+tmp <- tmp %>% 
+  group_by_at(setdiff(names(tmp), c("vehicle_type", "subsector_L3", "subsector_L2", "subsector_L1", "demand_EJ", "demand_F"))) %>%
+  summarise(demand_EJ = sum(demand_EJ), demand_F = sum(demand_F))
+
+# Rename BEV and FCEV to match fuel types Electric and Hydrogen
+tmp$technology[tmp$technology == "FCEV"] <- "Hydrogen"
+tmp$technology[tmp$technology == "BEV"]  <- "Electric"
+
+# Define plotstyles for fuels
+colour_by_fuel <- c(
+  `Electric` = '#ffd700',
+  `Hydrogen` = '#4233ff',
+  `Liquids`  = 'black',
+  `NG`       = '#892d1d'
+)
+cols_tmp <- cols[names(cols) %in% c("Electric", "Hydrogen", "Liquids", "NG")]
+names(cols_tmp)[3] <- "Elektrizität"
+names(cols_tmp)[4] <- "Wasserstoff"
+names(cols_tmp)[2] <- "Flüssigkraftstoffe"
+names(cols_tmp)[1] <- "Gas"
+
+# Translate Technologies
+tmp$technology[tmp$technology == "Electric"] <- "Elektrizität"
+tmp$technology[tmp$technology == "Hydrogen"] <- "Wasserstoff"
+tmp$technology[tmp$technology == "Liquids"]  <- "Flüssigkraftstoffe"
+tmp$technology[tmp$technology == "NG"]       <- "Gas"
+
+# Plot LDVs 
+tmp2 <- tmp %>% 
+  filter(veh == "LDV")
+tmp2 %>% 
+  ggplot(aes(x=year, y=demand_EJ, fill=technology)) +
+  geom_area() +
+  scale_fill_manual(values = cols_tmp[names(cols_tmp) %in% unique(tmp2$technology)]) +
+  facet_wrap("scenario", scales = "fixed") +
+  ylab("[EJ]") +
+  xlab("") +
+  theme(axis.text.x = element_text(angle = 40), legend.title = element_blank()) +
+  ggtitle("Endenergienachfrage PKW")
+ggsave("plots_EUR/Final_Energy_Demand_LDV_by_Fuel.png", width=6, height = 4)
+
+# Plot Passenger Buses and Train 
+tmp %>% 
+  filter(veh == "Bus and passenger rail") %>% 
+  ggplot(aes(x=year, y=demand_EJ, fill=technology)) +
+  geom_area() +
+  scale_fill_manual(values = cols_tmp[names(cols_tmp) %in% unique(tmp2$technology)]) +
+  facet_wrap("scenario", scales = "fixed") +
+  ylab("[EJ]") +
+  xlab("") +
+  theme(axis.text.x = element_text(angle = 40), legend.title = element_blank()) +
+  ggtitle("Endenergienachfrage Bus und Bahn")
+ggsave("plots_EUR/Final_Energy_Demand_Bus_and_passenger_rail_by_Fuel.png", width=6, height = 4)
+
+# Plot Passenger Aviation
+tmp %>% 
+  filter(veh == "Aviation") %>% 
+  ggplot(aes(x=year, y=demand_EJ, fill=technology)) +
+  geom_area() +
+  scale_fill_manual(values = cols_tmp[names(cols_tmp) %in% unique(tmp2$technology)]) +
+  facet_wrap("scenario", scales = "fixed") +
+  ylab("[EJ]") +
+  xlab("") +
+  theme(axis.text.x = element_text(angle = 40), legend.title = element_blank()) +
+  ggtitle("Endenergienachfrage Flugverkehr")
+ggsave("plots_EUR/Final_Energy_Demand_Aviation_by_Fuel.png", width=6, height = 4)
+
+
+# Plot Freight
+tmp %>% 
+  filter(veh == "Freight") %>% 
+  ggplot(aes(x=year, y=demand_EJ, fill=technology)) +
+  geom_area() +
+  scale_fill_manual(values = cols_tmp[names(cols_tmp) %in% unique(tmp2$technology)]) +
+  facet_wrap("scenario", scales = "fixed") +
+  ylab("[EJ]") +
+  xlab("") +
+  theme(axis.text.x = element_text(angle = 40), legend.title = element_blank()) +
+  ggtitle("Endenergienachfrage Fracht")
+ggsave("plots_EUR/Final_Energy_Demand_Freight_by_Fuel.png", width=6, height = 4)
 ```
 
