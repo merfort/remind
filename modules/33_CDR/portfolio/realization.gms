@@ -30,5 +30,6 @@ $Ifi "%phase%" == "declarations" $include "./modules/33_CDR/portfolio/declaratio
 $Ifi "%phase%" == "datainput" $include "./modules/33_CDR/portfolio/datainput.gms"
 $Ifi "%phase%" == "equations" $include "./modules/33_CDR/portfolio/equations.gms"
 $Ifi "%phase%" == "bounds" $include "./modules/33_CDR/portfolio/bounds.gms"
+$Ifi "%phase%" == "postsolve" $include "./modules/33_CDR/portfolio/postsolve.gms"
 *######################## R SECTION END (PHASES) ###############################
 *** EOF ./modules/33_CDR/portfolio/realization.gms
