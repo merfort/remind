@@ -13,7 +13,7 @@ require(magclass)
 require(gms)
 # require(remind2)
 library(devtools)
-load_all("/p/tmp/merfort/RESCUE/v2/libraries/remind2_oae")
+load_all("/p/projects/rescue/tier1_scenarios/v2/libraries/remind2_oae")
 require(gtools) # required for mixedsort()
 require(dplyr) # for filter, secelt, %>%
 require(stringr) # for str_sub
@@ -79,7 +79,7 @@ path_magpie_oldruns <- paste0(path_magpie, "output/")
 prefix_oldruns <-  "C_"
 
 # number of coupling iterations, can also be specified in path_settings_coupled
-max_iterations <- 5
+max_iterations <- 8
 
 # Number of coupling iterations (before final iteration) in which MAgPIE uses higher n600 resolution.
 # Until "max_iterations - n600_iterations" iteration MAgPIE runs with n200 resolution.
