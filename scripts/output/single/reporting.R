@@ -6,7 +6,7 @@
 # |  Contact: remind@pik-potsdam.de
 
 library(magclass)
-devtools::load_all("/p/tmp/merfort/RESCUE/v2/libraries/remind2_oae")
+devtools::load_all("/p/projects/rescue/tier1_scenarios/v2/libraries/remind2_oae")
 library(lucode2)
 library(gms)
 library(methods)
