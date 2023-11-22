@@ -11,7 +11,7 @@ create_input_for_45_carbonprice_exogenous<-function(gdx){
   library(gms,quietly=TRUE,warn.conflicts =FALSE)
   # library(remind2)
   library(devtools)
-  load_all("/p/tmp/merfort/RESCUE/v2/libraries/remind2")
+  load_all("/p/projects/rescue/tier1_scenarios/v2/libraries/remind2")
   
   p_fpath <- "./modules/45_carbonprice/exogenous/input/p45_tau_co2_tax.inc"
   
