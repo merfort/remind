@@ -6,23 +6,25 @@
 # |  Contact: remind@pik-potsdam.de
 
 create_input_for_45_carbonprice_exogenous<-function(gdx){
-  
+ 
   library(luplot,quietly=TRUE,warn.conflicts =FALSE)
   library(gms,quietly=TRUE,warn.conflicts =FALSE)
-  # library(remind2)
+  # require(remind2,quietly = TRUE,warn.conflicts =FALSE)
   library(devtools)
   load_all("/p/projects/rescue/tier1_scenarios/v2/libraries/remind2")
   
   p_fpath <- "./modules/45_carbonprice/exogenous/input/p45_tau_co2_tax.inc"
-  
+ 
   # ---- Read data ----
-  
+ 
   if (file.exists(gdx)) {
     pr <- reportPrices(gdx)
   } else {
     stop("No gdx file found to take the carbon price from - please provide gdx from a reference run in path_gdx_carbonprice in scenario_config file.")
   }
-  
+
+  if (! dir.exists(dirname(p_fpath))) dir.create(dirname(p_fpath), recursive = TRUE)
+ 
   # ---- Convert data ----
   
   #select right temporal/variable scope 
