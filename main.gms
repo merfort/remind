@@ -617,21 +617,22 @@ parameter
 *' the tax level, i.e. associated emissions do not enter the emissions balance
 *' equations.
 *'
-*' * (0)    off
-*' * (20)   Sets the emission factor to 20 kgCO2 per GJ, which for example
+*' * (0):    off
+*' * (20):   Sets the emission factor to 20 kgCO2 per GJ, which for example
 *'        results in a tax of 2 $ per GJ (primary energy) at a carbon price of
 *'        100 $ per tCO2:
 *'                20 kgCO2 per GJ * 100 $ per tCO2
 *'          eq    0.02 tCO2 per GJ * 100 $ per tCO2
 *'          eq    2 $ per GJ
+*' * (any number ge 0):  Sets the emissions factor to that number
 *'
 parameter
   cm_tradecostBio           "choose financial tradecosts multiplier for biomass (purpose grown pebiolc)"
 ;
   cm_tradecostBio     = 1;         !! def = 1
-***  (1):               medium trade costs (used e.g. for for SSP2)
-***  (0.5)              low tradecosts (used e.g. for other SSP scenarios than SSP2)
-***  (any value ge 0):  set costs multiplier to that value
+*' * (1):               medium trade costs (used e.g. for for SSP2)
+*' * (0.5)              low tradecosts (used e.g. for other SSP scenarios than SSP2)
+*' * (any value ge 0):  set costs multiplier to that value
 *'
 parameter
   cm_1stgen_phaseout        "choose if 1st generation biofuels should phase out after 2030 (vm_deltaCap equals 0)"
@@ -644,14 +645,15 @@ parameter
   cm_phaseoutBiolc          "Switch that allows for a full phaseout of all bioenergy technologies globally"
 ;
   cm_phaseoutBiolc    = 0;         !! def = 0  !! regexp = 0|1
-***  Only working with magpie_40 realization of 30_biomass module. 
-***  (0): (default) No phaseout
-***  (1): Phaseout capacities of all bioenergy technologies using pebiolc, as far
-***       as historical bounds on bioenergy technologies allow it. This covers
-***       all types of lignocellulosic feedstocks, i.e. purpose grown biomass and
-***       residues. Lower bounds on future electricity production due to NDC
-***       targets in p40_ElecBioBound are removed. The first year, in which no new
-***       capacities are allowed, is 2025 or cm_startyear if larger.
+*' Only working with magpie_40 realization of 30_biomass module.
+*'
+*' * (0): (default) No phaseout
+*' * (1): Phaseout capacities of all bioenergy technologies using pebiolc, as far
+*'        as historical bounds on bioenergy technologies allow it. This covers
+*'        all types of lignocellulosic feedstocks, i.e. purpose grown biomass and
+*'        residues. Lower bounds on future electricity production due to NDC
+*'        targets in p40_ElecBioBound are removed. The first year, in which no new
+*'        capacities are allowed, is 2025 or cm_startyear if larger.
 *'
 parameter
   cm_startyear              "first optimized modelling time step [year]"
@@ -1184,24 +1186,31 @@ $setglobal c_tech_earlyreti_rate  GLO.(biodiesel 0.14, bioeths 0.14), EUR_regi.(
 ***  (SSP5): emissions (from SSP5 scenario in MAgPIE)
 ***  (SDP):
 $setglobal cm_LU_emi_scen  SSP2   !! def = SSP2  !! regexp = SSP(1|2|5)|SDP
-*** cm_regi_bioenergy_EFTax  "region(s) in which bioenergy is charged with an emission-factor-based tax"
-***  This switch has only an effect if 21_tax is on and cm_bioenergy_EF_for_tax
-***  is not zero. It reads in the regions that are affected by the emission-
-***  factor-based bioenergy tax. Regions can be read in comma-separated
-***  Examples:
-***  (glob):                 default; all regions
-***  (EUR):                  only Europe
-***  (DEU):                  only Germany
-***  (CAZ,EUR,JPN,NEU,USA):  only these five regions (more or less OECD)
+*' cm_regi_bioenergy_EFTax  "region(s) in which bioenergy is charged with an emission-factor-based tax"
+*'
+*' This switch has only an effect if 21_tax is on and cm_bioenergy_EF_for_tax
+*' is not zero. It reads in the regions that are affected by the
+*' emission-factor-based bioenergy tax. Regions can be read in comma-separated.
+*' Examples:
+*'
+*' * (glob):                 default; all regions
+*' * (EUR):                  only Europe
+*' * (DEU):                  only Germany
+*' * (CAZ,EUR,JPN,NEU,USA):  only these five regions (more or less OECD)
+*'
 $setGlobal cm_regi_bioenergy_EFTax  glob  !! def = glob
-*** cm_tradbio_phaseout "Switch that allows for a faster phase out of traditional biomass"
-***  (default):  Default assumption, reaching zero demand in 2100
-***  (fast):     Fast phase out, starting in 2025 reaching zero demand in 2070 (close to zero in 2060)
+*' cm_tradbio_phaseout "Switch that allows for a faster phase out of traditional biomass"
+*'
+*' * (default):  Default assumption, reaching zero demand in 2100
+*' * (fast):     Fast phase out, starting in 2025 reaching zero demand in 2070 (close to zero in 2060)
+*'
 $setglobal cm_tradbio_phaseout  default  !! def = default  !! regexp = default|fast
-*** cm_maxProdBiolc  "Bound on global pebiolc production including residues but excluding traditionally used biomass [EJ per yr]"
-***  (off):             (default) no bound
-***  (100):             (e.g.) set maximum to 100 EJ per year
-***  (any value ge 0):  set maximum to that value
+*' cm_maxProdBiolc  "Bound on global pebiolc production including residues but excluding traditionally used biomass [EJ per yr]"
+*'
+*' * (off):             (default) no bound
+*' * (100):             (e.g.) set maximum to 100 EJ per year
+*' * (any value ge 0):  set maximum to that value
+*'
 $setglobal cm_maxProdBiolc  off  !! def = off  !! regexp = off|is.nonnegative
 *** cm_bioprod_regi_lim
 *** limit to total biomass production (including residues) by region to an upper value in EJ/yr from 2035 on
