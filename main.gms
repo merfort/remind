@@ -1491,7 +1491,7 @@ $setglobal cm_renewables_floor_cost  off  !! def = off
 ***   def <- "off" = use default p33_dac_fedem value.
 ***   or list of stationary energy carriers with respective value to be multiplied to p33_dac_fedem
 $setglobal cm_DAC_eff  off  !! def = off
-*** cm_33_OAE_lim "Global limit for OAE [tCO2 per yr]"
+*** cm_33_OAE_lim "Global limit for OAE with fixed regional shares based on GDP [tCO2 per yr]"
 ***  (off):             no bound
 ***  (5):               (default) global limit of 5GtCO2 per yr
 ***  (any value ge 0):  set maximum to that value
