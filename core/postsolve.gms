@@ -359,7 +359,7 @@ if (cm_iterative_target_adj eq 9,
 *** constant to 80% of the global average carbon price in the peak year.
       if(c_keepNetZeroCO2afterPeak eq 1,
         if (iteration.val lt 10,
-          loop(t$(sameas(t,c_peakBudgYr)),
+          loop(t$(t.val eq c_peakBudgYr),
              p_taxCO2eq10YearsAfterPeakYear = sum(regi, p_taxCO2eq_until2150(t,regi)) / sum(regi, 1) * 0.8;
           );
         else
@@ -373,7 +373,7 @@ if (cm_iterative_target_adj eq 9,
 *** Default realization, linear carbon price after the peak year with fixed
 *** slope
 	      pm_taxCO2eq(t,regi)$(t.val gt c_peakBudgYr) = p_taxCO2eq_until2150(t2,regi) + (t.val - t2.val) * c_taxCO2inc_after_peakBudgYr * sm_DptCO2_2_TDpGtC;  !! increase by c_taxCO2inc_after_peakBudgYr per year
-      else,
+      else
 *** Optional: if switch is activated, allow for a carbon price drop over the 10
 *** years after the peak year in order to fulfil a net zero budget condition in
 *** the years between the peak year and 2100
@@ -443,7 +443,7 @@ if (cm_iterative_target_adj eq 9,
 		  o_peakBudgYr_Itr(iteration+1) =  pm_ttot_val(ttot - 1);
       if(c_keepNetZeroCO2afterPeak eq 0,  !! default
         pm_taxCO2eq(t,regi)$(t.val gt pm_ttot_val(ttot - 1)) = p_taxCO2eq_until2150(ttot-1,regi) + (t.val - pm_ttot_val(ttot - 1)) * c_taxCO2inc_after_peakBudgYr * sm_DptCO2_2_TDpGtC;  !! increase by c_taxCO2inc_after_peakBudgYr per year after peakBudgYr
-      else,  !! see explanation above
+      else  !! see explanation above
         pm_taxCO2eq(t,regi)$(t.val eq pm_ttot_val(ttot - 1) + 5)  = (p_taxCO2eq_until2150(ttot-1,regi) + p_taxCO2eq10YearsAfterPeakYear) / 2;
         pm_taxCO2eq(t,regi)$(t.val ge pm_ttot_val(ttot - 1) + 10) = p_taxCO2eq10YearsAfterPeakYear;
       );
@@ -463,7 +463,7 @@ if (cm_iterative_target_adj eq 9,
         if(c_keepNetZeroCO2afterPeak eq 0,  !! default
           pm_taxCO2eq(t,regi) = p_taxCO2eq_until2150(ttot+1,regi) 
 			                        + (t.val - pm_ttot_val(ttot + 1)) * c_taxCO2inc_after_peakBudgYr * sm_DptCO2_2_TDpGtC;  !! increase by c_taxCO2inc_after_peakBudgYr per year 
-        else,  !! see explanation above
+        else  !! see explanation above
           pm_taxCO2eq(t,regi)$(t.val eq pm_ttot_val(ttot + 1))      = p_taxCO2eq_until2150(ttot+1,regi);
           pm_taxCO2eq(t,regi)$(t.val eq pm_ttot_val(ttot + 1) + 5)  = (p_taxCO2eq_until2150(ttot+1,regi) + p_taxCO2eq10YearsAfterPeakYear) / 2;
           pm_taxCO2eq(t,regi)$(t.val ge pm_ttot_val(ttot + 1) + 10) = p_taxCO2eq10YearsAfterPeakYear;
@@ -524,7 +524,7 @@ if (cm_iterative_target_adj eq 9,
           display o_factorRescale_taxCO2_afterPeakBudgYr;
           if(c_keepNetZeroCO2afterPeak eq 0,  !! default
 		        pm_taxCO2eq(t,regi)$(t.val gt t2.val) = pm_taxCO2eq(t2,regi) + (t.val - t2.val) * c_taxCO2inc_after_peakBudgYr * sm_DptCO2_2_TDpGtC;  !! increase by c_taxCO2inc_after_peakBudgYr per year
-          else,  !! see explanation above
+          else  !! see explanation above
             pm_taxCO2eq(t,regi)$(t.val eq t2.val + 5)  = (pm_taxCO2eq(t2,regi) + p_taxCO2eq10YearsAfterPeakYear) / 2;
             pm_taxCO2eq(t,regi)$(t.val ge t2.val + 10) = p_taxCO2eq10YearsAfterPeakYear;
           );
