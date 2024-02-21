@@ -33,6 +33,7 @@ p_taxCO2eq_iteration(iteration,ttot,all_regi)       "save CO2eq tax used in iter
 pm_taxCO2eq_iterationdiff(ttot,all_regi)              "help parameter for iterative adjustment of taxes"
 pm_taxCO2eq_iterationdiff_tmp(ttot,all_regi)          "help parameter for iterative adjustment of taxes"
 o_taxCO2eq_iterDiff_Itr(iteration,all_regi) "track p_taxCO2eq_iterationdiff over iterations"
+p_taxCO2eq10YearsAfterPeakYear                        "Level of CO2 tax for all years ten years after the peak year"
 pm_taxemiMkt(ttot,all_regi,all_emiMkt)                "CO2 or CO2eq region and emission market specific emission tax"
 pm_taxemiMkt_iteration(iteration,ttot,all_regi,all_emiMkt) "CO2 or CO2eq region and emission market specific emission tax per iteration"
 pm_emissionsForeign(tall,all_regi,all_enty)          "total emissions of other regions (nash relevant)"
@@ -612,6 +613,8 @@ p_emi_budget1_gdx                                     "budget for global energy-
 
 s_actualbudgetco2                                     "actual level of 2020-2100 cumulated emissions, including all CO2 for last iteration"
 s_actualbudgetco2_last                                "actual level of 2020-2100 cumulated emissions for previous iteration" /0/
+
+s_actualBudgetCO2betweenPeakYearAnd2100               "actual level of cumulated emissions between the peak-year and  2100"
 
 sm_globalBudget_dev                                   "actual level of global cumulated emissions budget divided by target budget"
 
