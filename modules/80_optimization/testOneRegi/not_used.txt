@@ -17,6 +17,7 @@ cm_abortOnConsecFail,           switch,     ???
 cm_nash_autoconverge,           switch,     ???
 cm_emiMktTarget_tolerance,      switch,     not needed
 cm_implicitQttyTarget_tolerance,switch,     not needed
+cm_keepNetZeroCO2afterPeak,     switch,      ???
 sm_eps,                         scalar,     ???
 pm_emissions0,                  parameter,  ???
 pm_co2eq0,                      parameter,  ???
@@ -41,6 +42,7 @@ cm_TaxConvCheck,                variable,   ??
 pm_taxCO2eq_iterationdiff,      input,      ??
 pm_taxCO2eq_iterationdiff_tmp,  input,      ??
 sm_globalBudget_dev,            input,      ??
+sm_actualBudgetCO2betweenPeakYearAnd2100, scalar, ???
 pm_factorRescaleemiMktCO2Tax,   input,      ??
 pm_emiMktTarget,                input,      ??
 pm_emiMktTarget_dev_iter,       input,      ??

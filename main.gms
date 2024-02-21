@@ -964,9 +964,9 @@ parameter
   c_taxCO2inc_after_peakBudgYr = 0; !! def = 0 . For weak targets (higher than 1100 Peak Budget), this value might need to increased to prevent continually increasing temperatures
 *'
 parameter
-  c_keepNetZeroCO2afterPeak "Switch to force cumulative CO2 emissions from the peak year to be zero by 2100"
+  cm_keepNetZeroCO2afterPeak "Switch to force cumulative CO2 emissions from the peak year to be zero by 2100"
 ;
-  c_keepNetZeroCO2afterPeak = 0;   !! def = 0  !! regexp = [0-1]
+  cm_keepNetZeroCO2afterPeak = 0;   !! def = 0  !! regexp = [0-1]
 *' * (0) Default, switch is deactivated
 *' * (1) Activating this switch allows the carbon price to decrease after the
 *'       peak year such that cumulative emissions in 2100 are equal to

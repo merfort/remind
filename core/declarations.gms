@@ -613,7 +613,7 @@ p_emi_budget1_gdx                                     "budget for global energy-
 s_actualbudgetco2                                     "actual level of 2020-2100 cumulated emissions, including all CO2 for last iteration"
 s_actualbudgetco2_last                                "actual level of 2020-2100 cumulated emissions for previous iteration" /0/
 
-s_actualBudgetCO2betweenPeakYearAnd2100               "actual level of cumulated emissions between the peak-year and  2100"
+sm_actualBudgetCO2betweenPeakYearAnd2100              "actual level of cumulated emissions between the peak-year and  2100"
 
 sm_globalBudget_dev                                   "actual level of global cumulated emissions budget divided by target budget"
 

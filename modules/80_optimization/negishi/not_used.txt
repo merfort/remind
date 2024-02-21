@@ -15,6 +15,7 @@ cm_emiMktTarget_tolerance,         switch,      not needed
 cm_implicitQttyTarget_tolerance,   switch,      not needed
 cm_sccConvergence,		   switch,      not needed
 cm_tempConvergence,		   switch,      not needed
+cm_keepNetZeroCO2afterPeak,        switch,      ???
 pm_sccConvergenceMaxDeviation,	   parameter,   ???
 pm_gmt_conv,			   parameter,   ???
 pm_budgetCO2eq,                    parameter,   ???
@@ -53,6 +54,7 @@ sm_endBudgetCO2eq,                 scalar,      ???
 sm_eps,                            scalar,      ???
 sm_fadeoutPriceAnticip,            scalar,      ???
 sm_globalBudget_dev,               input,       questionnaire
+sm_actualBudgetCO2betweenPeakYearAnd2100, scalar, ???
 sm_tmp2,                           scalar,      not needed
 sm_tmp,                            scalar,      not needed
 vm_capacityTradeBalance,           variable,    not implemented yet

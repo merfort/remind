@@ -382,6 +382,16 @@ if (p80_globalBudget_dev_iter(iteration) gt 1.01 OR p80_globalBudget_dev_iter(it
   p80_messageShow("target") = YES;
 );
 
+*** check if global budget between peak year and 2100 is zero, with 1 GtCO2
+*** tolerance
+if (cm_keepNetZeroCO2afterPeak eq 1,
+  p80_globalPostPeakBudget_iter(iteration) = sm_actualBudgetCO2betweenPeakYearAnd2100;
+  if (p80_globalPostPeakBudget_iter(iteration) gt 1 OR p80_globalPostPeakBudget_iter(iteration) lt -1,
+    s80_bool = 0;
+    p80_messageShow("cm_keepNetZeroCO2afterPeak") = YES;
+  );
+);
+
 *** additional criterion: if damage internalization is on, is damage iteration converged?
 p80_sccConvergenceMaxDeviation_iter(iteration) = pm_sccConvergenceMaxDeviation;
 p80_gmt_conv_iter(iteration) = pm_gmt_conv;
@@ -457,6 +467,12 @@ $ifthen.emiMkt not "%cm_emiMktTarget%" == "off"
           display pm_emiMktTarget_dev_iter;
           display pm_taxemiMkt_iteration;
 	      );
+        if(sameas(convMessage80, "cm_keepNetZeroCO2afterPeak"),
+          display "#### 8) A post-peak emissions target in 2100 has not reached yet.";
+          display "#### Check out sm_actualBudgetCO2betweenPeakYearAnd2100 and the (constant) post-peak carbon price p_taxCO2eq10YearsAfterPeakYear.";
+          display "#### Cumulative emissions between the peak year and 2100 should be zero with a tolerance of +/- 1 GtCO2.";
+          display sm_actualBudgetCO2betweenPeakYearAnd2100, p_taxCO2eq10YearsAfterPeakYear;
+        );
 $endif.emiMkt  
 $ifthen.cm_implicitQttyTarget not "%cm_implicitQttyTarget%" == "off"    
         if(sameas(convMessage80, "implicitEnergyTarget"),
@@ -569,6 +585,12 @@ $ifthen.emiMkt not "%cm_emiMktTarget%" == "off"
           display pm_emiMktTarget_dev_iter;
           display pm_taxemiMkt_iteration;
 	      );
+        if(sameas(convMessage80, "cm_keepNetZeroCO2afterPeak"),
+          display "#### 8) A post-peak emissions target in 2100 has not reached yet.";
+          display "#### Check out sm_actualBudgetCO2betweenPeakYearAnd2100 and the (constant) post-peak carbon price p_taxCO2eq10YearsAfterPeakYear.";
+          display "#### Cumulative emissions between the peak year and 2100 should be zero with a tolerance of +/- 1 GtCO2.";
+          display sm_actualBudgetCO2betweenPeakYearAnd2100, p_taxCO2eq10YearsAfterPeakYear;
+        );
 $endif.emiMkt
 $ifthen.cm_implicitQttyTarget not "%cm_implicitQttyTarget%" == "off"    
         if(sameas(convMessage80, "implicitEnergyTarget"),
