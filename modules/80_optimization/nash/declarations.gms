@@ -103,6 +103,7 @@ $ifthen.cm_implicitQttyTarget not "%cm_implicitQttyTarget%" == "off"
 p80_implicitQttyTarget_dev_iter(iteration,ttot,ext_regi,qttyTarget,qttyTargetGroup)      "deviation of current iteration quantity target from target per iteration - relative for total targets, absolute (= share points) for share targets"
 $endif.cm_implicitQttyTarget
 p80_globalBudget_dev_iter(iteration)              "actual level of global cumulated emissions budget divided by target budget per iteration"
+p80_globalPostPeakBudget_dev_iter(iteration)      "deviation between actual level of global cumulated emissions between peak year and 2100 and the target per iteration"
 p80_sccConvergenceMaxDeviation_iter(iteration)    "max deviation of SCC from last iteration [percent] per iteration"
 p80_gmt_conv_iter(iteration)                      "global mean temperature convergence per iteration"
 ; 
