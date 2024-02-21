@@ -1259,6 +1259,25 @@ $setGlobal cm_quantity_regiCO2target  off !! def = off
 *** Example: if set to 10, then the CF of all pe2se technologies can be decreased by up to 10% from the default value
 *** Setting capacity factors free is numerically expensive but can be helpful to see if negative prices disappear in historic years as the model is allowed to dispatch.
 $setGlobal cm_dispatchSetyDown  off   !! def = off  The amount that te producing any sety can dispatch less (in percent) - so setting "20" in a cm_dispatchSetyDown column in scenario_config will allow the model to reduce the output of this te by 20%
+*** cm_postPeakBudgCO2 "The amount of cumulative net CO2 emissions betwen the peak year and 2100 [Gt CO2]"
+***  ("off") No additional condition for post peak-emissions
+***  (0)     Setting this switch to 0 allows the carbon price to decrease after
+***          the peak year such that cumulative emissions in 2100 are equal to
+***          cumulative emissions in the peak year (i.e. net cumulative CO2
+***          emissions between peak year and 2100 are zero). To guarantee
+***          numerical feasibity cumulative emissions may be a bit lower in the
+***          in-between period, though not higher, as this would violate the
+***          peak-budget condition.
+***  (x<0)   Alternatively, this switch can be set to a negative number stating
+***          the global cumulative net negative emissions that should be
+***          achieved after the peak year until the end of the century.
+***          E.g. Setting it to -100 adjusts the post-peak carbon price until
+***          the differnce between cumulative CO2 emissions in the peak year
+***          and in 2100 are exactly 100 Gt CO2.
+***          Please note that the number needs to be 0 or negative. A postive
+***          value would by definition violate the peak-budget condition in the
+***          first place.
+$setGlobal cm_postPeakBudgCO2  off  !! def = off
 *** cm_dispatchSeelDown <- "off", same as cm_dispatchSetyDown but only provides range to capacity factors of electricity generation technologies
 *** cm_steel_secondary_max_share_scenario
 *** defines maximum secondary steel share per region

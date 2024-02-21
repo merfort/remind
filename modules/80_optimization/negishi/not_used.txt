@@ -47,6 +47,7 @@ sm_endBudgetCO2eq,                 scalar,      ???
 sm_eps,                            scalar,      ???
 sm_fadeoutPriceAnticip,            scalar,      ???
 sm_globalBudget_dev,               input,       questionnaire
+sm_actualBudgetCO2betweenPeakYearAnd2100, scalar, ???
 sm_tmp2,                           scalar,      not needed
 sm_tmp,                            scalar,      not needed
 vm_capacityTradeBalance,           variable,    not implemented yet

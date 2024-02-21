@@ -83,8 +83,8 @@ p80_SolNonOpt(all_regi)                    "solve status"
 p80_taxrev_dev(ttot,all_regi)              "deviation of tax revenue normalized by GDP if taxes did not converge"
 
 pm_fuExtrForeign(ttot,all_regi,all_enty,rlf) "foreign fuel extraction"
-p80_taxrev_dev(ttot,all_regi)                "deviation of tax revenue in percent GDP"
-;
+p80_globalPostPeakBudget_dev_iter(iteration) "deviation between actual level of global cumulated emissions between peak year and 2100 and the target per iteration"
+; 
 
 positive variable
 *AJS* Adjustment costs for Nash trade algorithm.  Only non-zero in the Nash_test realization of 80_optimization module.

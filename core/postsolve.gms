@@ -319,7 +319,8 @@ if(cm_iterative_target_adj eq 9,
   p_actualbudgetco2(ttot)$(ttot.val > 2020) = sum(ttot2$(ttot2.val < ttot.val AND ttot2.val > 2020), (sum(regi, (vm_emiTe.l(ttot2,regi,"co2") + vm_emiCdr.l(ttot2,regi,"co2") + vm_emiMac.l(ttot2,regi,"co2"))) * sm_c_2_co2 * pm_ts(ttot2)))
                        + sum(regi, (vm_emiTe.l(ttot,regi,"co2") + vm_emiCdr.l(ttot,regi,"co2") + vm_emiMac.l(ttot,regi,"co2"))) * sm_c_2_co2 * ((pm_ttot_val(ttot)-pm_ttot_val(ttot-1))/2 + 0.5)
                        + sum(regi, (vm_emiTe.l("2020",regi,"co2") + vm_emiCdr.l("2020",regi,"co2") + vm_emiMac.l("2020",regi,"co2"))) * sm_c_2_co2 * (pm_ts("2020")/2 + 0.5);
-  s_actualbudgetco2 = smax(t$(t.val le cm_peakBudgYr),p_actualbudgetco2(t));
+  s_actualbudgetco2 = smax(t$( t.val le cm_peakBudgYr ), p_actualbudgetco2(t));
+  sm_actualBudgetCO2betweenPeakYearAnd2100 = p_actualbudgetco2("2100") - s_actualbudgetco2;
   
   o_peakBudgYr_Itr(iteration) = cm_peakBudgYr;
                   
@@ -359,10 +360,12 @@ if(cm_iterative_target_adj eq 9,
       pm_taxCO2eq_iterationdiff(t,regi) = max(1* sm_DptCO2_2_TDpGtC, pm_taxCO2eq(t,regi) * p_factorRescale_taxCO2_Funneled(iteration) ) - pm_taxCO2eq(t,regi);
       p_taxCO2eq_until2150(t,regi) = max(1* sm_DptCO2_2_TDpGtC, p_taxCO2eq_until2150(t,regi) * p_factorRescale_taxCO2_Funneled(iteration) );
       pm_taxCO2eq(t,regi) = max(1* sm_DptCO2_2_TDpGtC, pm_taxCO2eq(t,regi) * p_factorRescale_taxCO2_Funneled(iteration) );  !! rescale co2tax
-      loop(t2$(t2.val eq cm_peakBudgYr),
-	    pm_taxCO2eq(t,regi)$(t.val gt cm_peakBudgYr) = p_taxCO2eq_until2150(t2,regi) + (t.val - t2.val) * cm_taxCO2inc_after_peakBudgYr * sm_DptCO2_2_TDpGtC;  !! increase by cm_taxCO2inc_after_peakBudgYr per year
-	  );
 
+*** Update post-peak carbon price. Please note that in case a post-peak year
+*** target was defined, this will be overwritten again below
+      loop(t2$(t2.val eq cm_peakBudgYr),
+        pm_taxCO2eq(t,regi)$(t.val gt cm_peakBudgYr) = p_taxCO2eq_until2150(t2,regi) + (t.val - t2.val) * cm_taxCO2inc_after_peakBudgYr * sm_DptCO2_2_TDpGtC;  !! increase by cm_taxCO2inc_after_peakBudgYr per year
+      );
       display p_factorRescale_taxCO2, p_factorRescale_taxCO2_Funneled;
 
       o_taxCO2eq_iterDiff_Itr(iteration,regi) = pm_taxCO2eq_iterationdiff("2030",regi);
@@ -416,8 +419,10 @@ if(cm_iterative_target_adj eq 9,
       loop(ttot$(ttot.val = cm_peakBudgYr),                               !! look at the peak timing
         if(  ( (o_totCO2emi_peakBudgYr(iteration) < -(0.1 + o_change_totCO2emi_peakBudgYr(iteration)) ) AND (cm_peakBudgYr > 2040) ), !! no peaking time before 2040
           display "shift peakBudgYr left";
-		  o_peakBudgYr_Itr(iteration+1) =  pm_ttot_val(ttot - 1);                
-          pm_taxCO2eq(t,regi)$(t.val gt pm_ttot_val(ttot - 1)) = p_taxCO2eq_until2150(ttot-1,regi) + (t.val - pm_ttot_val(ttot - 1)) * cm_taxCO2inc_after_peakBudgYr * sm_DptCO2_2_TDpGtC;  !! increase by cm_taxCO2inc_after_peakBudgYr per year after peakBudgYr
+		  o_peakBudgYr_Itr(iteration+1) =  pm_ttot_val(ttot - 1);
+*** Update post-peak carbon price. Please note that in case a post-peak year
+*** target was defined, this will be overwritten again below
+      pm_taxCO2eq(t,regi)$(t.val gt pm_ttot_val(ttot - 1)) = p_taxCO2eq_until2150(ttot-1,regi) + (t.val - pm_ttot_val(ttot - 1)) * cm_taxCO2inc_after_peakBudgYr * sm_DptCO2_2_TDpGtC;  !! increase by cm_taxCO2inc_after_peakBudgYr per year after peakBudgYr
         
 		elseif ( ( o_totCO2emi_peakBudgYr(iteration) > (0.1 + o_change_totCO2emi_peakBudgYr(iteration)) ) AND (cm_peakBudgYr < 2100) ), !! if peaking time would be after 2100, keep 2100 budget year
           if(  (o_pkBudgYr_flipflop(iteration) eq 1), !! if the target year was just shifted left after being shifted right, and would now be shifted right again
@@ -431,10 +436,12 @@ if(cm_iterative_target_adj eq 9,
 		    display "shift peakBudgYr right";
             o_peakBudgYr_Itr(iteration+1) =  pm_ttot_val(ttot + 1);  !! ttot+1 is the new peakBudgYr
 			loop(t$(t.val ge pm_ttot_val(ttot + 1)),
-              pm_taxCO2eq(t,regi) = p_taxCO2eq_until2150(ttot+1,regi) 
+*** Update post-peak carbon price. Please note that in case a post-peak year
+*** target was defined, this will be overwritten again below
+          pm_taxCO2eq(t,regi) = p_taxCO2eq_until2150(ttot+1,regi) 
 			                        + (t.val - pm_ttot_val(ttot + 1)) * cm_taxCO2inc_after_peakBudgYr * sm_DptCO2_2_TDpGtC;  !! increase by cm_taxCO2inc_after_peakBudgYr per year 
-            );
-		  );
+      );
+		);
         
 		else   !! don't do anything if the peakBudgYr is already at the corner values (2040, 2100) or if the emissions in the peakBudgYr are close enough to 0 (within the range of +/- o_change_totCO2emi_peakBudgYr)
           o_peakBudgYr_Itr(iteration+1) = o_peakBudgYr_Itr(iteration)
@@ -487,8 +494,9 @@ if(cm_iterative_target_adj eq 9,
           );
         
           display o_factorRescale_taxCO2_afterPeakBudgYr;
-		  pm_taxCO2eq(t,regi)$(t.val gt t2.val) = pm_taxCO2eq(t2,regi) + (t.val - t2.val) * cm_taxCO2inc_after_peakBudgYr * sm_DptCO2_2_TDpGtC;  !! increase by cm_taxCO2inc_after_peakBudgYr per year
-		  
+*** Update post-peak carbon price. Please note that in case a post-peak year
+*** target was defined, this will be overwritten again below
+		      pm_taxCO2eq(t,regi)$(t.val gt t2.val) = pm_taxCO2eq(t2,regi) + (t.val - t2.val) * cm_taxCO2inc_after_peakBudgYr * sm_DptCO2_2_TDpGtC;  !! increase by cm_taxCO2inc_after_peakBudgYr per year
         ); !! loop t2$(t2.val eq pm_ttot_val(ttot+1)),  !! set t2 to the following time step
       );  !! loop ttot$(ttot.val eq cm_peakBudgYr),  !! set ttot to the current peakBudgYr 
       cm_peakBudgYr = o_peakBudgYr_Itr(iteration+1);  !! this has to happen outside the loop, otherwise the loop condition might be true twice
@@ -500,6 +508,43 @@ if(cm_iterative_target_adj eq 9,
 	);
 	
     display o_delay_increase_peakBudgYear, o_reached_until2150pricepath, pm_taxCO2eq, o_peakBudgYr_Itr, o_taxCO2eq_afterPeakShiftLoop_Itr_1regi, o_pkBudgYr_flipflop;
+
+$ifthen.cm_postPeakBudgCO2 not "%cm_postPeakBudgCO2%" == "off"
+*** Optional: rescale a constant carbon price after the peak year based on a
+*** post-peak cumulative emissions budget target. This should only start from
+*** the 5th iteration on, in order to let the pre-peak year carbon price first
+*** converge a bit. The assumptions on what happens after the peak typically do
+*** not have a large effect on pre-peak dynamics, though. Before the 5th
+*** iteration, the carbon price is simply set constant to 60% of the global
+*** average carbon price in the peak year.
+
+*** Rescale post-peak carbon price parameter
+    if (iteration.val lt 5,
+      loop(t$(t.val eq cm_peakBudgYr),
+        pm_taxCO2eqPostPeak = sum(regi, p_taxCO2eq_until2150(t,regi)) / sum(regi, 1) * 0.6;
+      );
+    else
+      pm_taxCO2eqPostPeak = pm_taxCO2eqPostPeak *
+        max(0.8, min(1.25, (1 + (sm_actualBudgetCO2betweenPeakYearAnd2100 -1* (%cm_postPeakBudgCO2%)) / 1000) ** 2));
+    );
+
+*** Adjust post-peak carbon prices for all years
+    loop(ttot$(ttot.val eq cm_peakBudgYr),  !! set ttot to the current peakBudgYr 
+      if (o_delay_increase_peakBudgYear(iteration) = 1,
+*** Set carbon price to the long term carbon price for all years after the peak
+*** year except the very next time step. Here the carbon price was increased in
+*** oder to avoid peak-year flip-flopping.
+        loop(t2$(t2.val eq pm_ttot_val(ttot+1)),  !! set t2 to the following time step
+          pm_taxCO2eq(t,regi)$(t.val gt t2.val) = pm_taxCO2eqPostPeak;
+        );
+      else
+*** Set carbon price to the long term carbon price for all years after the peak
+*** year.
+        pm_taxCO2eq(t,regi)$(t.val gt ttot.val) = pm_taxCO2eqPostPeak;
+      );
+    );
+$endif.cm_postPeakBudgCO2
+
   ); !! if cm_emiscen eq 9,
 );   !! if cm_iterative_target_adj eq 8,
 

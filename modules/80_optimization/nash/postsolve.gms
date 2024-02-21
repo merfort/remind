@@ -325,6 +325,15 @@ if (sm_globalBudget_dev gt 1.01 OR sm_globalBudget_dev lt 0.99,
   p80_messageShow("target") = YES;
 );
 
+*** check if global budget between peak year and 2100 is met, with 1 GtCO2
+*** tolerance
+$ifthen.cm_postPeakBudgCO2 not "%cm_postPeakBudgCO2%" == "off"
+  p80_globalPostPeakBudget_dev_iter(iteration) = sm_actualBudgetCO2betweenPeakYearAnd2100 - 1* (%cm_postPeakBudgCO2%);
+  if (p80_globalPostPeakBudget_dev_iter(iteration) gt 1 OR p80_globalPostPeakBudget_dev_iter(iteration) lt -1,
+    s80_bool = 0;
+    p80_messageShow("cm_postPeakBudgCO2") = YES;
+  );
+$endif.cm_postPeakBudgCO2
 
 display "####";
 display "Convergence diagnostics";
@@ -387,7 +396,15 @@ $ifthen.emiMkt not "%cm_emiMktTarget%" == "off"
           display pm_emiMktTarget_dev_iter;
           display pm_taxemiMkt_iteration;
 	      );
-$endif.emiMkt  
+$endif.emiMkt
+$ifthen.cm_postPeakBudgCO2 not "%cm_postPeakBudgCO2%" == "off"
+        if(sameas(convMessage80, "cm_postPeakBudgCO2"),
+          display "#### 8) A post-peak CO2 emissions target in 2100 has not reached yet.";
+          display "#### Check out sm_actualBudgetCO2betweenPeakYearAnd2100 and the (constant) post-peak carbon price pm_taxCO2eqPostPeak.";
+          display "#### Cumulative emissions between the peak year and 2100 should be equal to cm_postPeakBudgCO2 +/- 1 GtCO2.";
+          display sm_actualBudgetCO2betweenPeakYearAnd2100, pm_taxCO2eqPostPeak;
+        );
+$endif.cm_postPeakBudgCO2
 $ifthen.cm_implicitQttyTarget not "%cm_implicitQttyTarget%" == "off"    
         if(sameas(convMessage80, "implicitEnergyTarget"),
 		      display "#### 10) A primary, secondary and/or final energy target has not been reached yet.";
@@ -492,6 +509,14 @@ $ifthen.emiMkt not "%cm_emiMktTarget%" == "off"
           display pm_taxemiMkt_iteration;
 	      );
 $endif.emiMkt
+$ifthen.cm_postPeakBudgCO2 not "%cm_postPeakBudgCO2%" == "off"
+        if(sameas(convMessage80, "cm_postPeakBudgCO2"),
+          display "#### 8) A post-peak CO2 emissions target in 2100 has not reached yet.";
+          display "#### Check out sm_actualBudgetCO2betweenPeakYearAnd2100 and the (constant) post-peak carbon price pm_taxCO2eqPostPeak.";
+          display "#### Cumulative emissions between the peak year and 2100 should be equal to cm_postPeakBudgCO2 +/- 1 GtCO2.";
+          display sm_actualBudgetCO2betweenPeakYearAnd2100, pm_taxCO2eqPostPeak;
+        );
+$endif.cm_postPeakBudgCO2
 $ifthen.cm_implicitQttyTarget not "%cm_implicitQttyTarget%" == "off"    
         if(sameas(convMessage80, "implicitEnergyTarget"),
 		      display "#### 10) A primary, secondary and/or final energy target has not been reached yet.";
