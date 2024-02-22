@@ -467,13 +467,13 @@ $ifthen.emiMkt not "%cm_emiMktTarget%" == "off"
           display pm_emiMktTarget_dev_iter;
           display pm_taxemiMkt_iteration;
 	      );
+$endif.emiMkt
         if(sameas(convMessage80, "cm_keepNetZeroCO2afterPeak"),
           display "#### 8) A post-peak emissions target in 2100 has not reached yet.";
           display "#### Check out sm_actualBudgetCO2betweenPeakYearAnd2100 and the (constant) post-peak carbon price p_taxCO2eq10YearsAfterPeakYear.";
           display "#### Cumulative emissions between the peak year and 2100 should be zero with a tolerance of +/- 1 GtCO2.";
           display sm_actualBudgetCO2betweenPeakYearAnd2100, p_taxCO2eq10YearsAfterPeakYear;
         );
-$endif.emiMkt  
 $ifthen.cm_implicitQttyTarget not "%cm_implicitQttyTarget%" == "off"    
         if(sameas(convMessage80, "implicitEnergyTarget"),
 		      display "#### 10) A quantity target has not been reached yet.";
@@ -585,13 +585,13 @@ $ifthen.emiMkt not "%cm_emiMktTarget%" == "off"
           display pm_emiMktTarget_dev_iter;
           display pm_taxemiMkt_iteration;
 	      );
+$endif.emiMkt
         if(sameas(convMessage80, "cm_keepNetZeroCO2afterPeak"),
           display "#### 8) A post-peak emissions target in 2100 has not reached yet.";
           display "#### Check out sm_actualBudgetCO2betweenPeakYearAnd2100 and the (constant) post-peak carbon price p_taxCO2eq10YearsAfterPeakYear.";
           display "#### Cumulative emissions between the peak year and 2100 should be zero with a tolerance of +/- 1 GtCO2.";
           display sm_actualBudgetCO2betweenPeakYearAnd2100, p_taxCO2eq10YearsAfterPeakYear;
         );
-$endif.emiMkt
 $ifthen.cm_implicitQttyTarget not "%cm_implicitQttyTarget%" == "off"    
         if(sameas(convMessage80, "implicitEnergyTarget"),
 		      display "#### 10) A quantity target has not been reached yet.";
