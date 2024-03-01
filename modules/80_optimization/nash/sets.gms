@@ -30,7 +30,7 @@ solvestat, modelstat, resusd, objval
 
 convMessage80   "contains all convergence criteria"
 /
-infes,surplus,nonopt,taxconv,anticip,target,regiTarget,implicitEnergyTarget,cm_implicitPriceTarget,cm_implicitPePriceTarget,damage,DevPriceAnticip,cm_keepNetZeroCO2afterPeak
+infes,surplus,nonopt,taxconv,anticip,target,regiTarget,implicitEnergyTarget,cm_implicitPriceTarget,cm_implicitPePriceTarget,damage,DevPriceAnticip,cm_postPeakBudgCO2
 /
 nash_sol_itr80  "nash iterations"
 /

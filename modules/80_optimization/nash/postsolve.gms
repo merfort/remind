@@ -382,15 +382,15 @@ if (p80_globalBudget_dev_iter(iteration) gt 1.01 OR p80_globalBudget_dev_iter(it
   p80_messageShow("target") = YES;
 );
 
-*** check if global budget between peak year and 2100 is zero, with 1 GtCO2
+*** check if global budget between peak year and 2100 is met, with 1 GtCO2
 *** tolerance
-if (cm_keepNetZeroCO2afterPeak eq 1,
-  p80_globalPostPeakBudget_iter(iteration) = sm_actualBudgetCO2betweenPeakYearAnd2100;
-  if (p80_globalPostPeakBudget_iter(iteration) gt 1 OR p80_globalPostPeakBudget_iter(iteration) lt -1,
+$ifthen.cm_postPeakBudgCO2 not "%cm_postPeakBudgCO2%" == "off"
+  p80_globalPostPeakBudget_dev_iter(iteration) = sm_actualBudgetCO2betweenPeakYearAnd2100 - 1* (%cm_postPeakBudgCO2%);
+  if (p80_globalPostPeakBudget_dev_iter(iteration) gt 1 OR p80_globalPostPeakBudget_dev_iter(iteration) lt -1,
     s80_bool = 0;
-    p80_messageShow("cm_keepNetZeroCO2afterPeak") = YES;
+    p80_messageShow("cm_postPeakBudgCO2") = YES;
   );
-);
+$endif.cm_postPeakBudgCO2
 
 *** additional criterion: if damage internalization is on, is damage iteration converged?
 p80_sccConvergenceMaxDeviation_iter(iteration) = pm_sccConvergenceMaxDeviation;
@@ -468,12 +468,14 @@ $ifthen.emiMkt not "%cm_emiMktTarget%" == "off"
           display pm_taxemiMkt_iteration;
 	      );
 $endif.emiMkt
-        if(sameas(convMessage80, "cm_keepNetZeroCO2afterPeak"),
-          display "#### 8) A post-peak emissions target in 2100 has not reached yet.";
-          display "#### Check out sm_actualBudgetCO2betweenPeakYearAnd2100 and the (constant) post-peak carbon price p_taxCO2eq10YearsAfterPeakYear.";
-          display "#### Cumulative emissions between the peak year and 2100 should be zero with a tolerance of +/- 1 GtCO2.";
-          display sm_actualBudgetCO2betweenPeakYearAnd2100, p_taxCO2eq10YearsAfterPeakYear;
+$ifthen.cm_postPeakBudgCO2 not "%cm_postPeakBudgCO2%" == "off"
+        if(sameas(convMessage80, "cm_postPeakBudgCO2"),
+          display "#### 8) A post-peak CO2 emissions target in 2100 has not reached yet.";
+          display "#### Check out sm_actualBudgetCO2betweenPeakYearAnd2100 and the (constant) post-peak carbon price pm_taxCO2eqPostPeak.";
+          display "#### Cumulative emissions between the peak year and 2100 should be equal to cm_postPeakBudgCO2 +/- 1 GtCO2.";
+          display sm_actualBudgetCO2betweenPeakYearAnd2100, pm_taxCO2eqPostPeak;
         );
+$endif.cm_postPeakBudgCO2
 $ifthen.cm_implicitQttyTarget not "%cm_implicitQttyTarget%" == "off"    
         if(sameas(convMessage80, "implicitEnergyTarget"),
 		      display "#### 10) A quantity target has not been reached yet.";
@@ -586,12 +588,14 @@ $ifthen.emiMkt not "%cm_emiMktTarget%" == "off"
           display pm_taxemiMkt_iteration;
 	      );
 $endif.emiMkt
-        if(sameas(convMessage80, "cm_keepNetZeroCO2afterPeak"),
-          display "#### 8) A post-peak emissions target in 2100 has not reached yet.";
-          display "#### Check out sm_actualBudgetCO2betweenPeakYearAnd2100 and the (constant) post-peak carbon price p_taxCO2eq10YearsAfterPeakYear.";
-          display "#### Cumulative emissions between the peak year and 2100 should be zero with a tolerance of +/- 1 GtCO2.";
-          display sm_actualBudgetCO2betweenPeakYearAnd2100, p_taxCO2eq10YearsAfterPeakYear;
+$ifthen.cm_postPeakBudgCO2 not "%cm_postPeakBudgCO2%" == "off"
+        if(sameas(convMessage80, "cm_postPeakBudgCO2"),
+          display "#### 8) A post-peak CO2 emissions target in 2100 has not reached yet.";
+          display "#### Check out sm_actualBudgetCO2betweenPeakYearAnd2100 and the (constant) post-peak carbon price pm_taxCO2eqPostPeak.";
+          display "#### Cumulative emissions between the peak year and 2100 should be equal to cm_postPeakBudgCO2 +/- 1 GtCO2.";
+          display sm_actualBudgetCO2betweenPeakYearAnd2100, pm_taxCO2eqPostPeak;
         );
+$endif.cm_postPeakBudgCO2
 $ifthen.cm_implicitQttyTarget not "%cm_implicitQttyTarget%" == "off"    
         if(sameas(convMessage80, "implicitEnergyTarget"),
 		      display "#### 10) A quantity target has not been reached yet.";

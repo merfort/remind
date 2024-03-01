@@ -15,7 +15,6 @@ cm_emiMktTarget_tolerance,         switch,      not needed
 cm_implicitQttyTarget_tolerance,   switch,      not needed
 cm_sccConvergence,		   switch,      not needed
 cm_tempConvergence,		   switch,      not needed
-cm_keepNetZeroCO2afterPeak,        switch,      ???
 pm_sccConvergenceMaxDeviation,	   parameter,   ???
 pm_gmt_conv,			   parameter,   ???
 pm_budgetCO2eq,                    parameter,   ???
