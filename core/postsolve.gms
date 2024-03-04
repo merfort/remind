@@ -515,7 +515,7 @@ $ifthen.cm_postPeakBudgCO2 not "%cm_postPeakBudgCO2%" == "off"
       );
     else
       pm_taxCO2eqPostPeak = pm_taxCO2eqPostPeak *
-        max(0.8, min(1.25, (1 + (sm_actualBudgetCO2betweenPeakYearAnd2100 -1* (%cm_postPeakBudgCO2%)) / 1000) ** 2));
+        max(0.9, min(1.1, 1 + (sm_actualBudgetCO2betweenPeakYearAnd2100 -1* (%cm_postPeakBudgCO2%)) / 1000)) ** 2;
     );
 
 *** Adjust post-peak carbon prices for all years
