@@ -60,7 +60,7 @@ create_input_for_45_carbonprice_exogenous<-function(gdx){
    
   cat("*** EOF ",p_fpath,"\n", file = p_fpath, sep = "", append = TRUE)
   
-  load_all("/p/tmp/katarkow/remind2/rebased-cdr-portfolio-oae")
+  load_all("/p/projects/rescue/tier1_scenarios/v2/libraries/remind2_oae")
 
 
 }
