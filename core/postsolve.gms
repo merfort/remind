@@ -511,26 +511,19 @@ $ifthen.cm_postPeakBudgCO2 not "%cm_postPeakBudgCO2%" == "off"
 *** Rescale post-peak carbon price parameter
     if (iteration.val lt 5,
       loop(t$(t.val eq c_peakBudgYr),
-        pm_taxCO2eqPostPeak = sum(regi, p_taxCO2eq_until2150(t,regi)) / sum(regi, 1) * 0.6;
+        pm_taxCO2eqPostPeak = sum(regi, p_taxCO2eq_until2150(t,regi)) / sum(regi, 1) * 0.3;
       );
     else
       pm_taxCO2eqPostPeak = pm_taxCO2eqPostPeak *
-        max(0.9, min(1.1, 1 + (sm_actualBudgetCO2betweenPeakYearAnd2100 -1* (%cm_postPeakBudgCO2%)) / 1000)) ** 2;
+        max(0.95, min(1.05, 1 + (sm_actualBudgetCO2betweenPeakYearAnd2100 -1* (%cm_postPeakBudgCO2%)) / 3000)) ** 2;
     );
 
-*** Adjust post-peak carbon prices for all years
-    loop(ttot$(ttot.val eq c_peakBudgYr),  !! set ttot to the current peakBudgYr 
-      if (o_delay_increase_peakBudgYear(iteration) = 1,
 *** Set carbon price to the long term carbon price for all years after the peak
-*** year except the very next time step. Here the carbon price was increased in
-*** oder to avoid peak-year flip-flopping.
-        loop(t2$(t2.val eq pm_ttot_val(ttot+1)),  !! set t2 to the following time step
-          pm_taxCO2eq(t,regi)$(t.val gt t2.val) = pm_taxCO2eqPostPeak;
-        );
-      else
-*** Set carbon price to the long term carbon price for all years after the peak
-*** year.
-        pm_taxCO2eq(t,regi)$(t.val gt ttot.val) = pm_taxCO2eqPostPeak;
+*** year except the very next time step. Here the carbon price may have been
+*** increased to guarantee that the peak budget is really not exceeded.
+    loop(ttot$(ttot.val eq c_peakBudgYr),  !! set ttot to the current peakBudgYr
+      loop(t2$(t2.val eq pm_ttot_val(ttot+1)),  !! set t2 to the following time step
+        pm_taxCO2eq(t,regi)$(t.val gt t2.val) = pm_taxCO2eqPostPeak;
       );
     );
 $endif.cm_postPeakBudgCO2
