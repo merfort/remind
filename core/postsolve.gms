@@ -467,16 +467,13 @@ if(cm_iterative_target_adj eq 9,
             o_delay_increase_peakBudgYear(iteration+1) = 0;  !! probably is not necessary
             o_reached_until2150pricepath(iteration) = 0;
             o_peakBudgYr_Itr(iteration+1) = t2.val;        !! shift PeakBudgYear to the following time step
-            cm_peakBudgYr = o_peakBudgYr_Itr(iteration+1);
             pm_taxCO2eq(t2,regi) = p_taxCO2eq_until2150(t2,regi) ;  !! set CO2 price in t2 to value in the "continuous path"
       
-            display cm_peakBudgYr;
 		  elseif ( ( o_reached_until2150pricepath(iteration-1) eq 1 ) AND ( o_totCO2emi_peakBudgYr(iteration) < (0.1 + o_change_totCO2emi_peakBudgYr(iteration)) ) ), 
             display "New intermediate price in timestep after cm_peakBudgYr is sufficient to stabilize peaking year - go back to normal loop";	
 			o_delay_increase_peakBudgYear(iteration+1) = 0;  !! probably is not necessary
             o_reached_until2150pricepath(iteration) = 0;
 			o_peakBudgYr_Itr(iteration+1) = o_peakBudgYr_Itr(iteration);  
-            cm_peakBudgYr = o_peakBudgYr_Itr(iteration+1);
           else      !! either didn't reach the continued "until2150"-price path in last iteration, or the increase was high enough to get emissions to 0. 
 		            !! in this case, keep PeakBudgYr, and adjust the price in the year after the peakBudgYr to get emissions close to 0,
 			o_delay_increase_peakBudgYear(iteration+1) = 1; !! make sure next iteration peakBudgYr is not shifted right again
@@ -500,6 +497,7 @@ if(cm_iterative_target_adj eq 9,
         ); !! loop t2$(t2.val eq pm_ttot_val(ttot+1)),  !! set t2 to the following time step
       );  !! loop ttot$(ttot.val eq cm_peakBudgYr),  !! set ttot to the current peakBudgYr 
       cm_peakBudgYr = o_peakBudgYr_Itr(iteration+1);  !! this has to happen outside the loop, otherwise the loop condition might be true twice
+      display cm_peakBudgYr;
     ); !! if o_delay_increase_peakBudgYear(iteration) = 1,   !! if there was a flip-floping in the previous iterations, try to solve this
 	
 	
