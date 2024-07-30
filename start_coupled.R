@@ -170,6 +170,24 @@ start_coupled <- function(path_remind, path_magpie, cfg_rem, cfg_mag, runname, m
           if (as.numeric(modstat$o_modelstat$val)!=2 && as.numeric(modstat$o_modelstat$val)!=7) stop("Iteration stopped! REMIND o_modelstat was ",modstat," but is required to be 2 or 7.\n")
         } else if (cfg_rem$gms$optimization == "nash") {
           if (as.numeric(modstat$s80_bool$val)!=1) message("Warning: REMIND s80_bool not 1. Iteration continued though.")
+
+          # Check if post-peak budget constraint was fulfilled and stop if not.
+          pp_dev <- readGDX(paste0(outfolder_rem,"/fulldata.gdx"),types="parameters",format="raw","p80_globalPostPeakBudget_dev_iter")
+          it_last_pp_dev <- pp_dev$p80_globalPostPeakBudget_dev_iter$val[nrow(pp_dev$p80_globalPostPeakBudget_dev_iter$val),1]
+          it_last <- as.numeric(readGDX(paste0(outfolder_rem,"/fulldata.gdx"),types="parameters","o_iterationNumber"))
+          pp_dev_last_it <- pp_dev$p80_globalPostPeakBudget_dev_iter$val[nrow(pp_dev$p80_globalPostPeakBudget_dev_iter$val),2]
+          # A violation of that constrain is only happening if the target
+          # deviation is too large in the last iteration. This iteration check
+          # is required, since p80_globalPostPeakBudget_dev_iter is not filled
+          # in an iteration, where the deviation is exactly zero.
+          # Also, it should only be checked, if this there is actually a
+          # post-peak target set. If not, it_last_pp_dev will evaluate to
+          # numeric(0).
+          if (abs(pp_dev_last_it) > 1 && (it_last_pp_dev == it_last) && !(identical(it_last_pp_dev, numeric(0)))) stop(
+            "Post-peak budget constraint not fulfilled! p80_globalPostPeakBudget_dev_iter =",
+            pp_dev_last_it, " in the last iteration (",
+            it_last_pp_dev, ") but its absolute value is required to be less than 1.\n"
+          )
         }
       } else if (file.exists(paste0(outfolder_rem,"/non_optimal.gdx"))) {
         stop("### COUPLING ### REMIND didn't find an optimal solution. Coupling iteration stopped!")
@@ -209,7 +227,7 @@ start_coupled <- function(path_remind, path_magpie, cfg_rem, cfg_mag, runname, m
     cfg_mag$results_folder <- paste0("output/",runname,"-mag-",i)
     cfg_mag$title          <- paste0(runname,"-mag-",i)
     if (!is.null(renv::project())) {
-      cfg_mag$renv_lock <- normalizePath(file.path(path_remind, cfg_rem$results_folder, "renv.lock"))
+      cfg_mag$renv_lock <- normalizePath(file.path(path_magpie, "renv.lock"))
     }
 
     if (magpie_empty) {
