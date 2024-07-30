@@ -530,14 +530,19 @@ $ifthen.cm_postPeakBudgCO2 not "%cm_postPeakBudgCO2%" == "off"
 *** year except the very next time step. Here the carbon price may have been
 *** increased to guarantee that the peak budget is really not exceeded.
     loop(ttot$(ttot.val eq cm_peakBudgYr),  !! set ttot to the current peakBudgYr
-      loop(t2$(t2.val eq pm_ttot_val(ttot+1)),  !! set t2 to the following time step
-        pm_taxCO2eq(t,regi)$(t.val gt t2.val) = pm_taxCO2eqPostPeak;
+      loop(t2$(t2.val eq pm_ttot_val(ttot+2)),  !! set t2 two time steps behind the peak year
+*** Linearly decrease carbon price from the value derived above (which will be
+*** applied in exactly the time step two time steps behind the peak year) to
+*** the 2100 carbon price of 0.44 (0.44 T$/GtC = 120 $/tCO2), which appears to
+*** be a good long term convergence point to approximately kepp net-zero CO2 emissions.
+        pm_taxCO2eq(t,regi)$(t.val ge t2.val AND t.val lt 2100) = pm_taxCO2eqPostPeak * (2100 - t.val) / (2100 - t2.val) + 0.44 * (t.val - t2.val)  / (2100 - t2.val);
       );
     );
+    pm_taxCO2eq(t,regi)$(t.val ge 2100) = 0.44;
 $endif.cm_postPeakBudgCO2
 
   ); !! if cm_emiscen eq 9,
-);   !! if cm_iterative_target_adj eq 8,
+);   !! if cm_iterative_target_adj eq 9,
 
 ***------ end of "cm_iterative_target_adj" variants-----------------------------------------
 
