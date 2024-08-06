@@ -112,7 +112,7 @@ display s_actualbudgetco2;
 				                      max(pm_taxCO2eq_iterationdiff(t,regi) * min(max((c_budgetCO2from2020 - s_actualbudgetco2)/(s_actualbudgetco2 - s_actualbudgetco2_last),-2),2),-pm_taxCO2eq(t,regi)/2);
 			    pm_taxCO2eq_iterationdiff(t,regi) = pm_taxCO2eq_iterationdiff_tmp(t,regi);
 			);
-      o_taxCO2eq_iterDiff_Itr(iteration,regi) = pm_taxCO2eq_iterationdiff("2030",regi);
+      o_taxCO2eq_iterDiff_Itr(iteration,regi) = pm_taxCO2eq_iterationdiff("2050",regi);
 		else
 			if(s_actualbudgetco2 > 0 or abs(c_budgetCO2from2020 - s_actualbudgetco2) < 2, !! if model was not optimal, or if budget already reached, keep tax constant
 				pm_taxCO2eq(t,regi) = pm_taxCO2eq(t,regi);
@@ -121,7 +121,7 @@ display s_actualbudgetco2;
 *** if budget has turned negative, reduce CO2 price by 20%
 				pm_taxCO2eq_iterationdiff(t,regi) = -0.2*pm_taxCO2eq(t,regi);
 				pm_taxCO2eq(t,regi) = pm_taxCO2eq(t,regi) + pm_taxCO2eq_iterationdiff(t,regi);
-				o_taxCO2eq_iterDiff_Itr(iteration,regi) = pm_taxCO2eq_iterationdiff("2030",regi);
+				o_taxCO2eq_iterDiff_Itr(iteration,regi) = pm_taxCO2eq_iterationdiff("2050",regi);
 			);	
 		);
 		display o_taxCO2eq_iterDiff_Itr;
