@@ -95,8 +95,8 @@ display s_actualbudgetco2;
 		display sm_budgetCO2eqGlob;
 	elseif cm_emiscen eq 9,
 		display pm_taxCO2eq;
-	    if(o_modelstat eq 2 AND ord(iteration)<cm_iteration_max AND s_actualbudgetco2 > 0 AND abs(c_budgetCO2from2020 - s_actualbudgetco2) ge 0.5,   !!only for optimal iterations, and not after the last one, and only if budget still possitive, and only if target not yet reached
-		  sm_globalBudget_dev = s_actualbudgetco2 / c_budgetCO2from2020; 
+      sm_globalBudget_dev = s_actualbudgetco2 / c_budgetCO2from2020;
+	    if(o_modelstat eq 2 AND ord(iteration)<cm_iteration_max AND s_actualbudgetco2 > 0,   !!only for optimal iterations, and not after the last one, and only if budget still possitive
 *** make sure that iteration converges: 
 *** use multiplicative for budgets higher than 1200 Gt; for lower budgets, use multiplicative adjustment only for first 3 iterations, 
 			if(ord(iteration) lt 3 or c_budgetCO2from2020 > 1200,
