@@ -1,4 +1,4 @@
-# |  (C) 2006-2022 Potsdam Institute for Climate Impact Research (PIK)
+# |  (C) 2006-2024 Potsdam Institute for Climate Impact Research (PIK)
 # |  authors, and contributors see CITATION.cff file. This file is part
 # |  of REMIND and licensed under AGPL-3.0-or-later. Under Section 7 of
 # |  AGPL-3.0, you are granted additional permissions described in the
@@ -6,21 +6,23 @@
 # |  Contact: remind@pik-potsdam.de
 
 create_input_for_45_carbonprice_exogenous<-function(gdx){
-  
+ 
   library(luplot,quietly=TRUE,warn.conflicts =FALSE)
   library(gms,quietly=TRUE,warn.conflicts =FALSE)
   require(remind2,quietly = TRUE,warn.conflicts =FALSE)
-  
+ 
   p_fpath <- "./modules/45_carbonprice/exogenous/input/p45_tau_co2_tax.inc"
-  
+ 
   # ---- Read data ----
-  
+ 
   if (file.exists(gdx)) {
     pr <- reportPrices(gdx)
   } else {
     stop("No gdx file found to take the carbon price from - please provide gdx from a reference run in path_gdx_carbonprice in scenario_config file.")
   }
-  
+
+  if (! dir.exists(dirname(p_fpath))) dir.create(dirname(p_fpath), recursive = TRUE)
+ 
   # ---- Convert data ----
   
   #select right temporal/variable scope 
@@ -40,7 +42,7 @@ create_input_for_45_carbonprice_exogenous<-function(gdx){
   cat("*=              Exogenous CO2 tax level                      =*\n", file = p_fpath, append = TRUE)
   cat("*=============================================================*\n", file = p_fpath, append = TRUE)
   cat("*= author: dklein@pik-potsdam.de                             =*\n", file = p_fpath, append = TRUE)
-  cat(paste("*= date  : ", Sys.time(), "                               =*\n", sep=""), file = p_fpath, append = TRUE)
+  cat(paste("*= date  : ", round(Sys.time()), "                               =*\n", sep=""), file = p_fpath, append = TRUE)
   cat("*= generated with:                                           =*\n", file = p_fpath, append = TRUE)
   cat("*= scripts/input/create_input_for_45_carbonprice_exogenous.R =*\n", file = p_fpath, append = TRUE)
   cat(paste0("*= from file: ", normalizePath(gdx), " =*\n"), file = p_fpath, append = TRUE)

@@ -1,4 +1,4 @@
-# |  (C) 2006-2022 Potsdam Institute for Climate Impact Research (PIK)
+# |  (C) 2006-2024 Potsdam Institute for Climate Impact Research (PIK)
 # |  authors, and contributors see CITATION.cff file. This file is part
 # |  of REMIND and licensed under AGPL-3.0-or-later. Under Section 7 of
 # |  AGPL-3.0, you are granted additional permissions described in the
@@ -32,7 +32,8 @@ submit <- function(cfg, restart = FALSE, stopOnFolderCreateError = TRUE) {
       if (stopOnFolderCreateError) {
         stop(couldnotdelete, ".")
       } else if (! all(grepl("^log*.txt", list.files(cfg$results_folder)))) {
-        stop(couldnotdelete, " and it contains not only log files.")
+        message(couldnotdelete, " and it contains not only log files. ",
+                "Probably the slurm job was aborted and restarted.")
       } else {
         message(couldnotdelete, " containing only log files as expected for coupled runs.")
       }
@@ -45,9 +46,10 @@ submit <- function(cfg, restart = FALSE, stopOnFolderCreateError = TRUE) {
     if (is.null(renv::project())) {
       warning("No active renv project found, not using renv.")
     } else {
-      # we only want to run renv checks/updates in the first run in a cascade, which can be
-      # detected like this
-      firstRunInCascade <- normalizePath(renv::project()) == normalizePath(".")
+      # we only want to run renv checks/updates in the first run in a cascade:
+      # cfg$renvLockFromPrecedingRun is only NULL for the first run in a cascade.
+      # For a subsequent run it has been set by the parent run in run.R (standalone) or start_coupled.R (coupled).
+      firstRunInCascade <- is.null(cfg$renvLockFromPrecedingRun)
       if (firstRunInCascade) {
         if (getOption("autoRenvUpdates", FALSE)) {
           installedUpdates <- piamenv::updateRenv()
@@ -60,16 +62,22 @@ submit <- function(cfg, restart = FALSE, stopOnFolderCreateError = TRUE) {
         message("   Generating lockfile '", file.path(cfg$results_folder, "renv.lock"), "'... ", appendLF = FALSE)
         # suppress output of renv::snapshot
         utils::capture.output({
-          utils::capture.output({
-            # snapshot current main renv into run folder
-            renv::snapshot(lockfile = file.path(cfg$results_folder, "_renv.lock"), prompt = FALSE)
+          errorMessage <- utils::capture.output({
+            snapshotSuccess <- tryCatch({
+              # snapshot current main renv into run folder
+              renv::snapshot(lockfile = file.path(cfg$results_folder, "_renv.lock"), prompt = FALSE)
+              TRUE
+            }, error = function(error) FALSE)
           }, type = "message")
         })
+        if (!snapshotSuccess) {
+          stop(paste(errorMessage, collapse = "\n"))
+        }
         message("done.")
       } else {
         # a run renv is loaded, we are presumably starting new run in a cascade
-        message("Copying lockfile into '", cfg$results_folder, "'")
-        file.copy(renv::paths$lockfile(), file.path(cfg$results_folder, "_renv.lock"))
+        message("   Copying lockfile '",cfg$renvLockFromPrecedingRun,"' into '", cfg$results_folder, "'")
+        file.copy(cfg$renvLockFromPrecedingRun, file.path(cfg$results_folder, "_renv.lock"))
       }
 
 
@@ -86,6 +94,13 @@ submit <- function(cfg, restart = FALSE, stopOnFolderCreateError = TRUE) {
                wd = cfg$results_folder,
                env = c(RENV_PATHS_LIBRARY = "renv/library"),
                stdout = renvLogPath, stderr = "2>&1")
+    }
+
+    if (cfg$pythonEnabled == "on") {
+      piamenv::createResultsfolderPythonVirtualEnv(normalizePath(cfg$results_folder))
+    } else {
+      # create empty .venv folder so that new venv won't be initialized automatically by .Rprofile
+      dir.create(file.path(cfg$results_folder, ".venv"))
     }
 
     # Save the cfg (with the updated name of the result folder) into the results folder.
@@ -116,8 +131,8 @@ submit <- function(cfg, restart = FALSE, stopOnFolderCreateError = TRUE) {
   } else {
     exitCode <- system(paste0("sbatch --job-name=",
                               cfg$title,
-                              " --output=log.txt",
-                              " --mail-type=END",
+                              " --output=log.txt --open-mode=append", # append for requeued jobs
+                              " --mail-type=END,FAIL",
                               " --comment=REMIND",
                               " --wrap=\"Rscript prepareAndRun.R \" ",
                               cfg$slurmConfig))

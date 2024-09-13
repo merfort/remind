@@ -1,6 +1,6 @@
 {
   "title": "REMIND - REgional Model of INvestments and Development",
-  "version": "3.1.0",
+  "version": "3.3.2",
   "creators": [
     {
       "name": "Luderer, Gunnar",
@@ -57,7 +57,7 @@
       "affiliation": "Potsdam Institute for Climate Impact Research"
     },
     {
-      "name": "Dietrich, Jan",
+      "name": "Dietrich, Jan Philipp",
       "affiliation": "Potsdam Institute for Climate Impact Research",
       "orcid": "0000-0002-4309-6431"
     },
@@ -65,6 +65,11 @@
       "name": "Dirnaichner, Alois",
       "affiliation": "Potsdam Institute for Climate Impact Research",
       "orcid": "0000-0002-3240-2608"
+    },
+    {
+      "name": "Fuchs, Sophie",
+      "affiliation": "Potsdam Institute for Climate Impact Research",
+      "orcid": "0009-0000-7258-1287"
     },
     {
       "name": "Führlich, Pascal",
@@ -100,11 +105,18 @@
     },
     {
       "name": "Klein, David",
-      "affiliation": "Potsdam Institute for Climate Impact Research"
+      "affiliation": "Potsdam Institute for Climate Impact Research",
+      "orcid": "0009-0001-7917-8041"
     },
     {
       "name": "Koch, Johannes",
-      "affiliation": "Potsdam Institute for Climate Impact Research"
+      "affiliation": "Potsdam Institute for Climate Impact Research",
+      "orcid": "0000-0003-2920-8086"
+    },
+    {
+      "name": "Köhler-Schindler, Laurin",
+      "affiliation": "Potsdam Institute for Climate Impact Research",
+      "orcid": "0000-0003-4268-3084"
     },
     {
       "name": "Körner, Alexander"
@@ -132,7 +144,13 @@
     },
     {
       "name": "Malik, Aman",
-      "affiliation": "Potsdam Institute for Climate Impact Research"
+      "affiliation": "Potsdam Institute for Climate Impact Research",
+      "orcid": "0000-0002-7310-8448"
+    },
+    {
+      "name": "Mandaroux, Rahel",
+      "affiliation": "Potsdam Institute for Climate Impact Research",
+      "orcid": "0000-0001-5596-2571"
     },
     {
       "name": "Manger, Susanne"
@@ -162,7 +180,8 @@
     },
     {
       "name": "Pehl, Michaja",
-      "affiliation": "Potsdam Institute for Climate Impact Research"
+      "affiliation": "Potsdam Institute for Climate Impact Research",
+      "orcid": "0000-0003-2349-6515"
     },
     {
       "name": "Pflüger, Mika",
@@ -195,6 +214,10 @@
     },
     {
       "name": "Rottoli, Marianna",
+      "affiliation": "Potsdam Institute for Climate Impact Research"
+    },
+    {
+      "name": "Rüter, Tonn",
       "affiliation": "Potsdam Institute for Climate Impact Research"
     },
     {
@@ -238,5 +261,5 @@
   "license": {
     "id": "AGPL-3.0-or-later"
   },
-  "publication_date": "2023-02-10"
+  "publication_date": "2024-07-04"
 }

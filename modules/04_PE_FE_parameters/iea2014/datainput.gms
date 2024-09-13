@@ -1,4 +1,4 @@
-*** |  (C) 2006-2022 Potsdam Institute for Climate Impact Research (PIK)
+*** |  (C) 2006-2024 Potsdam Institute for Climate Impact Research (PIK)
 *** |  authors, and contributors see CITATION.cff file. This file is part
 *** |  of REMIND and licensed under AGPL-3.0-or-later. Under Section 7 of
 *** |  AGPL-3.0, you are granted additional permissions described in the
@@ -20,7 +20,7 @@ if (smin((t,regi,pe2se(entyPe,entySe,te)), f04_IO_input(t,regi,entyPe,entySe,te)
   loop ((t,regi,pe2se(entyPe,entySe,te)),
     if (f04_IO_input(t,regi,entyPe,entySe,te) lt 0,
       put_utility "msg" /
-	f04_IO_input.tn(t,regi,entyPE,entySE,te), " = ",
+	f04_IO_input.tn(t,regi,entyPe,entySe,te), " = ",
         f04_IO_input(t,regi,entyPe,entySe,te):10:8;
     );
   );
@@ -47,7 +47,7 @@ if (smin((t,regi,pe2se(entyPe,entySe,te)), f04_IO_output(t,regi,entyPe,entySe,te
   loop ((t,regi,pe2se(entyPe,entySe,te)),
     if (f04_IO_output(t,regi,entyPe,entySe,te) lt 0,
      put_utility "msg" /
-       f04_IO_output.tn(t,regi,entyPE,entySE, te), " = ",
+       f04_IO_output.tn(t,regi,entyPe,entySe, te), " = ",
        f04_IO_output(t,regi,entyPe,entySe,te):10:8;
     );
   );
@@ -164,8 +164,8 @@ $endif.subsectors
 f04_IO_input(ttot,regi,all_enty,all_enty2,all_te) = f04_IO_input(ttot,regi,all_enty,all_enty2,all_te) * sm_EJ_2_TWa;
 f04_IO_output(ttot,regi,all_enty,all_enty2,all_te) = f04_IO_output(ttot,regi,all_enty,all_enty2,all_te) * sm_EJ_2_TWa;
 
-*** calculate bio share per carrier for buildings and industry (only for historically available years)
-pm_secBioShare(ttot,regi,entyFe,sector)$((sameas(entyFE,"fegas") or sameas(entyFE,"fehos") or sameas(entyFE,"fesos")) and entyFe2Sector(entyFe,sector)  and (ttot.val ge 2005 and ttot.val le 2015) and (sum((entySe,all_enty,all_te)$entyFeSec2entyFeDetail(entyFe,sector,all_enty), f04_IO_output(ttot,regi,entySe,all_enty,all_te) ) gt 0)) = 
+*** calculate bio share per fe carrier (only for historically available years)
+pm_secBioShare(ttot,regi,entyFe,sector)$((seAgg2fe("all_seso",entyFe) OR seAgg2fe("all_seliq",entyFe) OR seAgg2fe("all_sega",entyFe)) AND entyFe2Sector(entyFe,sector) and (ttot.val ge 2005 and ttot.val le 2020) and (sum((entySe,all_enty,all_te)$entyFeSec2entyFeDetail(entyFe,sector,all_enty), f04_IO_output(ttot,regi,entySe,all_enty,all_te) ) gt 0)) = 
   sum((entySeBio,all_enty,all_te)$entyFeSec2entyFeDetail(entyFe,sector,all_enty), f04_IO_output(ttot,regi,entySeBio,all_enty,all_te) ) 
   /
   sum((entySe,all_enty,all_te)$entyFeSec2entyFeDetail(entyFe,sector,all_enty), f04_IO_output(ttot,regi,entySe,all_enty,all_te) )
@@ -279,9 +279,6 @@ p04_prodCoupleGlob("segabio","fegas","tdbiogas","seel")     = -0.05;
 p04_prodCoupleGlob("segafos","fegas","tdfosgas","seel")     = -0.05;
 p04_prodCoupleGlob("pegeo","sehe","geohe","seel")           = -0.3;
 p04_prodCoupleGlob("cco2","ico2","ccsinje","seel")          = -0.005;
-p04_prodCoupleGlob("fedie","uedit","apcardiEffT","feelt")   = -0.1;
-p04_prodCoupleGlob("fedie","uedit","apcardiEffH2T","feelt") = -0.2;
-p04_prodCoupleGlob("fedie","uedit","apcardiEffH2T","feh2t") = -0.1;
 *** use global data for coule products if regional data form IEA are 0
 loop(pc2te(enty,enty2,te,enty3),
     loop(regi,
@@ -328,7 +325,7 @@ loop(en2en(enty,enty2,te),  !! this sum does not include couple production, only
 );
 
 *RP* adjust pm_prodCouple values to default of 0.9 if technology is not used in the initial time step
-loop(teCHP(te),
+loop(teChp(te),
   loop(regi,
     if( pm_data(regi,"mix0",te) eq 0 , 
       loop(pc2te(enty,"seel",te,"sehe"),

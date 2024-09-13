@@ -21,8 +21,14 @@ Example for a scenario_config of REMIND
 
 Those two columns are mandatory and usually placed at the beginning:
 
-* `title` labels that run. It contains a unique identifier for each run, which must not contain a `.` to avoid a GAMS failure. The more runs you will have, the more it will be important that you label them in a way such that you easily remember the specific settings you chose for this run.
-* `start` can be used as a boolean switch that lets you choose whether or not you would like to start this run once you submit this config file to the modeling routine. It often makes sense to keep some runs in the csv file to remember their configurations for the next time although you do not want to run them now and therefore switch them off. You do this by setting `start` to 0. You can also write a group name in this cell, and by running `./start.R --interactive`, you can select this group to be started.
+* `title` labels that run. It contains a unique identifier for each run that must only consist of letters, digits, `_` and `-`. The more runs you will have, the more it will be important that you label them in a way such that you easily remember the specific settings you chose for this run.
+* `start` can be used to start specified runs by default or sort the runs into different groups. By default, only runs which have `1` in their `start` column will be started. It often makes sense to keep some runs in the csv file to remember their configurations, but not start them by default. You can do this by either setting `start` to `0`, so they will never be started; or by setting start to a custom group like `calibrate` (for calibration runs), so they will only be started when this group is selected. You can specify multiple groups, separated by commas, then the run will be part of all of the groups. To specify which group to start, either run `./start.R --interactive` and select the group, or run e.g. `start.R startgroup=calibrate config/scenario_config.csv` directly.
+
+The column `copyFromConfig` allows to specify a scenario from the same config file. All empty cells are copied from this scenario, allowing to generate scenario variations efficiently. Nested assignment is allowed, so `NDC` can specify `Base` here, and `Policy` can specify `NDC`, so if both `Policy` and `NDC` don't specify a certain switch, the value is taken from `Base`. The only restriction is that the scenario specified in the `copyFromConfig` cell must be defined in an earlier row. To get the full settings for a specific scenario (here: `SSP2-Base` in `scenario_config.csv`) including those copied, run in your REMIND folder:
+``` R
+source("scripts/start/readCheckScenarioConfig.R"); source("scripts/start/path_gdx_list.R")
+readCheckScenarioConfig("config/scenario_config.csv")["SSP2-Base", ]
+```
 
 Further columns are the configurations that you can choose for the specific runs.
 They may contain values for parameters such as `cm_rcp_scen` and module realizations such as `exponential` for [`./module/carbonprice/`](../modules/45_carbonprice). They overwrite the default defined and explained in [`./config/default.cfg`](../config/default.cfg) and [`./main.gms`](../main.gms) by the respective cell value for each run. If you leave a cell empty or if no column exists for a setting, the default value is used.
@@ -41,7 +47,7 @@ Example with comments and different ways to specify subsequent runs.
 The columns to implement subsequent runs are usually found at the end, starting with `path_gdx`:
 
 * `path_gdx` allows to specify initial conditions for the run, overwriting the usual initial conditions taken from the calibration files found in [`./config/gdx-files/`](../config/gdx-files/files). If it points to an unconverged run, this can be used to restart runs, similar to `Rscript start.R --restart`.
-* `path_gdx_bau` points to the run used as business as usual (BAU) scenario, for example for runs using [`45_carbonprice/NDC`](../modules/45_carbonprice/NDC), where some countries specify emission as percentage reduction compared to BAU.
+* `path_gdx_bau` points to the run used as business as usual (BAU) scenario, for example for runs using [`45_carbonprice/NDC`](../modules/45_carbonprice/NDC), where some countries specify emission as percentage reduction compared to BAU. All realizations needing it should be summarized in [`scripts/start/needBau.R`](../scripts/start/needBau.R).
 * `path_gdx_carbonprice` can be used to use a carbon tax path from an earlier run with realization [`45_carbonprice/exogenous`](../modules/45_carbonprice/exogenous).
 * `path_gdx_ref` points to the run used for all `t < cm_startyear`, which can be used for example for delayed transition scenarios.
 * `path_gdx_refpolicycost` points to the run that is used as a comparison for the policy cost calculation. If no such column exists, `path_gdx_ref` is used instead.
@@ -59,7 +65,7 @@ The column `slurmConfig` can be used to specify the slurm configuration, either 
 
 Everything in the row after a `#` is interpreted as comment. Best use it as first character in the first column to structure the file. Using `#` elsewhere else can lead to unexpected data losses of the cells that follow in the row. If you want to switch off the use of a column, either temporarily or to add some comments, add a dot before the parameter name, which then may read `.cm_startyear` and is then ignored.
 
-Before you start the runs, you can test whether the right runs would be started and find all necessary gdx files. This also writes the `.Rdata` files in the REMIND main folder:
+Before you start the runs, you can test whether the right runs would be started and find all necessary gdx files:
 ```bash
 Rscript start.R --test config/scenario_config_XYZ.csv
 ```
@@ -76,12 +82,14 @@ If you want to manually start runs instead of editing the `start` column in the 
 ```bash
 Rscript start.R --interactive config/scenario_config_XYZ.csv
 ```
-In interactive mode, the scripts lets you select a config file if you do not specify one. You can combine all these options and use
+In interactive mode, the scripts lets you select a config file if you do not specify one. You can combine options such as
 ```bash
-Rscript start.R -gqi
+Rscript start.R --quick --interactive
+Rscript start.R -qi
 ```
-as a shortcut, meaning `g` for `gamscompile`, `i` for `--interactive`, `q` for `--quick`. The shortcut `t` for `--test` avoids that `--gamscompile` is executed.
-
+The latter uses shortcuts, meaning `i` for `--interactive`, `q` for `--quick`. The shortcut `t` for `--test` avoids that anything is executed,
+`g` for `gamscompile` avoids that actual runs are started.
+See `Rscript start.R --help` for further information.
 
 Further notes:
 --------------
@@ -95,4 +103,16 @@ Further notes:
 ```bash
 git diffmif scenario_config_1.csv scenario_config_2.csv
 git diff --word-diff=color --word-diff-regex=. --no-index scenario_config_1.csv scenario_config_2.csv
+```
+
+* As noted above, while the bundle is running, you may not change the code or `git checkout` another branch, because that would disturb runs which are started later. If you want to work on other things in REMIND while the bundle is running, you should therefore make a copy of the REMIND clone before starting the bundle. On linux, use `rsync` for a fast copy:
+
+```shell
+rsync -a --exclude='/output/' /path/to/remind/ /path/to/remind-copy
+```
+replace `/path/to/remind/` with the path to remind, and `/path/to/remind-copy` with the desired path for the remind copy. Note that you have to use a `/` at the end of the existing path, and no `/` at the end of the new path.
+
+After the run is finished, you can use `mv` to move the output folder generated in the copy back into the main folder, to have all your run output in one place:
+```shell
+mv /path/to/remind-copy/output/* /path/to/remind/output/
 ```

@@ -1,29 +1,101 @@
-# This profile can be used to link the model to a specified library snapshot
-# (e.g. if your model version is from an older date and does not work with the
-# newest libraries anymore). By default it is not active.
+local({
+# setting RENV_PATHS_LIBRARY ensures packages are installed into renv/library
+# for some reason this also has implications for symlinking into the global cache
+Sys.setenv(RENV_PATHS_LIBRARY = "renv/library")
 
-local({ # prevent variables defined here from ending up in the global env
+# do not check if library and renv.lock are in sync, because normally renv.lock does not exist
+options(renv.config.synchronized.check = FALSE)
 
-# Set the snapshot path to a path of your choice.
-# Snapshots must be compatible to the R version used. If you are using R 4.1
-# make sure the selected snapshot's name ends with '_R4'.
+# always set the renv project to the current directory
+Sys.setenv("RENV_PROJECT" = getwd())
 
-snapshot <- "/p/projects/rd3mod/R/libraries/snapshots/2023_02_19_R4"    # used for runs v4
-# snapshot <- "/p/projects/rd3mod/R/libraries/snapshots/2023_03_24_R4"    # used for reporting v4
+# when increasing renvVersion first commit new version's activate script and
+# put that commit's hash into the git checkout call below
+renvVersion <- "1.0.7"
 
-activateSnapshot <- function(snapshot) {
-  stopifnot(file.exists(snapshot))
-  if (R.version$major <= 3) { # include.site is not available before R 4.0
-    if (endsWith(snapshot, "_R4")) stop("Your R version is ", R.version$major, ", but your library snapshot is for 4.0 or later")
-    .libPaths(snapshot)
-  } else {
-    if (!endsWith(snapshot, "_R4")) stop("Your R version is ", R.version$major, ", but your library snapshot is for < 4.0.")
-    # setting include.site to FALSE makes sure that only the snapshot and system libraries are used
-    .libPaths(snapshot, include.site = FALSE)
-  }
-  message("libPaths was set to: ", snapshot)
+# reset renv/activate.R to match renv 1.0.7
+gitRoot <- system2("git", c("rev-parse", "--show-toplevel"), stdout = TRUE)
+if (Sys.getenv("RESET_RENV_ACTIVATE_SCRIPT", unset = "TRUE") == "TRUE" &&
+      normalizePath(gitRoot) == normalizePath(".")) {
+  system2("git", c("checkout", "b83bb1811ff08d8ee5ba8e834af5dd0080d10e66", "--", "renv/activate.R"))
 }
 
-activateSnapshot(snapshot)
+source("renv/activate.R")
 
+if (packageVersion("renv") != renvVersion) {
+  renvLockExisted <- file.exists(renv::paths$lockfile())
+  renv::install(paste0("renv@", renvVersion))
+  if (!renvLockExisted) {
+    unlink(renv::paths$lockfile())
+  }
+}
+
+if (!"https://rse.pik-potsdam.de/r/packages" %in% getOption("repos")) {
+  options(repos = c(getOption("repos"), pik = "https://rse.pik-potsdam.de/r/packages"))
+}
+
+# bootstrapping, will only run once after remind is freshly cloned
+if (isTRUE(rownames(installed.packages(priority = "NA")) == "renv")) {
+  message("R package dependencies are not installed in this renv, installing now...")
+  renv::install("rmarkdown", prompt = FALSE) # rmarkdown is required to find dependencies in Rmd files
+  renv::hydrate(prompt = FALSE, report = FALSE) # auto-detect and install all dependencies
+  message("Finished installing R package dependencies.")
+}
+
+# bootstrapping python venv, will only run once after remind is freshly cloned
+if (!dir.exists(".venv/")
+    && (Sys.which("python3") != ""
+        || (Sys.which("python.exe") != ""
+            && suppressWarnings(isTRUE(startsWith(system2("python.exe", "--version", stdout = TRUE), "Python 3")))
+           ))) {
+  message("Python venv is not available, setting up now...")
+  # use system python to set up venv
+  if (.Platform$OS.type == "windows") {
+    system2("python.exe", c("-mvenv", ".venv"))
+    pythonInVenv <- normalizePath(file.path(".venv", "Scripts", "python.exe"), mustWork = TRUE)
+  } else {
+    system2("python3", c("-mvenv", ".venv"))
+    pythonInVenv <- normalizePath(file.path(".venv", "bin", "python"), mustWork = TRUE)
+  }
+  # use venv python to install dependencies in venv
+  system2(pythonInVenv, c("-mpip", "install", "--upgrade", "pip", "wheel"))
+  system2(pythonInVenv, c("-mpip", "install", "-r", "requirements.txt"))
+}
+
+# Configure locations of REMIND input data
+# These can be located in directories on the local machine, remote directories,
+# or default directories on the cluster.
+# To use these, set the environment variable in your ~/.bashrc file in your home
+# direcotry (on linux) or in the system environment variables dialog (on windows):
+
+# local directories
+# e.g.
+# on Linux (separate multiple paths by colons)
+# REMIND_repos_dirs="/my/first/path:/my/second/path"
+# on Windows (separate multiple paths by semicolons)
+# REMIND_repos_dirs="C:\my\first\path;D:\my\second\path"
+remindReposDirs <- Sys.getenv("REMIND_repos_dirs")
+
+# unless specified otherwise, use cluster defaults
+use_cluster_defaults <- TRUE
+
+# add local directories, if any
+if ("" != remindReposDirs) {
+  directories <- unlist(strsplit(remindReposDirs, .Platform$path.sep, fixed = TRUE))
+  directoriesList <- rep(list(NULL), length(directories))
+  names(directoriesList) <- directories
+  options(remind_repos = c(options("remind_repos")[[1]], directoriesList))
+  use_cluster_defaults <- FALSE
+}
+
+# Include local calibration results, if they exist, from either the main
+# directory or output directories.
+path <- file.path(
+    c('.', file.path('..', '..')),
+    'calibration_results', '.Rprofile_calibration_results')
+
+path <- head(path[file.exists(path)], 1)
+
+if (!rlang::is_empty(path))
+    source(path)
 })

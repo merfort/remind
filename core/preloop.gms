@@ -1,4 +1,4 @@
-*** |  (C) 2006-2022 Potsdam Institute for Climate Impact Research (PIK)
+*** |  (C) 2006-2024 Potsdam Institute for Climate Impact Research (PIK)
 *** |  authors, and contributors see CITATION.cff file. This file is part
 *** |  of REMIND and licensed under AGPL-3.0-or-later. Under Section 7 of
 *** |  AGPL-3.0, you are granted additional permissions described in the
@@ -28,7 +28,7 @@ vm_prodFe.l(ttot,regi,entyFe2,entyFe2,te) = 0;
 vm_prodSe.l(ttot,regi,enty,enty2,te) = 0;
 vm_demSe.l(ttot,regi,enty,enty2,te) = 0;
 vm_Xport.l(ttot,regi,tradePe)       = 0;
-vm_capDistr.l(t,regi,te,rlf)          = 0;
+v_capDistr.l(t,regi,te,rlf)          = 0;
 vm_cap.l(t,regi,te,rlf)              = 0;
 vm_fuExtr.l(ttot,regi,"pebiolc","1")$(ttot.val ge 2005)  = 0;
 vm_pebiolc_price.l(ttot,regi)$(ttot.val ge 2005)         = 0;
@@ -38,13 +38,14 @@ vm_co2eqMkt.l(ttot,regi,emiMkt) = 0;
 v_shfe.l(t,regi,enty,sector) = 0;
 v_shGasLiq_fe.l(t,regi,sector) = 0;  
 pm_share_CCS_CCO2(t,regi) = 0; 
-  
+pm_taxCO2eqSum(t,regi) = 0;
+
 *** overwrite default targets with gdx values if wanted
 Execute_Loadpoint 'input' p_emi_budget1_gdx = sm_budgetCO2eqGlob;
 Execute_Loadpoint 'input' vm_demPe.l = vm_demPe.l;
 Execute_Loadpoint 'input' q_balPe.m = q_balPe.m;
 Execute_Loadpoint 'input' qm_budget.m = qm_budget.m;
-Execute_Loadpoint 'input' pm_pvpRegi = pm_pvpRegi;
+Execute_Loadpoint 'input' q_co2eq.m = q_co2eq.m;
 Execute_Loadpoint 'input' pm_pvp = pm_pvp;
 Execute_Loadpoint 'input' vm_demFeSector.l = vm_demFeSector.l;
 
@@ -72,11 +73,6 @@ loop(pe2se(enty,entySe,te)$((not sameas(entySe,"seh2")) AND (not sameas(te,"dhp"
 loop(se2fe(enty,entyFe,te)$((not sameas(enty, "seh2")) AND (not sameas(entyFe, "feelt"))),
 pm_vintage_in(regi,"1",te) = pm_vintage_in(regi,"1",te) * max((pm_histfegrowth(regi,entyFe)- 0.005 + 1/fm_dataglob("lifetime",te))/(1/fm_dataglob("lifetime",te)),0.1);
 pm_vintage_in(regi,"6",te) = pm_vintage_in(regi,"6",te) * max(((pm_histfegrowth(regi,entyFe)- 0.005 + 1/fm_dataglob("lifetime",te))/(1/fm_dataglob("lifetime",te)) + 1)* 0.75, 0.2);
-);
-***fe2ue technologies
-loop(fe2ue(entyFe,enty,te)$((not sameas(te, "apCarElT")) AND (not sameas(te, "apCarH2T")) AND (not sameas(te, "apTrnElT"))),
-pm_vintage_in(regi,"1",te) = pm_vintage_in(regi,"1",te) * max((pm_histfegrowth(regi,entyFe)- 0.005 + 1/fm_dataglob("lifetime",te))/(1/fm_dataglob("lifetime",te)),0.1);
-pm_vintage_in(regi,"6",te) = pm_vintage_in(regi,"6",te) * max(((pm_histfegrowth(regi,entyFe)- 0.005 + 1/fm_dataglob("lifetime",te))/(1/fm_dataglob("lifetime",te)) + 1) * 0.75,0.2);
 );
 
 *RP
@@ -186,6 +182,11 @@ $ENDIF.out
 *** load PE, SE, FE price parameters from reference gdx to have prices in time steps before cm_startyear
 if (cm_startyear gt 2005,
 execute_load "input_ref.gdx", pm_PEPrice, pm_SEPrice, pm_FEPrice;
+);
+
+*** load vm_capEarlyReti(ttot,regi,te) from reference gdx to have a reference point for q_smoothphaseoutCapEarlyReti and q_limitCapEarlyReti
+if (cm_startyear gt 2005,
+Execute_Loadpoint 'input_ref' vm_capEarlyReti.l = vm_capEarlyReti.l;
 );
 
 *** EOF ./core/preloop.gms

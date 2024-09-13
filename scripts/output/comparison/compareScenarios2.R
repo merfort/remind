@@ -1,4 +1,4 @@
-# |  (C) 2006-2022 Potsdam Institute for Climate Impact Research (PIK)
+# |  (C) 2006-2024 Potsdam Institute for Climate Impact Research (PIK)
 # |  authors, and contributors see CITATION.cff file. This file is part
 # |  of REMIND and licensed under AGPL-3.0-or-later. Under Section 7 of
 # |  AGPL-3.0, you are granted additional permissions described in the
@@ -18,7 +18,7 @@ source("./scripts/start/isSlurmAvailable.R")
 if (!exists("outputdirs")) {
   stop(
     "Variable outputdirs does not exist. ",
-    "Please call comapreScenarios.R via output.R, which defines outputdirs.")
+    "Please call compareScenarios.R via output.R, which defines outputdirs.")
 }
 
 # Find a suitable default cs2 profile depending on config.RData.
@@ -53,13 +53,15 @@ startComp <- function(
   outFileName <- jobName
   script <- "scripts/cs2/run_compareScenarios2.R"
   cat("Starting ", jobName, "\n")
-  if (isSlurmAvailable()) {
+  if (isSlurmAvailable() && ! identical(slurmConfig, "direct")) {
     clcom <- paste0(
       "sbatch ", slurmConfig,
       " --job-name=", jobName,
+      " --comment=compareScenarios2",
       " --output=", jobName, ".out",
       " --error=", jobName, ".out",
-      " --mail-type=END --time=200 --mem-per-cpu=8000",
+      " --mail-type=END,FAIL --time=200",
+      if (!grepl("--mem", slurmConfig)) " --mem=8000",
       " --wrap=\"Rscript ", script,
       " outputDirs=", paste(outputDirs, collapse = ","),
       " profileName=", profileName,
@@ -82,16 +84,22 @@ startComp <- function(
 
 
 # Load cs2 profiles.
-profiles <- remind2::getCs2Profiles()
+profiles <- piamPlotComparison::getCs2Profiles()
+
+lucode2::readArgs("profileNames")
 
 # Let user choose cs2 profile(s).
 profileNamesDefault <- determineDefaultProfiles(outputdirs[1])
-profileNames <- names(profiles)[gms::chooseFromList(
-  ifelse(names(profiles) %in% profileNamesDefault, crayon::cyan(names(profiles)), names(profiles)),
-  type = "profiles for cs2",
-  userinfo = paste0("Leave empty for ", crayon::cyan("cyan"), " default profiles."),
-  returnBoolean = TRUE
-)]
+
+if (! exists("profileNames") || ! all(profileNames %in% names(profiles))) {
+  profileNames <- names(profiles)[gms::chooseFromList(
+    ifelse(names(profiles) %in% profileNamesDefault, crayon::cyan(names(profiles)), names(profiles)),
+    type = "profiles for cs2",
+    userinfo = paste0("Leave empty for ", crayon::cyan("cyan"), " default profiles.\n",
+                      "For a tutorial, see https://pik-piam.r-universe.dev/articles/remind2/compareScenariosRemind2.html"),
+    returnBoolean = TRUE
+  )]
+}
 if (length(profileNames) == 0) {
   profileNames <- profileNamesDefault
   message("Default: ", paste(profileNamesDefault, collapse = ", "), ".\n")

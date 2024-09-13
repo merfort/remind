@@ -1,4 +1,4 @@
-*** |  (C) 2006-2022 Potsdam Institute for Climate Impact Research (PIK)
+*** |  (C) 2006-2024 Potsdam Institute for Climate Impact Research (PIK)
 *** |  authors, and contributors see CITATION.cff file. This file is part
 *** |  of REMIND and licensed under AGPL-3.0-or-later. Under Section 7 of
 *** |  AGPL-3.0, you are granted additional permissions described in the
@@ -7,7 +7,7 @@
 *** SOF ./modules/05_initialCap/on/declarations.gms
 
 Parameter
-  pm_cap0(all_regi,all_te)                           "standing capacity in 2005 as calculated by the initialization routine generisinical. Unit: TWa"
+  p05_cap0(all_regi,all_te)                           "standing capacity in 2005 as calculated by the initialization routine generisinical. Unit: TWa"
   p05_emi2005_from_initialcap2(all_regi,emiTe)       "regional energy emissions 2005 resulting from the initialcap routine. Unit: GtC"
   p05_initial_capacity(all_regi,all_te)              "capacitiy at t=2005, calculated from past deltacaps"
   p05_inital_input(all_regi,all_te)                  "input in 2005, calculated from past deltacaps and initial time-variable eta"
@@ -24,7 +24,11 @@ Parameter
   p05_aux_cap_distr(all_regi,all_te,rlf)             "auxiliary calculation parameter for the calculation of initial capacities, distributed to grades"
   p05_aux_cap(all_regi,all_te)                       "auxiliary calculation parameter for the calculation of initial capacities"
   pm_aux_capLowerLimit(all_te,all_regi,tall)         "auxiliary calculation parameter for the calculation of the lowest possible capacities in the first time steps"
-  p05_aux_calccapLowerLimitSwitch(tall)              "auxiliary calculation parameter to allow the calculation of the lowest possible capacities in the first time steps"    
+  p05_aux_calccapLowerLimitSwitch(tall)              "auxiliary calculation parameter to allow the calculation of the lowest possible capacities in the first time steps"
+$ifThen %cm_techcosts% == "GLO"
+  p05_inco0_t_ref(ttot,all_regi,all_te)              "auxiliary parameter to load pm_inco0_t from reference run if cm_startyear > 2005 and initialCap is therefore not run"
+$endIf
+  p05_pmdata_ref(all_regi,char,all_te)               "auxiliary parameter to load pm_data from reference run if cm_startyear > 2005 and initialCap is therefore not run"
 ;
 
 Variables

@@ -1,4 +1,4 @@
-# |  (C) 2006-2022 Potsdam Institute for Climate Impact Research (PIK)
+# |  (C) 2006-2024 Potsdam Institute for Climate Impact Research (PIK)
 # |  authors, and contributors see CITATION.cff file. This file is part
 # |  of REMIND and licensed under AGPL-3.0-or-later. Under Section 7 of
 # |  AGPL-3.0, you are granted additional permissions described in the
@@ -22,8 +22,12 @@ prepare <- function() {
     for(i in 1:length(filelist)) {
       if(!is.na(filelist[i])) {
         to <- paste0(destfolder,"/",names(filelist)[i])
-	      if(!file.copy(filelist[i],to=to,recursive=dir.exists(to),overwrite=T))
-	        cat(paste0("Could not copy ",filelist[i]," to ",to,"\n"))
+	      if(!file.copy(filelist[i],to=to,recursive=dir.exists(to),overwrite=T)) {
+           cat(paste0("Could not copy ",filelist[i]," to ",to,"\n"))
+        } else {
+           cat(paste0("Copied ",filelist[i]," to ",to,"\n"))
+        }
+	        
       }
 	  }
   }
@@ -49,7 +53,7 @@ prepare <- function() {
             "flexdashboard", "gdx", "gdxdt", "gdxrrw", "ggplot2", "gtools",
             "lucode2", "luplot", "luscale", "magclass", "magpie4", "methods",
             "mip", "mrremind", "mrvalidation", "optparse", "parallel",
-            "plotly", "remind2", "rlang", "rmndt", "tidyverse",
+            "plotly", "remind2", "reticulate", "rlang", "rmndt", "tidyverse",
             "tools"),
 
         'Package') %>%
@@ -64,27 +68,12 @@ prepare <- function() {
   # change to REMIND main folder
   setwd(cfg$remind_folder)
 
-  # Check configuration for consistency
-#  cfg <- check_config(cfg, reference_file="config/default.cfg",
-#                      settings_config = "config/settings_config.csv",
-#                      extras = c("backup", "remind_folder", "pathToMagpieReport", "cm_nash_autoconverge_lastrun",
-#                                 "gms$c_expname", "restart_subsequent_runs", "gms$c_GDPpcScen",
-#                                 "gms$cm_CES_configuration", "gms$c_description"))
-
-  # Check for compatibility with subsidizeLearning
-  if ( (cfg$gms$optimization != 'nash') & (cfg$gms$subsidizeLearning == 'globallyOptimal') ) {
-    cat("Only optimization='nash' is compatible with subsudizeLearning='globallyOptimal'. Switching subsidizeLearning to 'off' now. \n")
-    cfg$gms$subsidizeLearning = 'off'
-  }
-
-  # reportCEScalib only works with the calibrate module
-  if ( cfg$gms$CES_parameters != "calibrate" ) cfg$output <- setdiff(cfg$output,"reportCEScalib")
+  cfg <- checkFixCfg(cfg, remindPath = cfg$remind_folder)
 
   #AJS quit if title is too long - GAMS can't handle that
   if( nchar(cfg$title) > 75 | grepl("\\.",cfg$title) ) {
       stop("This title is too long or the name contains dots - GAMS would not tolerate this, and quit working at a point where you least expect it. Stopping now. ")
   }
-
 
   # adjust GDPpcScen based on GDPscen
   cfg$gms$c_GDPpcScen <- gsub("gdp_","",cfg$gms$cm_GDPscen)
@@ -111,7 +100,7 @@ prepare <- function() {
 
   ################## M O D E L   L O C K ###################################
   # Lock the directory for other instances of the start scripts
-  lock_id <- model_lock(timeout1 = 3)
+  lock_id <- model_lock(timeout1 = 1)
   on.exit() # set the commands when exiting in the correct order
   on.exit(model_unlock(lock_id),add=TRUE)
   on.exit(setwd(cfg$results_folder),add=TRUE)
@@ -131,26 +120,15 @@ prepare <- function() {
     create_input_for_45_carbonprice_exogenous(as.character(cfg$files2export$start["input_carbonprice.gdx"]))
   }
 
-  # Calculate CES configuration string
-  cfg$gms$cm_CES_configuration <- paste0("indu_",cfg$gms$industry,"-",
-                                         "buil_",cfg$gms$buildings,"-",
-                                         "tran_",cfg$gms$transport,"-",
-                                         "POP_", cfg$gms$cm_POPscen, "-",
-                                         "GDP_", cfg$gms$cm_GDPscen, "-",
-                                         "En_",  cfg$gms$cm_demScen, "-",
-                                         "Kap_", cfg$gms$capitalMarket, "-",
-                                         if(cfg$gms$cm_calibration_string == "off") "" else paste0(cfg$gms$cm_calibration_string, "-"),
-                                         "Reg_", madrat::regionscode(cfg$regionmapping))
-
-  # write name of corresponding CES file to datainput.gms
-  replace_in_file(file    = "./modules/29_CES_parameters/load/datainput.gms",
-                  content = paste0('$include "./modules/29_CES_parameters/load/input/',cfg$gms$cm_CES_configuration,'.inc"'),
-                  subject = "CES INPUT")
-
   # If a path to a MAgPIE report is supplied use it as REMIND input (used for REMIND-MAgPIE coupling)
   # ATTENTION: modifying gms files
   if (!is.null(cfg$pathToMagpieReport)) {
-    getReportData(path_to_report = cfg$pathToMagpieReport,inputpath_mag=cfg$gms$biomass,inputpath_acc=cfg$gms$agCosts)
+    getReportData(
+      path_to_report = cfg$pathToMagpieReport,
+      inputpath_mag  = cfg$gms$biomass,
+      inputpath_acc  = cfg$gms$agCosts,
+      var_luc        = cfg$var_luc
+    )
   }
 
   # Update module paths in GAMS code
@@ -171,10 +149,12 @@ prepare <- function() {
   manipulateConfig(tmpModelFile, cfg$gms)
 
   ######## declare functions for updating information ####
-  update_info <- function(regionscode, revision) {
+  update_info <- function(regionscode, revision, model_version) {
 
     subject <- "VERSION INFO"
     content <- c("",
+      paste("Modelversion:", model_version),
+      "",
       paste("Regionscode:", regionscode),
       "",
       paste("Input data revision:", revision),
@@ -185,96 +165,12 @@ prepare <- function() {
     replace_in_file(tmpModelFile, paste("*", content), subject)
   }
 
-  update_sets <- function(map) {
-     .tmp <- function(x,prefix="", suffix1="", suffix2=" /", collapse=",", n=10) {
-      content <- NULL
-      tmp <- lapply(split(x, ceiling(seq_along(x)/n)),paste,collapse=collapse)
-      end <- suffix1
-      for(i in 1:length(tmp)) {
-        if(i==length(tmp)) end <- suffix2
-        content <- c(content,paste0('       ',prefix,tmp[[i]],end))
-      }
-      return(content)
-    }
-    modification_warning <- c(
-      '*** THIS CODE IS CREATED AUTOMATICALLY, DO NOT MODIFY THESE LINES DIRECTLY',
-      '*** ANY DIRECT MODIFICATION WILL BE LOST AFTER NEXT INPUT DOWNLOAD',
-      '*** CHANGES CAN BE DONE USING THE RESPECTIVE LINES IN scripts/start/prepare.R')
-    content <- c(modification_warning,'','sets')
-    # create iso set with nice formatting (10 countries per line)
-    tmp <- lapply(split(map$CountryCode, ceiling(seq_along(map$CountryCode)/10)),paste,collapse=",")
-    regions <- as.character(unique(map$RegionCode))
-    # Creating sets for H12 subregions
-    subsets <- remind2::toolRegionSubsets(map=cfg$regionmapping,singleMatches=TRUE,removeDuplicates=FALSE)
-    if(grepl("regionmapping_21_EU11", cfg$regionmapping, fixed = TRUE)){ #add EU27 region group
-      subsets <- c(subsets,list(
-        "EU27"=c("ENC","EWN","ECS","ESC","ECE","FRA","DEU","ESW"), #EU27 (without Ireland)
-        "NEU_UKI"=c("NES", "NEN", "UKI") #EU27 (without Ireland)
-      ) )
-    }
-    # declare ext_regi (needs to be declared before ext_regi to keep order of ext_regi)
-    content <- c(content, paste('   ext_regi "extended regions list (includes subsets of H12 regions)"'))
-    content <- c(content, '      /')
-    content <- c(content, '        GLO,')
-    content <- c(content, '        ', paste(paste0(names(subsets),"_regi"),collapse=','),",")
-    content <- c(content, '        ', paste(regions,collapse=','))
-    content <- c(content, '      /')
-    content <- c(content, ' ')
-    # declare all_regi
-    content <- c(content, '',paste('   all_regi "all regions" /',paste(regions,collapse=','),'/',sep=''),'')
-    # regi_group
-    content <- c(content, '   regi_group(ext_regi,all_regi) "region groups (regions that together corresponds to a H12 region)"')
-    content <- c(content, '      /')
-    content <- c(content, '      ', paste('GLO.(',paste(regions,collapse=','),')'))
-    for (i in 1:length(subsets)){
-        content <- c(content, paste0('        ', paste(c(paste0(names(subsets)[i],"_regi"))), ' .(',paste(subsets[[i]],collapse=','), ')'))
-    }
-    content <- c(content, '      /')
-    content <- c(content, ' ')
-    # iso countries set
-    content <- c(content,'   iso "list of iso countries" /')
-    content <- c(content, .tmp(map$CountryCode, suffix1=",", suffix2=" /"),'')
-    content <- c(content,'   regi2iso(all_regi,iso) "mapping regions to iso countries"','      /')
-    for(i in as.character(unique(map$RegionCode))) {
-      content <- c(content, .tmp(map$CountryCode[map$RegionCode==i], prefix=paste0(i," . ("), suffix1=")", suffix2=")"))
-    }
-    content <- c(content,'      /')
-    content <- c(content, 'iso_regi "all iso countries and EU and greater China region" /  EUR,CHA,')
-    content <- c(content, .tmp(map$CountryCode, suffix1=",", suffix2=" /"),'')
-    content <- c(content,'   map_iso_regi(iso_regi,all_regi) "mapping from iso countries to regions that represent country" ','         /')
-    for(i in regions[regions %in% c("EUR","CHA",as.character(unique(map$CountryCode)))]) {
-      content <- c(content, .tmp(i, prefix=paste0(i," . "), suffix1="", suffix2=""))
-    }
-    content <- c(content,'      /',';')
-    replace_in_file('core/sets.gms',content,"SETS",comment="***")
-  }
-
   ############ download and distribute input data ########
   # check whether the regional resolution and input data revision are outdated and update data if needed
-  if(file.exists("input/source_files.log")) {
-      input_old     <- readLines("input/source_files.log")[c(1,2,3)]
-  } else {
-      input_old     <- "no_data"
-  }
-  input_new      <- c(paste0("rev",cfg$inputRevision,"_", madrat::regionscode(cfg$regionmapping),"_", tolower(cfg$model_name),".tgz"),
-                      paste0("rev",cfg$inputRevision,"_", madrat::regionscode(cfg$regionmapping),ifelse(cfg$extramappings_historic == "","",paste0("-", madrat::regionscode(cfg$extramappings_historic))),"_", tolower(cfg$validationmodel_name),".tgz"),
-                      paste0("CESparametersAndGDX_",cfg$CESandGDXversion,".tgz"))
-  # download and distribute needed data
-  if(!setequal(input_new, input_old) | cfg$force_download) {
-      message(if (cfg$force_download) "You set 'cfg$force_download = TRUE'"
-              else "Your input data are outdated or in a different regional resolution",
-              ". New input data are downloaded and distributed.")
-      download_distribute(files        = input_new,
-                          repositories = cfg$repositories, # defined in your environment variables
-                          modelfolder  = ".",
-                          debug        = FALSE,
-			  stopOnMissing = TRUE)
-  } else {
-      message("No input data downloaded and distributed. To enable that, delete input/source_files.log or set cfg$force_download to TRUE.")
-  }
+  cfg <- updateInputData(cfg, remindPath = ".")
 
   # extract BAU emissions for NDC runs to set up emission goals for region where only some countries have a target
-  if ((!is.null(cfg$gms$carbonprice) && (cfg$gms$carbonprice == "NDC")) | (!is.null(cfg$gms$carbonpriceRegi) && (cfg$gms$carbonpriceRegi == "NDC")) ){
+  if (isTRUE(cfg$gms$carbonprice == "NDC") || isTRUE(cfg$gms$carbonpriceRegi == "NDC")) {
     cat("\nRun scripts/input/prepare_NDC.R.\n")
     source("scripts/input/prepare_NDC.R")
     prepare_NDC(as.character(cfg$files2export$start["input_bau.gdx"]), cfg)
@@ -282,11 +178,10 @@ prepare <- function() {
 
   ############ update information ########################
   # update_info, which regional resolution and input data revision in tmpModelFile
-  update_info(madrat::regionscode(cfg$regionmapping), cfg$inputRevision)
-  # update_sets, which is updating the region-depending sets in core/sets.gms
+  update_info(madrat::regionscode(cfg$regionmapping), cfg$inputRevision, cfg$model_version)
+  # updateSets, which is updating the region-depending sets in core/sets.gms
   #-- load new mapping information
-  map <- read.csv(cfg$regionmapping, sep=";")
-  update_sets(map)
+  updateSets(cfg)
 
   ########################################################
   ### PROCESSING INPUT DATA ###################### END ###
@@ -312,6 +207,8 @@ prepare <- function() {
   if (0 != system(paste('cp', gdx_name,
 			file.path(cfg$results_folder, 'input.gdx')))) {
     stop('Could not copy gdx file ', gdx_name)
+  } else {
+    message('Copied ', gdx_name, ' to input.gdx')
   }
 
   # choose which conopt files to copy
@@ -443,7 +340,7 @@ prepare <- function() {
 
     writeLines(levs, "levs.gms")
 
-    # Replace fixing.gms with level values
+    # Replace fixings.gms with level values
     file.copy("levs.gms", "fixings.gms", overwrite = TRUE)
 
     fixings_manipulateThis <- c(fixings_manipulateThis, list(c(".L ", ".FX ")))
@@ -512,8 +409,7 @@ prepare <- function() {
                                 list(c("v39_shSynGas.M", "!!v39_shSynGas.M")),
                                 list(c("q39_emiCCU.M", "!!q39_emiCCU.M")),
                                 list(c("q39_shSynTrans.M", "!!q39_shSynTrans.M")),
-                                list(c("q39_shSynGas.M", "!!q39_shSynGas.M")),
-                                list(c("q39_EqualSecShare_BioSyn.M", "!!q39_EqualSecShare_BioSyn.M")))
+                                list(c("q39_shSynGas.M", "!!q39_shSynGas.M")))
     }
 
     #RP filter out module 40 techpol fixings
@@ -530,7 +426,6 @@ prepare <- function() {
                                 list(c("q40_PEcoalBound.M", "!!q40_PEcoalBound.M")),
                                 list(c("q40_PEgasBound.M", "!!q40_PEgasBound.M")),
                                 list(c("q40_PElowcarbonBound.M", "!!q40_PElowcarbonBound.M")),
-                                list(c("q40_EV_share.M", "!!q40_EV_share.M")),
                                 list(c("q40_TrpEnergyRed.M", "!!q40_TrpEnergyRed.M")),
                                 list(c("q40_El_RenShare.M", "!!q40_El_RenShare.M")),
                                 list(c("q40_BioFuelBound.M", "!!q40_BioFuelBound.M")))
@@ -544,90 +439,18 @@ prepare <- function() {
     }
 
     #KK CDR module realizations
-    if(cfg$gms$CDR == 'DAC'){
-      fixings_manipulateThis <- c(fixings_manipulateThis,
-                                  list(c("v33_emiEW.FX", "!!v33_emiEW.FX")),
-                                  list(c("v33_grindrock_onfield.FX", "!!v33_grindrock_onfield.FX")),
-                                  list(c("v33_grindrock_onfield_tot.FX", "!!v33_grindrock_onfield_tot.FX")))
+    fixings_manipulateThis <- c(fixings_manipulateThis,
+                                list(c("vm_ccs_cdr.FX", "vm_co2capture_cdr.FX")),
+                                list(c("v33_emi.FX", "vm_emiCdrTeDetail.FX")))
 
-      levs_manipulateThis <- c(levs_manipulateThis,
-                               list(c("v33_emiEW.L", "!!v33_emiEW.L")),
-                               list(c("v33_grindrock_onfield.L", "!!v33_grindrock_onfield.L")),
-                               list(c("v33_grindrock_onfield_tot.L", "!!v33_grindrock_onfield_tot.L")))
+    levs_manipulateThis <- c(levs_manipulateThis,
+                              list(c("vm_ccs_cdr.L", "vm_co2capture_cdr.L")),
+                              list(c("v33_emi.L", "vm_emiCdrTeDetail.L")))
 
-      margs_manipulateThis <- c(margs_manipulateThis,
-                                list(c("v33_emiEW.M", "!!v33_emiEW.M")),
-                                list(c("v33_grindrock_onfield.M", "!!v33_grindrock_onfield.M")),
-                                list(c("v33_grindrock_onfield_tot.M", "!!v33_grindrock_onfield_tot.M")),
-                                list(c("q33_capconst_grindrock.M", "!!q33_capconst_grindrock.M")),
-                                list(c("q33_grindrock_onfield_tot.M", "!!q33_grindrock_onfield_tot.M")),
-                                list(c("q33_omcosts.M", "!!q33_omcosts.M")),
-                                list(c("q33_potential.M", "!!q33_potential.M")),
-                                list(c("q33_emiEW.M", "!!q33_emiEW.M")),
-                                list(c("q33_LimEmiEW.M", "!!q33_LimEmiEW.M")))
-    }
-
-    if(cfg$gms$CDR == 'weathering'){
-      fixings_manipulateThis <- c(fixings_manipulateThis,
-                                  list(c("v33_emiDAC.FX", "!!v33_emiDAC.FX")),
-                                  list(c("v33_DacFEdemand_el.FX", "!!v33_DacFEdemand_el.FX")),
-                                  list(c("v33_DacFEdemand_heat.FX", "!!v33_DacFEdemand_heat.FX")))
-
-      levs_manipulateThis <- c(levs_manipulateThis,
-                               list(c("v33_emiDAC.L", "!!v33_emiDAC.L")),
-                               list(c("v33_DacFEdemand_el.L", "!!v33_DacFEdemand_el.L")),
-                               list(c("v33_DacFEdemand_heat.L", "!!v33_DacFEdemand_heat.L")))
-
-      margs_manipulateThis <- c(margs_manipulateThis,
-                                list(c("v33_emiDAC.M", "!!v33_emiDAC.")),
-                                list(c("v33_DacFEdemand_el.M", "!!v33_DacFEdemand_el.M")),
-                                list(c("v33_DacFEdemand_heat.M", "!!v33_DacFEdemand_heat.M")),
-                                list(c("q33_DacFEdemand_heat.M", "!!q33_DacFEdemand_heat.M")),
-                                list(c("q33_DacFEdemand_el.M", "!!q33_DacFEdemand_el.M")),
-                                list(c("q33_capconst_dac.M", "!!q33_capconst_dac.M")),
-                                list(c("q33_ccsbal.M", "!!q33_ccsbal.M")),
-                                list(c("q33_H2bio_lim.M", "!!q33_H2bio_lim.M")))
-    }
-
-    if(cfg$gms$CDR == 'off'){
-      fixings_manipulateThis <- c(fixings_manipulateThis,
-                                  list(c("v33_emiDAC.FX", "!!v33_emiDAC.FX")),
-                                  list(c("v33_emiEW.FX", "!!v33_emiEW.FX")),
-                                  list(c("v33_DacFEdemand_el.FX", "!!v33_DacFEdemand_el.FX")),
-                                  list(c("v33_DacFEdemand_heat.FX", "!!v33_DacFEdemand_heat.FX")),
-                                  list(c("v33_grindrock_onfield.FX", "!!v33_grindrock_onfield.FX")),
-                                  list(c("v33_grindrock_onfield_tot.FX", "!!v33_grindrock_onfield_tot.FX")))
-
-      levs_manipulateThis <- c(levs_manipulateThis,
-                               list(c("v33_emiDAC.L", "!!v33_emiDAC.L")),
-                               list(c("v33_emiEW.L", "!!v33_emiEW.L")),
-                               list(c("v33_DacFEdemand_el.L", "!!v33_DacFEdemand_el.L")),
-                               list(c("v33_DacFEdemand_heat.L", "!!v33_DacFEdemand_heat.L")),
-                               list(c("v33_grindrock_onfield.L", "!!v33_grindrock_onfield.L")),
-                               list(c("v33_grindrock_onfield_tot.L", "!!v33_grindrock_onfield_tot.L")))
-
-      margs_manipulateThis <- c(margs_manipulateThis,
-                                list(c("v33_emiDAC.M", "!!v33_emiDAC.M")),
-                                list(c("v33_emiEW.M", "!!v33_emiEW.M")),
-                                list(c("v33_grindrock_onfield.M", "!!v33_grindrock_onfield.M")),
-                                list(c("v33_grindrock_onfield_tot.M", "!!v33_grindrock_onfield_tot.M")),
-                                list(c("v33_DacFEdemand_el.M", "!!v33_DacFEdemand_el.M")),
-                                list(c("v33_DacFEdemand_heat.M", "!!v33_DacFEdemand_heat.M")),
-                                list(c("q33_capconst_grindrock.M", "!!q33_capconst_grindrock.M")),
-                                list(c("q33_grindrock_onfield_tot.M", "!!q33_grindrock_onfield_tot.M")),
-                                list(c("q33_omcosts.M", "!!q33_omcosts.M")),
-                                list(c("q33_potential.M", "!!q33_potential.M")),
-                                list(c("q33_emiEW.M", "!!q33_emiEW.M")),
-                                list(c("q33_LimEmiEW.M", "!!q33_LimEmiEW.M")),
-                                list(c("q33_DacFEdemand_heat.M", "!!q33_DacFEdemand_heat.M")),
-                                list(c("q33_DacFEdemand_el.M", "!!q33_DacFEdemand_el.M")),
-                                list(c("q33_capconst_dac.M", "!!q33_capconst_dac.M")),
-                                list(c("q33_ccsbal.M", "!!q33_ccsbal.M")),
-                                list(c("q33_H2bio_lim.M", "!!q33_H2bio_lim.M")),
-                                list(c("q33_demFeCDR.M", "!!q33_demFeCDR.M")),
-                                list(c("q33_emicdrregi.M", "!!q33_emicdrregi.M")),
-                                list(c("q33_otherFEdemand.M", "!!q33_otherFEdemand.M")))
-    }
+    margs_manipulateThis <- c(margs_manipulateThis,
+                              list(c("vm_ccs_cdr.M", "vm_co2capture_cdr.M")),
+                              list(c("q33_DAC_ccsbal.M", "!!q33_DAC_ccsbal.M")),
+                              list(c("q33_DAC_emi.M", "!!q33_DAC_emi.M")))
     # end of CDR module realizations
 
     levs_manipulateThis <- c(levs_manipulateThis,
@@ -635,8 +458,8 @@ prepare <- function() {
     fixings_manipulateThis <- c(fixings_manipulateThis,
                                 list(c("vm_shBioFe.FX","!!vm_shBioFe.FX")))
     margs_manipulateThis <- c(margs_manipulateThis,
-                                list(c("vm_shBioFe.M", "!!vm_shBioFe.M")))
-
+                                list(c("vm_shBioFe.M", "!!vm_shBioFe.M")),
+                                list(c("q39_EqualSecShare_BioSyn.M", "!!q39_EqualSecShare_BioSyn.M")))
 
     # OR: renamed for sectoral taxation
     levs_manipulateThis <- c(levs_manipulateThis,
@@ -650,6 +473,18 @@ prepare <- function() {
     fixings_manipulateThis <- c(fixings_manipulateThis,
                              list(c("vm_emiCO2_sector.FX", "vm_emiCO2Sector.FX")),
                              list(c("v21_taxrevCO2_sector.FX", "v21_taxrevCO2Sector.FX")))
+
+    # OR: renamed in https://github.com/remindmodel/remind/pull/1495
+    levs_manipulateThis <- c(levs_manipulateThis,
+                             list(c("v_costInvTeDir.L", "vm_costInvTeDir.L")),
+                             list(c("v_costInvTeAdj.L", "vm_costInvTeAdj.L")))
+    margs_manipulateThis <- c(margs_manipulateThis,
+                             list(c("v_costInvTeDir.M", "vm_costInvTeDir.M")),
+                             list(c("v_costInvTeAdj.M", "vm_costInvTeAdj.M")))
+    fixings_manipulateThis <- c(fixings_manipulateThis,
+                             list(c("v_costInvTeDir.FX", "vm_costInvTeDir.FX")),
+                             list(c("v_costInvTeAdj.FX", "vm_costInvTeAdj.FX")))
+
 
     # renamed because of https://github.com/remindmodel/remind/pull/796
     manipulate_tradesets <- c(list(c("'gas_pipe'", "'pipe_gas'")),
@@ -725,20 +560,20 @@ prepare <- function() {
     margs_manipulateThis <- c(margs_manipulateThis,
                              list(c("v21_taxrevBioImport.M", "!!v21_taxrevBioImport.M")),
                              list(c("q21_taxrevBioImport.M", "!!q21_taxrevBioImport.M")),
-                             list(c("q30_limitProdtoHist.M", "!!q30_limitProdtoHist.M")))    
+                             list(c("q30_limitProdtoHist.M", "!!q30_limitProdtoHist.M")))
     fixings_manipulateThis <- c(fixings_manipulateThis,
                             list(c("v21_taxrevBioImport.FX", "!!v21_taxrevBioImport.FX")))
 
     # renamed because of https://github.com/remindmodel/remind/pull/1128
     levs_manipulateThis <- c(levs_manipulateThis,
                              list(c("v_emiTeDetailMkt.L", "!!v_emiTeDetailMkt.L")),
-                             list(c("v_emiTeMkt.L", "!!v_emiTeMkt.L")))    
+                             list(c("v_emiTeMkt.L", "!!v_emiTeMkt.L")))
     margs_manipulateThis <- c(margs_manipulateThis,
                              list(c("v_emiTeDetailMkt.M", "!!v_emiTeDetailMkt.M")),
-                             list(c("v_emiTeMkt.M", "!!v_emiTeMkt.M")))    
+                             list(c("v_emiTeMkt.M", "!!v_emiTeMkt.M")))
     fixings_manipulateThis <- c(fixings_manipulateThis,
                             list(c("v_emiTeDetailMkt.FX", "!!v_emiTeDetailMkt.FX")),
-                             list(c("v_emiTeMkt.FX", "!!v_emiTeMkt.FX")))   
+                             list(c("v_emiTeMkt.FX", "!!v_emiTeMkt.FX")))
 
     # Include fixings (levels) and marginals in full.gms at predefined position
     # in core/loop.gms.

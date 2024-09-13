@@ -1,31 +1,22 @@
 Running REMIND and MAgPIE in coupled mode
 ================
 David Klein (<dklein@pik-potsdam.de>)
-27 April, 2020
 
 - [Running REMIND and MAgPIE in coupled mode](#running-remind-and-magpie-in-coupled-mode)
 - [How to start coupled runs](#how-to-start-coupled-runs)
-    - [Clone the models](#clone-the-models)
-    - [Switch to relevant branchs](#switch-to-relevant-branchs)
-    - [Create snapshot of R libraries](#create-snapshot-of-r-libraries)
-    - [Activate snapshot for REMIND and MAgPIE](#activate-snapshot-for-remind-and-magpie)
-    - [What happens during a single coupled run](#what-happens-during-a-single-coupled-run)
-    - [What happens during a bundle of coupled runs](#what-happens-during-a-bundle-of-coupled-runs)
-    - [Configure start_bundle_coupled.R](#configure-start_bundle_coupledr)
-    - [Configure the config files of your choice](#configure-the-config-files-of-your-choice)
-    - [Perform test start before actually submitting runs](#perform-test-start-before-actually-submitting-runs)
-    - [Start runs after checking that coupling scripts finds all gdxes and mifs](#start-runs-after-checking-that-coupling-scripts-finds-all-gdxes-and-mifs)
+    + [Clone the models](#clone-the-models)
+    + [Switch to relevant branchs](#switch-to-relevant-branchs)
+    + [What happens during a single coupled run](#what-happens-during-a-single-coupled-run)
+    + [What happens during a bundle of coupled runs](#what-happens-during-a-bundle-of-coupled-runs)
+    + [Configure start_bundle_coupled.R](#configure-start_bundle_coupledr)
+    + [Configure the config files of your choice](#configure-the-config-files-of-your-choice)
+    + [Perform test start before actually submitting runs](#perform-test-start-before-actually-submitting-runs)
+    + [Start runs after checking that coupling scripts finds all gdxes and mifs](#start-runs-after-checking-that-coupling-scripts-finds-all-gdxes-and-mifs)
 - [Check the convergence](#check-the-convergence)
 - [Technical concept](#technical-concept)
-    - [Dynamic part](#dynamic-part)
-    - [Static part](#static-part)
-    - [Assumptions](#assumptions)
-    - [The coupling scripts](#the-coupling-scripts)
-
-- [Check the convergence](#Check-the-convergence)
-- [Technical concept](#technical-concept)
-    + [Dynamic](#dynamic)
-    + [Static](#static)
+    + [Dynamic part](#dynamic-part)
+    + [Static part](#static-part)
+    + [Assumptions](#assumptions)
     + [The coupling scripts](#the-coupling-scripts)
 
 # How to start coupled runs
@@ -34,8 +25,9 @@ David Klein (<dklein@pik-potsdam.de>)
 
 ```bash
 git clone https://github.com/magpiemodel/magpie.git
-git clone https://github.com/remindmodel/remind.git
+git clone --filter=blob:limit=1m https://github.com/remindmodel/remind.git
 ```
+Note: On the PIK cluster, use `cloneremind https://github.com/remindmodel/remind.git` instead of `git clone --filter…` to clone REMIND.
 
 ### Switch to relevant branchs
 
@@ -45,28 +37,9 @@ For both models switch to the git branches you want to use for your runs, for ex
 git checkout develop
 ```
 
-### Create snapshot of R libraries
-
-Coupled runs may take a bit longer. During the runtime some of the R packages that are used by the coupled runs might get updated.
-Updates might change the behaviour of functions in an unexpected way. To avoid this create a snapshot of the R libraries before starting
-the runs:
-
-```bash
-bash /p/projects/rd3mod/R/libraries/Scripts/create_snapshot_with_day.sh
-```
-
-### Activate snapshot for REMIND and MAgPIE
-
-Direct the models to the snapshot you just created above by first renaming [.snapshot.Rprofile](../.snapshot.Rprofile) to `.Rprofile`. The default `.Rprofile` is activating renv, but coupled runs must use a snapshot at the moment. Then edit this new `.Rprofile` in REMIND's main folder. This file will be copied to the MAgPIE main folder automatically.
-As `snapshot`, enter the path to the snapshot you want to use (the `_R4` is necessary if you run `R 4.0` or later):
-
-```bash
-snapshot <- "/p/projects/rd3mod/R/libraries/snapshots/2022_12_15_R4"
-```
-
 ### What happens during a single coupled run
 
-You can find a more technical explanation in the sections below, but the start script is essentially creating new runs of each model that use previous runs as input. These runs's name follow a specific pattern of suffixes and prefixes, and "communicate" through ".mif" reporting files.
+You can find a more technical explanation in the sections below, but the start script is essentially creating new runs of each model that use previous runs as input. These runs' names follow a specific pattern of suffixes and prefixes, and "communicate" through ".mif" reporting files.
 
 <a href="figures/4-REMIND-MAgPIE-circle.png"><img src="figures/4-REMIND-MAgPIE-circle.png" align="right" style="margin-left:2em; width:400px; " /></a>
 
@@ -127,13 +100,15 @@ See comments in the head section of the file. Most importantly you need to provi
 Required as `path_settings_coupled` is a file from [`./config/`](../config) that starts with `scenario_config_coupled*.csv` and provides some extra information for coupled runs (e.g. which run should be started, specific MAgPIE configurations), with one scenario per row and settings on the columns. `path_settings_remind` is a normal `scenario_config` that defines all other REMIND settings, as explained in [`03_RunningBundleOfRuns`](./03_RunningBundleOfRuns.md). Every scenario to be run must be present in both files.
 
 All the columns must be present in the `scenario_config_coupled.csv` file, but most of them can be left blank. The required ones are:
+
    - `title`: The name of the scenario, must be unique and match the `title` column in REMIND's `scenario_config.csv`
    - `start`: Defines if a scenario run should be started (1) or not (0). Overrides whatever is set in REMIND's `scenario_config*.csv`. If you have an unfinished coupled run, it will automatically try to continue from the last coupling iteration (i.e. REMIND or MAgPIE run), if it is not finished yet (i.e. reached `max_iterations`).
-   - `qos`: The SLURM qos the coupled runs should be submitted to. Currently, there is no default support for running a coupled run locally. If no `qos` is set here, the default one is `short`. Naturally, the `qos` names are likely different if you are running the models in a different cluster.
-   - `magpie_scen`: A pipe (`|`) separated list of configurations to pass to MAgPIE. Each entry should correspond to a column in [MAgPIE's scenario_config](https://github.com/magpiemodel/magpie/blob/master/config/scenario_config.csv), each one of them setting the multiple configuration flags listed on that file. The configurations are applied in the order that they appear. For example, to configure MAgPIE with SSP2 settings and climate change impacts according to RCP45 set `magpie_scen` to `SSP2|cc|rcp4p5`.
+   - `qos`: The SLURM qos the coupled runs should be submitted to, such as `priority`, `short`, `medium`, `long` or `standby` on the PIK cluster. If you use `auto`, the qos is set to `priority` if an empty slot exists, and `short` otherwise. This is also the default if no `qos` is set. Currently, there is no default support for running a coupled run locally.   
+   - `magpie_scen`: A pipe (`|`) separated list of configurations to pass to MAgPIE. Each entry should correspond to a column in [MAgPIE's scenario_config](https://github.com/magpiemodel/magpie/blob/master/config/scenario_config.csv), each one of them setting the multiple configuration flags listed in that file. The configurations are applied in the order that they appear. For example, to configure MAgPIE with SSP2 settings and climate change impacts according to RCP45 set `magpie_scen` to `SSP2|cc|rcp4p5`. To select scenarios from a different `scenario_config*.csv` file replace `magpie_scen` by the path to that file relative to MAgPIE's main folder, for example: `config/projects/scenario_config_PROJECT.csv`. The filename *must contain* the string `scenario_config`. You can also specify more than one column directing to another `scenario_config_PROJECT2.csv` file. They will be evaluated in the order in which they appear in the `scenario_config_coupled.csv`. There is another option of addressing MAgPIE switches described at the end of the list of optional columns below.
    - `no_ghgprices_land_until`: Controls at which timestep in the MAgPIE runs GHG prices from REMIND will start to be applied. This essentially enables you to set whether or not (or when) GHG prices on land should be applied in MAgPIE. If you want MAgPIE to always apply the same GHG prices from REMIND, you should set this to a timestep corresponding to the start of your REMIND run, such as `y2020` to start in the 2020 timestep. If you want to disable GHG prices in MAgPIE, regardless of what REMIND finds, set this to the last timestep of the run (usually `y2150`). Values in between allow the simulation of policies where GHG prices are only applied in the land use sector after a certain year.
 
-Other, optional columns allow you to make a run start only after another has finished, set starting conditions, and give you finer control over which data is fed to MAgPIE.
+Other, optional columns allow you to make a run start only after another has finished, set starting conditions, and give you finer control over which data is fed from REMIND to MAgPIE or from MAgPIE to REMIND.
+
    - `path_gdx`, `path_gdx_ref`, `path_gdx_refpolicycost`, `path_gdx_carbonprice`, `path_gdx_bau`, : Override these same settings in REMIND's `scenario_config`, see [`03_RunningBundleOfRuns`](./03_RunningBundleOfRuns.md) for a detailed explanation.
       - You can set these switches either to the full path of a `fulldata.gdx` file or simply to the name of another scenario in the file (without the "C_"!). So if you want a certain scenario (say `NDC`) to use as starting point the results of a `Base` scenario, you can simply set `path_gdx` to `Base` and it will automatically locate the appropriate `fulldata.gdx` in `Base`, for example `path_remind/C_Base-rem-x/fulldata.gdx`.
       - If you set any of these `path_gdx…` columns (or `path_mif_ghgprice_land`, below) with a scenario name such as `Base`, the coupling script will not start any runs that depend on an unfinished run, and automatically start them when that run finishes. So, in the example above, you can set `start` to `1` in both `Base` and `NDC`, `NDC` will only start *after* `Base` is finished. `NDC-rem-2` will start after `NDC-rem-1` and `Base-rem-2` are finished.
@@ -145,6 +120,8 @@ Other, optional columns allow you to make a run start only after another has fin
    - `oldrun`: This setting can be used to continue a coupled run that had a different name and/or is in a different folder. It works in almost the same way as `path_gdx`, but it is used only if no REMIND run has been finished for this scenario. It will look in the path set in `start_bundle_coupled.R`'s `path_remind_oldruns`. This can be useful when continuing a previous experiment that was made in another REMIND copy, or after changing scenario names.
    - `path_report: Provide a path to a MAgPIE report here if you want REMIND to start with it. It overwrites whatever might have been automatically found from former MAgPIE runs. 
    - `cm_nash_autoconverge_lastrun`: can be used to specify `cm_nash_autoconverge`, but only for the last REMIND run, for example to increase precision there by setting it to `2`.
+   - `cfg_mag$...`: If you don't want to select composed scenarios in MAgPIE to address switches, you can directly address individual MAgPIE switches in the `scenario_config_coupled.csv`. Add any number of columns to your `scenario_config_coupled.csv` that have the name of the MAgPIE switch as the column name. They need to start with `cfg_mag$`. For example: if you want to set `gms$s56_cprice_red_factor` to `3.14` for `SSP2-NPi`, add the column `cfg_mag$gms$s56_cprice_red_factor` to your `scenario_config_coupled.csv` and fill in `3.14` in the row that defines `SSP2-NPi`.
+   - `var_luc`: Controls, which variable to use in REMIND to represent land-use change (LUC) CO2 emissions from MAgPIE (`co2luc` in REMIND). By default, this switch is set to `smooth` such that the variable `Emissions|CO2|Land|+|Land-use Change` is used. This variable was i.a. obtained by applying a low-pass filter to the raw LUC emissions in order to smooth out spikes. Alternatively, this switch can be set to `raw`. Then the unfiltered variable `Emissions|CO2|Land RAW|+|Land-use Change` is used instead.
 
 
 ### Perform test start before actually submitting runs
@@ -177,7 +154,7 @@ If you pass `--interactive` as a flag, the script asks you to choose the scenari
 Rscript start_bundle_coupled.R [configfile]
 ```
 
-You can append `&> start_log.txt` (or a different filename) to this command if you want to save the log of this procedure to a file, instead of printing it to the screen. You can have a look with `less start_log.txt`.
+You can use `Rscript start_bundle_coupled.R [configfile] | tee -a start_log.txt` (or a different filename) if you want to save the log of this procedure to a file, additionally to printing it to the screen.
 
 # Check the convergence
 
@@ -213,7 +190,7 @@ There are two components of the REMIND-MAgPIE coupling: the prominent dynamic pa
 * GHG emission baselines for SSPs/RCPs (delivered to REMIND via (updated in coupled runs)
 * total agricultural production costs (fixed for standalone and coupled)
 
-Please find here a [detailed list of the REMIND input files and were they come from](https://redmine.pik-potsdam.de/projects/remind-r/wiki/Updating_inputs_from_MAgPIE).
+Please find a detailed list of the REMIND input files and were they come from [in the gitlab wiki](https://gitlab.pik-potsdam.de/REMIND/wiki/-/wikis/Updating-Inputs-from-Magpie).
 
 ### Assumptions
 
@@ -229,6 +206,7 @@ The meta scripts for coupled runs that configure the models, start the runs, and
 <img src="figures/coupling-scripts.png" style="display: block; margin: auto;" />
 
 * `start_bundle_coupled.R`
+  * installs MAgPIE dependencies, ensures both REMIND and MAgPIE run in the same renv
   * reads scenario_config_coupled.csv and scenario_config.csv files and updates model cfgs accordingly
   * saves all settings (including cfgs) to individual `.RData` files in the REMIND main folder such as `C_Base-rem-x.RData`
   * sends a job to the cluster for each scenario specified in the csvs. Each job executes `start_coupled.R`.

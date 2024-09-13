@@ -35,9 +35,9 @@ scenarioAndReference=("SDP_EI-PkBudg650" "SDP_EI-NPi" \
 "SDP_MC-NPi" "SDP_MC-NPi" \
 "SDP_RC-PkBudg650" "SDP_RC-NPi" \
 "SDP_RC-NPi" "SDP_RC-NPi" \
-"SSP2EU-NDC" "SSP2EU-NPi" \
-"SSP2EU-PkBudg650" "SSP2EU-NPi"
-"SSP2EU-NPi" "SSP2EU-NPi"
+"SSP2-NDC" "SSP2-NPi" \
+"SSP2-PkBudg650" "SSP2-NPi"
+"SSP2-NPi" "SSP2-NPi"
 )
 
 # generate scenario selection string as expected by policyCosts
@@ -49,15 +49,21 @@ scenarioAndReference=( $( IFS="," ; echo "${scenarioAndReference[*]}") )
 Rscript output.R comp=T output=policyCosts outputdir=$scenarioAndReference
 ```
 
-Short version if you have a single base run for all your scenarios:
+Short version if you have a single base run for all your scenarios and want to automatically start a compareScenario2 and an IIASA export:
 ```
 # NGFS
 remnr=5
-runs=(h_cpol h_ndc o_1p5c o_2p d_delfrag d_rap)
+runs=(h_cpol h_ndc o_2c o_1p5c o_lowdem d_delfrag d_strain)
 baserun=h_cpol
 
-outputarray=( "${runs[@]/%/-rem-${remnr},${baserun}-rem-${remnr}}" )
-outputarray=( "${outputarray[@]/#/output/C_}" )
-outputstring="$(IFS=,; echo "${outputarray[*]}")"
-Rscript output.R comp=T output=policyCosts outputdir=$outputstring
+outputarraypc=( "${runs[@]/%/-rem-${remnr},output/C_${baserun}-rem-${remnr}}" )
+outputarraypc=( "${outputarraypc[@]/#/output/C_}" )
+outputstringpc="$(IFS=,; echo "${outputarraypc[*]}")"
+Rscript scripts/output/comparison/policyCosts.R outputdirs=$outputstringpc special_requests=
+
+outputarraycs=( "${runs[@]/%/-rem-${remnr}}" )
+outputarraycs=( "${outputarraycs[@]/#/output/C_}" )
+outputstringcs="$(IFS=,; echo "${outputarraycs[*]}")"
+Rscript output.R comp=export output=xlsx_IIASA outputdir=$outputstringcs project=NGFS_v4 filename_prefix=NGFS_v4
+Rscript output.R comp=comparison output=compareScenarios2 outputdir=$outputstringcs filename_prefix=NGFS_v4 slurmConfig=priority profileNames=REMIND-MAgPIE
 ```

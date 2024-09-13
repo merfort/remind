@@ -55,9 +55,9 @@ REMIND uses [renv](https://rstudio.github.io/renv/) for managing required R pack
 The `piamenv` functions explained earlier should cover all common tasks, use the following for more control.
 - `renv::install("package@2.3.4")` install specific package version
 - `renv::install("githubuser/package", ref = "<commit hash>")` install package from GitHub, optionally provide commit hash
-- `renv::install("/p/tmp/username/yourpackagefolder")` install package from sources
+- `renv::install("/p/tmp/username/yourpackagefolder")` install package from sources. Always use an absolute path!
 - `renv::remove("package")` uninstall package
-- `renv::update(exclude = "renv")` (`make update-all-renv`) update all packages except renv (please do not update renv itself)
+- `renv::update(exclude = "renv")` (`make update-renv-all`) update all packages except renv (please do not update renv itself)
 - `renv::update("package")` update package
 - `renv::snapshot()` write renv.lock
 - `renv::status()` show differences between library and renv.lock
@@ -68,4 +68,4 @@ The `piamenv` functions explained earlier should cover all common tasks, use the
 When testing packages in development use `renv::install("githubuser/package")` to install the package from your fork. Do not set `options(autoRenvUpdates = TRUE)` and be careful with updates, your custom package might get overwritten otherwise.
 
 # legacy snapshots
-Before REMIND started using renv it was using so-called "snapshots" to get a stable package environment. You can restore this snapshot machinery (and disable renv) by renaming `.snapshot.Rprofile` -> `.Rprofile`. If you do, please make sure to *not* commit your changes to `.Rprofile`. For coupled model runs you need to use snapshots, renv does not cover that use case yet. Snapshot support will be removed when coupled model runs are possible with renv.
+Before REMIND started using renv it was using so-called "snapshots" to get a stable package environment. Snapshot support was removed on 2023-07-13.

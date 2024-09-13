@@ -1,13 +1,18 @@
-# |  (C) 2006-2022 Potsdam Institute for Climate Impact Research (PIK)
+# |  (C) 2006-2024 Potsdam Institute for Climate Impact Research (PIK)
 # |  authors, and contributors see CITATION.cff file. This file is part
 # |  of REMIND and licensed under AGPL-3.0-or-later. Under Section 7 of
 # |  AGPL-3.0, you are granted additional permissions described in the
 # |  REMIND License Exception, version 1.0 (see LICENSE file).
 # |  Contact: remind@pik-potsdam.de
 
-run <- function(start_subsequent_runs = TRUE) {
+run <- function() {
 
   load("config.Rdata")
+
+  if (cfg$pythonEnabled == "on"){
+    # Set environment variables so that reticulate finds the configured Python virtual env
+    Sys.setenv(RETICULATE_PYTHON = piamenv::pythonBinPath(".venv"))
+  }
 
   # Save start time
   timeGAMSStart <- Sys.time()
@@ -73,21 +78,7 @@ run <- function(start_subsequent_runs = TRUE) {
             sub("'([^']*)'.'([^']*)'.'([^']*)'.'([^']*)' (.*)[ ,][ /];?",
                 "pm_cesdata(\"\\1\",\"\\2\",\"\\3\",\"\\4\") = \\5;", x = .) %>%
             write(file_name)
-
-
-          pm_cesdata_putty = system("gdxdump fulldata.gdx symb=pm_cesdata_putty", intern = TRUE)
-          if (length(pm_cesdata_putty) == 2){
-            tmp_putty =  gsub("^Parameter *([A-z_(,)])+cesParameters\\).*$",'\\1"quantity")  =   0;',  pm_cesdata_putty[2])
-          } else {
-            tmp_putty = pm_cesdata_putty[-(1:2)] %>%
-              grep("quantity", x = ., value = TRUE) %>%
-              grep(expr_ces_in,x = ., value = T)
-          }
-          tmp_putty %>%
-            sub("'([^']*)'.'([^']*)'.'([^']*)'.'([^']*)' (.*)[ ,][ /];?",
-                "pm_cesdata_putty(\"\\1\",\"\\2\",\"\\3\",\"\\4\") = \\5;", x = .)%>% write(file_name,append =T)
-        }
-
+        } 
         getLoadFile()
 
         # Store all the interesting output
@@ -130,7 +121,7 @@ run <- function(start_subsequent_runs = TRUE) {
     cat("\nREMIND run finished!\n\n")
 
     # Create solution report for Nash runs
-    if (cfg$gms$optimization == "nash" && cfg$gms$cm_nash_mode != "debug" && file.exists("fulldata.gdx")) {
+    if (cfg$gms$optimization == "nash" && cfg$gms$cm_nash_mode != 1 && file.exists("fulldata.gdx")) {
       system("gdxdump fulldata.gdx Format=gamsbas Delim=comma Output=output_nash.gms")
       file.append("full.lst", "output_nash.gms")
       file.remove("output_nash.gms")
@@ -140,86 +131,19 @@ run <- function(start_subsequent_runs = TRUE) {
     cat("\nREMIND was compiled but not executed, because cfg$action was set to 'c'\n\n")
   }
 
-  explain_modelstat <- c("1" = "Optimal", "2" = "Locally Optimal", "3" = "Unbounded", "4" = "Infeasible",
-                         "5" = "Locally Infeasible", "6" = "Intermediate Infeasible", "7" = "Intermediate Nonoptimal")
-  modelstat <- numeric(0)
-  stoprun <- FALSE
+  #====================== Model summary ===========================
 
-  # to facilitate debugging, look which files were created.
-  message("Model summary:")
-  # Print REMIND runtime
-  message("  gams_runtime is ", round(gams_runtime,1), " ", units(gams_runtime), ".")
-  if (! file.exists("full.gms")) {
-    message("! full.gms does not exist, so the REMIND GAMS code was not generated.")
-    stoprun <- TRUE
-  } else {
-    message("  full.gms exists, so the REMIND GAMS code was generated.")
-    if (! file.exists("full.lst") | ! file.exists("full.log")) {
-      message("! full.log or full.lst does not exist, so GAMS did not run.")
-      stoprun <- TRUE
-    } else {
-      message("  full.log and full.lst exist, so GAMS did run.")
-      if (! file.exists("abort.gdx")) {
-        message("  abort.gdx does not exist, a file written automatically for some types of errors.")
-      } else {
-        message("! abort.gdx exists, a file containing the latest data at the point GAMS aborted execution.")
-      }
-      if (! file.exists("non_optimal.gdx")) {
-        message("  non_optimal.gdx does not exist, a file written if at least one iteration did not find a locally optimal solution.")
-      } else {
-        modelstat_no <- as.numeric(readGDX(gdx = "non_optimal.gdx", "o_modelstat", format = "simplest"))
-        max_iter_no  <- as.numeric(readGDX(gdx = "non_optimal.gdx", "o_iterationNumber", format = "simplest"))
-        message("  non_optimal.gdx exists, because iteration ", max_iter_no, " did not find a locally optimal solution. ",
-          "modelstat: ", modelstat_no, if (modelstat_no %in% names(explain_modelstat)) paste0(" (", explain_modelstat[modelstat_no], ")"))
-        modelstat[[as.character(max_iter_no)]] <- modelstat_no
-      }
-      if(! file.exists("fulldata.gdx")) {
-        message("! fulldata.gdx does not exist, so output generation will fail.")
-        if (cfg$action == "ce") {
-          stoprun <- TRUE
-        }
-      } else {
-        modelstat_fd <- as.numeric(readGDX(gdx = "fulldata.gdx", "o_modelstat", format = "simplest"))
-        max_iter_fd  <- as.numeric(readGDX(gdx = "fulldata.gdx", "o_iterationNumber", format = "simplest"))
-        message("  fulldata.gdx exists, because iteration ", max_iter_fd, " was successful. ",
-          "modelstat: ", modelstat_fd, if (modelstat_fd %in% names(explain_modelstat)) paste0(" (", explain_modelstat[modelstat_fd], ")"))
-        modelstat[[as.character(max_iter_fd)]] <- modelstat_fd
-      }
-      if (length(modelstat) > 0) {
-        modelstat <- modelstat[which.max(names(modelstat))]
-        message("  Modelstat after ", as.numeric(names(modelstat)), " iterations: ", modelstat,
-                if (modelstat %in% names(explain_modelstat)) paste0(" (", explain_modelstat[modelstat], ")"))
-      }
-      logStatus <- grep("*** Status", readLines("full.log"), fixed = TRUE, value = TRUE)
-      message("  full.log states: ", paste(logStatus, collapse = ", "))
-      if (! all("*** Status: Normal completion" == logStatus)) stoprun <- TRUE
-    }
-  }
-
-  if (identical(cfg$gms$optimization, "nash") && file.exists("full.lst") && cfg$action == "ce") {
-    message("\nInfeasibilities extracted from full.lst with nashstat -F:")
-    command <- paste(
-      "li=$(nashstat -F | wc -l); cat",   # li-1 = #infes
-      "<(if (($li < 2)); then echo no infeasibilities found; fi)",
-      "<(if (($li > 1)); then nashstat -F | head -n 2 | sed -r 's/\\x1B\\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g'; fi)",
-      "<(if (($li > 4)); then echo ... $(($li - 3)) infeasibilities omitted, show all with 'nashstat -a' ...; fi)",
-      "<(if (($li > 2)); then nashstat -F | tail -n 1 | sed -r 's/\\x1B\\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g'; fi)",
-      "<(if (($li > 3)); then echo If infeasibilities appear some iterations before GAMS failed, check 'nashstat -a' carefully.; fi)",
-      "<(if (($li > 3)); then echo The error that stopped GAMS is probably not the actual reason to fail.; fi)")
-    nashstatres <- try(system2("/bin/bash", args = c("-c", shQuote(command))))
-    if (nashstatres != 0) message("nashstat not found, search for p80_repy in full.lst yourself.")
-  }
-  message("")
+  modelSummaryData <- modelSummary(".", gams_runtime)
 
   message("\nCollect and submit run statistics to central data base.")
   lucode2::runstatistics(file       = "runstatistics.rda",
-                         modelstat  = modelstat,
+                         modelstat  = modelSummaryData[["modelstat"]],
                          config     = cfg,
                          runtime    = gams_runtime,
                          setup_info = lucode2::setup_info(),
                          submit     = cfg$runstatistics)
 
-  if (stoprun) {
+  if (modelSummaryData[["stoprun"]]) {
     stop("GAMS did not complete its run, so stopping here:\n       No output is generated, no subsequent runs are started.\n",
          "       See the debugging tutorial at https://github.com/remindmodel/remind/blob/develop/tutorials/10_DebuggingREMIND.md")
   }
@@ -237,7 +161,9 @@ run <- function(start_subsequent_runs = TRUE) {
   # Use the name to check whether it is a coupled run (TRUE if the name ends with "-rem-xx")
   coupled_run <- grepl("-rem-[0-9]{1,2}$",cfg$title)
   # Don't start subsequent runs form here if REMIND runs coupled. They are started in start_coupled.R instead.
-  start_subsequent_runs <- (start_subsequent_runs | isTRUE(cfg$restart_subsequent_runs)) & !coupled_run
+  # Only if this run has been restarted manually cfg$restart_subsequent_runs is TRUE. If the run is resumed after
+  # preemtion it is just NULL and isFALSE(NULL) is FALSE, so subsequent standalone runs will be started.
+  start_subsequent_runs <- ! isFALSE(cfg$restart_subsequent_runs) && ! coupled_run
 
   if (start_subsequent_runs & (length(rownames(cfg$RunsUsingTHISgdxAsInput)) > 0)) {
     # track whether any subsequent run was actually started
@@ -261,8 +187,15 @@ run <- function(start_subsequent_runs = TRUE) {
 
       gdx_na <- is.na(cfg$files2export$start[pathes_to_gdx])
       needfulldatagdx <- names(cfg$files2export$start[pathes_to_gdx][cfg$files2export$start[pathes_to_gdx] == cfg_main$title & !gdx_na])
+      if (length(needfulldatagdx) == 0) {
+        message("Somehow, my gdx file was not needed although cfg$RunsUsingTHISgxAsInput expected that. Skipping ", run)
+        next
+      }
       message("In ", RData_file, ", use current fulldata.gdx path for ", paste(needfulldatagdx, collapse = ", "), ".")
       cfg$files2export$start[needfulldatagdx] <- fulldatapath
+      # let the subsequent run use the renv.lock of this run
+      message("In ", RData_file, ", use current renv.lock for subsequent run ", run, ".")
+      cfg$renvLockFromPrecedingRun <- file.path(cfg_main$remind_folder, cfg_main$results_folder, "renv.lock")
 
       save(cfg, file = RData_file)
 
@@ -325,7 +258,10 @@ run <- function(start_subsequent_runs = TRUE) {
 
   # make sure the renv used for the run is also used for generating output
   if (!is.null(renv::project())) {
-    stopifnot(`loaded renv and outputdir must be equal` = normalizePath(renv::project()) == normalizePath(outputdir))
+    if (normalizePath(renv::project()) != normalizePath(outputdir)) {
+      warning("loaded renv=", normalizePath(renv::project()), " and outputdir=", normalizePath(outputdir), " must be equal.")
+    }
+    message("Using ", normalizePath(renv::project()), " as renv project")
     argv <- c(get0("argv"), paste0("--renv=", renv::project()))
   }
 
