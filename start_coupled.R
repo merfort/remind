@@ -60,7 +60,7 @@ start_coupled <- function(path_remind, path_magpie, cfg_rem, cfg_mag, runname, m
   library(methods)
 #  library(remind2)
   library(devtools)
-  load_all("/p/projects/rescue/tier1_scenarios/v2/libraries/remind2_oae")
+  load_all("/p/projects/rescue/tier1_scenarios/v5p0/libraries/remind2_oae")
 
   errorsfound <- 0
   # delete entries in stack that contain needle and append new

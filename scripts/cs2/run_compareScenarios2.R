@@ -6,7 +6,7 @@
 # |  Contact: remind@pik-potsdam.de
 # library(remind2)
 library(devtools)
-load_all("/p/projects/rescue/tier1_scenarios/v2/libraries/remind2_oae")
+load_all("/p/projects/rescue/tier1_scenarios/v5p0/libraries/remind2_oae")
 
 if (!exists("source_include")) {
   lucode2::readArgs("outputDirs", "outFileName", "profileName")

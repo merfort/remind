@@ -11,7 +11,7 @@ create_input_for_45_carbonprice_exogenous<-function(gdx){
   library(gms,quietly=TRUE,warn.conflicts =FALSE)
   # require(remind2,quietly = TRUE,warn.conflicts =FALSE)
   library(devtools)
-  load_all("/p/projects/rescue/tier1_scenarios/v2/libraries/remind2")
+  load_all("/p/projects/rescue/tier1_scenarios/v5p0/libraries/remind2")
   
   p_fpath <- "./modules/45_carbonprice/exogenous/input/p45_tau_co2_tax.inc"
  
@@ -62,7 +62,7 @@ create_input_for_45_carbonprice_exogenous<-function(gdx){
    
   cat("*** EOF ",p_fpath,"\n", file = p_fpath, sep = "", append = TRUE)
   
-  load_all("/p/projects/rescue/tier1_scenarios/v2/libraries/remind2_oae")
+  load_all("/p/projects/rescue/tier1_scenarios/v5p0/libraries/remind2_oae")
 
 
 }
