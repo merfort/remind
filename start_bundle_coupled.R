@@ -77,7 +77,7 @@ path_magpie_oldruns <- file.path(path_magpie, "output")
 prefix_oldruns <-  "C_"
 
 # number of coupling iterations, can also be specified in path_settings_coupled
-max_iterations <- 5
+max_iterations <- 7
 
 # Number of coupling iterations (before final iteration) in which MAgPIE uses higher n600 resolution.
 # Until "max_iterations - n600_iterations" iteration MAgPIE runs with n200 resolution.
