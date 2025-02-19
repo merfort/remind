@@ -2,7 +2,7 @@ title;start;oldrun;path_report;qos;config/scenario_config.csv;no_ghgprices_land_
 #  H12 SSP2 - Defaults for reference;0;;;;;;;;;;;;;;;;;;
 SSP2-NDC;1;;;;SSP2|NDC|nocc_hist|rcp4p5;y2150;1;;;;;;;;;;1;;
 SSP2-NDCsy2025;0;;;;SSP2|NDC|nocc_hist|rcp4p5;y2150;1;;;;;;;;;;1;;
-SSP2-NPi;0;;;;SSP2|NPI|nocc_hist|rcp4p5;y2150;1;;;;;;;;;;1;;
+SSP2-NPi;1;;;;SSP2|NPI|nocc_hist|rcp4p5;y2150;1;;;;;;;;;;1;;
 SSP2-NPi2025;1;;;priority;SSP2|NPI|nocc_hist|rcp4p5;y2150;1;;;;;;;;;;1;;
 SSP2-PkBudg500;0;;;;SSP2|NDC|nocc_hist|rcp1p9;y2030;1;;;;;;;;;;1;;
 SSP2-PkBudg650;0;;;;SSP2|NDC|nocc_hist|rcp1p9;y2030;1;;;;;;;;;;1;;
