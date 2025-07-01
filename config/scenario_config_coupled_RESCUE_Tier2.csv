@@ -1,0 +1,19 @@
+title;start;copyConfigFrom;oldrun;path_report;qos;config/scenario_config.csv;no_ghgprices_land_until;var_luc;path_gdx;path_gdx_bau;path_gdx_ref;path_gdx_refpolicycost;cfg_mag$gms$s56_c_price_induced_aff;cfg_mag$gms$c32_aff_policy;cfg_mag$gms$c56_emis_policy;cfg_mag$gms$s15_elastic_demand;cfg_mag$gms$s29_treecover_target;cfg_mag$gms$s59_scm_target;cfg_mag$gms$c60_1stgen_biodem
+# H12 SSP2;;;;;;;;;;;;;;;;;;;
+SSP2-NDC;0;;;;;SSP2|NDC|AR-natveg|nocc_hist;y2150;raw;;;;;;;;1;0;0;const2030
+SSP2-NPi;0;;;;;SSP2|NPI|AR-natveg|nocc_hist;y2150;raw;;;;;;;;1;0;0;const2030
+SSP2-NPi2025;1;;;;priority;SSP2|NPI|AR-natveg|nocc_hist;y2150;raw;;;;;;;;1;0;0;const2030
+SSP2-PkBudg650;0;;;;;SSP2|NDC|AR-natveg|nocc_hist;y2030;raw;;;;;;;;1;0.02;0.2;const2030
+SSP2-PkBudg1000;0;;;;;SSP2|NDC|AR-natveg|nocc_hist;y2030;raw;;;;;;;;1;0.01;0.1;const2030
+SSP2-EcBudg400;0;;;;;SSP2|NDC|AR-plant|nocc_hist;y2030;raw;;;;;;;;1;0.02;0.2;const2030
+# RESCUE-Tier2;;;;;;;;;;;;;;;;;;;
+RESCUE-Tier2-loOS-def;1;;;;standby;SSP2|NDC|AR-natveg|nocc_hist;y2030;raw;;;;;1;ndc;reddnatveg_nosoil;1;0.02;0.2;const2030
+RESCUE-Tier2-hiOS-def;1;;;;standby;SSP2|NDC|AR-natveg|nocc_hist;y2035;raw;;;;;1;ndc;reddnatveg_nosoil;1;0.02;0.2;const2030
+RESCUE-Tier2-loOS-ARoff;1;RESCUE-Tier2-loOS-def;;;standby;;;;;;;;0;none;;;;;
+RESCUE-Tier2-hiOS-ARoff;1;RESCUE-Tier2-hiOS-def;;;standby;;;;;;;;0;none;;;;;
+RESCUE-Tier2-loOS-ESPoff;1;RESCUE-Tier2-loOS-def;;;standby;;;;;;;;;;ecoSysProtOff;;;;
+RESCUE-Tier2-hiOS-ESPoff;1;RESCUE-Tier2-hiOS-def;;;standby;;;;;;;;;;ecoSysProtOff;;;;
+RESCUE-Tier2-loOS-DACoff_EWoff;1;RESCUE-Tier2-loOS-def;;;standby;;;;;;;;;;;;;;
+RESCUE-Tier2-hiOS-DACoff_EWoff;1;RESCUE-Tier2-hiOS-def;;;standby;;;;;;;;;;;;;;
+RESCUE-Tier2-loOS-conv2070;1;RESCUE-Tier2-loOS-def;;;standby;;;;;;;;;;;;;;
+RESCUE-Tier2-hiOS-conv2070;1;RESCUE-Tier2-hiOS-def;;;standby;;;;;;;;;;;;;;
