@@ -183,6 +183,15 @@ p80_pvp_itr(ttot,trade,iteration+1)$((ttot.val ge cm_startyear) AND (NOT tradeSe
       )
      ;
 
+***make sure that initial coal prices are not too small
+if (iteration.val eq 1,
+  p80_pvp_itr(ttot, trade, iteration2)$( (ttot.val eq 2100) AND sameas(trade, "pecoal") AND (iteration2.val eq iteration.val + 1) ) = max(
+    1e-6, 
+    p80_pvp_itr(ttot, trade, iteration2)
+  );
+);
+
+
 *AJS* feed updated prices and quantities into the next iteration:
 *ML* adjustments in case of infeasibilities (increase import)
 loop(trade$(NOT tradeSe(trade)),

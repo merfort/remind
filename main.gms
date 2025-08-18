@@ -664,6 +664,17 @@ parameter
 *'          eq    2 $ per GJ
 *'
 parameter
+  cm_lim_bio_increase_cpl   "Limit by which bioenergy may be increased in between iterations"
+;
+  cm_lim_bio_increase_cpl  = -1;       !! def = -1
+*' Only relevant for MAgPIE-coupling. This switch limits bioenergy increase
+*' compared with last iteration. It only affects purpose grown lignocellulosic
+*' biomass. Needs to be a number greater equal zero.
+*' ATTENTION: not compatible with global bound set by cm_maxProdBiolc
+*' 
+*' * (-1)   off
+*' * (0.1)  bioenergy may only increase by 10 percent between iterations
+parameter
   cm_tradecostBio           "choose financial tradecosts multiplier for biomass (purpose grown pebiolc)"
 ;
   cm_tradecostBio     = 1;         !! def = 1

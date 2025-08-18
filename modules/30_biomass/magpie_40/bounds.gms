@@ -136,4 +136,92 @@ loop( ext_regi$(p30_bioprod_regi_lim(ext_regi)),
 );
 $ENDIF.bioprod_regi_lim
 
+$ifthen.cm_MAgPIE_coupling %cm_MAgPIE_coupling% == "on"
+*** Potentially limit jumps betweeen iterations in bioenergy production in the
+*** coupling to avoid infeasibilities in MAgPIE by only allowing production
+*** that is not too far away from the last iteration. Also make sure that there
+*** is always some (region-specific) minimum production allowed.
+if(NOT (cm_lim_bio_increase_cpl eq -1),
+  !! Upper bounds
+  vm_fuExtr.up(t,"CAZ","pebiolc","1")$(t.val le 2030) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"CAZ"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"CHA","pebiolc","1")$(t.val le 2030) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"CHA"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"EUR","pebiolc","1")$(t.val le 2030) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"EUR"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"IND","pebiolc","1")$(t.val le 2030) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"IND"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"JPN","pebiolc","1")$(t.val le 2030) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"JPN"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"LAM","pebiolc","1")$(t.val le 2030) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"LAM"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"MEA","pebiolc","1")$(t.val le 2030) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"MEA"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"NEU","pebiolc","1")$(t.val le 2030) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"NEU"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"OAS","pebiolc","1")$(t.val le 2030) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"OAS"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"REF","pebiolc","1")$(t.val le 2030) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"REF"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"SSA","pebiolc","1")$(t.val le 2030) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"SSA"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"USA","pebiolc","1")$(t.val le 2030) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"USA"), 0.1 * sm_EJ_2_TWa);
+  
+  vm_fuExtr.up(t,"CAZ","pebiolc","1")$(t.val gt 2030 AND t.val le 2050) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"CAZ"), 0.5 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"CHA","pebiolc","1")$(t.val gt 2030 AND t.val le 2050) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"CHA"), 0.5 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"EUR","pebiolc","1")$(t.val gt 2030 AND t.val le 2050) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"EUR"), 0.5 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"IND","pebiolc","1")$(t.val gt 2030 AND t.val le 2050) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"IND"), 0.5 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"JPN","pebiolc","1")$(t.val gt 2030 AND t.val le 2050) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"JPN"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"LAM","pebiolc","1")$(t.val gt 2030 AND t.val le 2050) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"LAM"), 0.5 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"MEA","pebiolc","1")$(t.val gt 2030 AND t.val le 2050) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"MEA"), 0.5 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"NEU","pebiolc","1")$(t.val gt 2030 AND t.val le 2050) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"NEU"), 0.5 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"OAS","pebiolc","1")$(t.val gt 2030 AND t.val le 2050) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"OAS"), 0.5 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"REF","pebiolc","1")$(t.val gt 2030 AND t.val le 2050) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"REF"), 0.5 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"SSA","pebiolc","1")$(t.val gt 2030 AND t.val le 2050) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"SSA"), 0.5 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"USA","pebiolc","1")$(t.val gt 2030 AND t.val le 2050) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"USA"), 0.5 * sm_EJ_2_TWa);
+  
+  vm_fuExtr.up(t,"CAZ","pebiolc","1")$(t.val gt 2050) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"CAZ"), 1.0 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"CHA","pebiolc","1")$(t.val gt 2050) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"CHA"), 5.0 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"EUR","pebiolc","1")$(t.val gt 2050) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"EUR"), 2.0 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"IND","pebiolc","1")$(t.val gt 2050) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"IND"), 2.0 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"JPN","pebiolc","1")$(t.val gt 2050) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"JPN"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"LAM","pebiolc","1")$(t.val gt 2050) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"LAM"), 5.0 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"MEA","pebiolc","1")$(t.val gt 2050) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"MEA"), 1.0 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"NEU","pebiolc","1")$(t.val gt 2050) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"NEU"), 1.0 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"OAS","pebiolc","1")$(t.val gt 2050) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"OAS"), 5.0 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"REF","pebiolc","1")$(t.val gt 2050) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"REF"), 1.0 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"SSA","pebiolc","1")$(t.val gt 2050) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"SSA"), 3.0 * sm_EJ_2_TWa);
+  vm_fuExtr.up(t,"USA","pebiolc","1")$(t.val gt 2050) = max((1 + cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"USA"), 3.0 * sm_EJ_2_TWa);
+
+  !! Lower bounds
+  vm_fuExtr.lo(t,"CAZ","pebiolc","1")$(t.val le 2030) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"CAZ"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"CHA","pebiolc","1")$(t.val le 2030) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"CHA"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"EUR","pebiolc","1")$(t.val le 2030) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"EUR"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"IND","pebiolc","1")$(t.val le 2030) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"IND"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"JPN","pebiolc","1")$(t.val le 2030) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"JPN"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"LAM","pebiolc","1")$(t.val le 2030) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"LAM"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"MEA","pebiolc","1")$(t.val le 2030) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"MEA"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"NEU","pebiolc","1")$(t.val le 2030) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"NEU"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"OAS","pebiolc","1")$(t.val le 2030) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"OAS"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"REF","pebiolc","1")$(t.val le 2030) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"REF"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"SSA","pebiolc","1")$(t.val le 2030) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"SSA"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"USA","pebiolc","1")$(t.val le 2030) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"USA"), 0.1 * sm_EJ_2_TWa);
+
+  vm_fuExtr.lo(t,"CAZ","pebiolc","1")$(t.val gt 2030 AND t.val le 2050) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"CAZ"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"CHA","pebiolc","1")$(t.val gt 2030 AND t.val le 2050) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"CHA"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"EUR","pebiolc","1")$(t.val gt 2030 AND t.val le 2050) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"EUR"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"IND","pebiolc","1")$(t.val gt 2030 AND t.val le 2050) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"IND"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"JPN","pebiolc","1")$(t.val gt 2030 AND t.val le 2050) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"JPN"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"LAM","pebiolc","1")$(t.val gt 2030 AND t.val le 2050) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"LAM"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"MEA","pebiolc","1")$(t.val gt 2030 AND t.val le 2050) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"MEA"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"NEU","pebiolc","1")$(t.val gt 2030 AND t.val le 2050) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"NEU"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"OAS","pebiolc","1")$(t.val gt 2030 AND t.val le 2050) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"OAS"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"REF","pebiolc","1")$(t.val gt 2030 AND t.val le 2050) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"REF"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"SSA","pebiolc","1")$(t.val gt 2030 AND t.val le 2050) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"SSA"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"USA","pebiolc","1")$(t.val gt 2030 AND t.val le 2050) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"USA"), 0.1 * sm_EJ_2_TWa);
+
+  vm_fuExtr.lo(t,"CAZ","pebiolc","1")$(t.val gt 2050) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"CAZ"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"CHA","pebiolc","1")$(t.val gt 2050) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"CHA"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"EUR","pebiolc","1")$(t.val gt 2050) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"EUR"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"IND","pebiolc","1")$(t.val gt 2050) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"IND"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"JPN","pebiolc","1")$(t.val gt 2050) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"JPN"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"LAM","pebiolc","1")$(t.val gt 2050) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"LAM"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"MEA","pebiolc","1")$(t.val gt 2050) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"MEA"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"NEU","pebiolc","1")$(t.val gt 2050) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"NEU"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"OAS","pebiolc","1")$(t.val gt 2050) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"OAS"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"REF","pebiolc","1")$(t.val gt 2050) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"REF"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"SSA","pebiolc","1")$(t.val gt 2050) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"SSA"), 0.1 * sm_EJ_2_TWa);
+  vm_fuExtr.lo(t,"USA","pebiolc","1")$(t.val gt 2050) = max((1 - cm_lim_bio_increase_cpl) * pm_pebiolc_demandmag(t,"USA"), 0.1 * sm_EJ_2_TWa);
+);
+$endif.cm_MAgPIE_coupling
+
 *** EOF ./modules/30_biomass/magpie_40/bounds.gms
