@@ -23,6 +23,7 @@ v6p0_SSP2-cp0590-r_on-p_all-a_c0600-b_full-d_off-def;0;;;;v6p0_SSP2-cp0590-r_off
 ### In-between scenarios;0;;;;;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_res-d_off-def;0;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;;;;;;;ecoSysProtForest;275;;;;;;;;
 v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_off-d_off-def;0;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_res-d_off-def;;;;;;;;;;;;;;;;
+v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_100-d_off-def;0;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_res-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_150-d_off-def;0;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_res-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_full-d_off-def;0;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_res-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0590-r_off-p_off-a_c0075-b_res-d_off-def;0;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_res-d_off-def;;;;;;;ecoSysProtOff;;;;;;;;;
@@ -36,6 +37,8 @@ v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_full-d_off-TCEx;0;;;;v6p0_SSP2-cp0590-r_o
 v6p0_SSP2-cp0590-r_off-p_for-a_c1800-b_res-d_off-def;0;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_res-d_off-def;;;;;;;;6600;;;;;;;;
 v6p0_SSP2-cp0590-r_on-p_all-a_c0600-b_full-d_off-cc;0;;;;v6p0_SSP2-cp0590-r_on-p_all-a_c0600-b_full-d_off-def;SSP2|NDC|cc|rcp2p6;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-cc;0;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;SSP2|NDC|cc|rcp2p6;;;;;;;;;;;;;;;
+v6p0_SSP2-cp0590-r_on-p_all-a_c0600-b_full-d_off-cc45;0;;;;v6p0_SSP2-cp0590-r_on-p_all-a_c0600-b_full-d_off-def;SSP2|NDC|cc|rcp4p5;;;;;;;;;;;;;;;
+v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-cc45;0;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;SSP2|NDC|cc|rcp4p5;;;;;;;;;;;;;;;
 ## Carbon Prices from PkBudg0600;0;;;;;;;;;;;;;;;;;;;;
 ### Corner scenarios;0;;;;;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0600-r_off-p_off-a_off-b_off-d_off-def;0;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;;;;;;;;;;;;;;;;
@@ -49,6 +52,7 @@ v6p0_SSP2-cp0600-r_on-p_all-a_c0600-b_full-d_off-def;0;;;;v6p0_SSP2-cp0590-r_on-
 ### In-between scenarios;0;;;;;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0600-r_off-p_for-a_c0075-b_res-d_off-def;0;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_res-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0600-r_off-p_for-a_c0075-b_off-d_off-def;0;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_off-d_off-def;;;;;;;;;;;;;;;;
+v6p0_SSP2-cp0600-r_off-p_for-a_c0075-b_100-d_off-def;0;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_100-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0600-r_off-p_for-a_c0075-b_150-d_off-def;0;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_150-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0600-r_off-p_for-a_c0075-b_full-d_off-def;0;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_full-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0600-r_off-p_off-a_c0075-b_res-d_off-def;0;;;;v6p0_SSP2-cp0590-r_off-p_off-a_c0075-b_res-d_off-def;;;;;;;;;;;;;;;;
@@ -62,6 +66,8 @@ v6p0_SSP2-cp0600-r_off-p_for-a_c0075-b_full-d_off-TCEx;0;;;;v6p0_SSP2-cp0590-r_o
 v6p0_SSP2-cp0600-r_off-p_for-a_c1800-b_res-d_off-def;0;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c1800-b_res-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0600-r_on-p_all-a_c0600-b_full-d_off-cc;0;;;;v6p0_SSP2-cp0590-r_on-p_all-a_c0600-b_full-d_off-def;SSP2|NDC|cc|rcp2p6;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0600-r_off-p_off-a_off-b_off-d_off-cc;0;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;SSP2|NDC|cc|rcp2p6;;;;;;;;;;;;;;;
+v6p0_SSP2-cp0600-r_on-p_all-a_c0600-b_full-d_off-cc45;0;;;;v6p0_SSP2-cp0590-r_on-p_all-a_c0600-b_full-d_off-def;SSP2|NDC|cc|rcp4p5;;;;;;;;;;;;;;;
+v6p0_SSP2-cp0600-r_off-p_off-a_off-b_off-d_off-cc45;0;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;SSP2|NDC|cc|rcp4p5;;;;;;;;;;;;;;;
 ## Carbon Prices from PkBudg0610;0;;;;;;;;;;;;;;;;;;;;
 ### Corner scenarios;0;;;;;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0610-r_off-p_off-a_off-b_off-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;;;;;;;;;;;;;;;;
@@ -75,6 +81,7 @@ v6p0_SSP2-cp0610-r_on-p_all-a_c0600-b_full-d_off-def;1;;;;v6p0_SSP2-cp0590-r_on-
 ### In-between scenarios;0;;;;;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0610-r_off-p_for-a_c0075-b_res-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_res-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0610-r_off-p_for-a_c0075-b_off-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_off-d_off-def;;;;;;;;;;;;;;;;
+v6p0_SSP2-cp0610-r_off-p_for-a_c0075-b_100-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_100-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0610-r_off-p_for-a_c0075-b_150-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_150-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0610-r_off-p_for-a_c0075-b_full-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_full-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0610-r_off-p_off-a_c0075-b_res-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_c0075-b_res-d_off-def;;;;;;;;;;;;;;;;
@@ -88,6 +95,8 @@ v6p0_SSP2-cp0610-r_off-p_for-a_c0075-b_full-d_off-TCEx;1;;;;v6p0_SSP2-cp0590-r_o
 v6p0_SSP2-cp0610-r_off-p_for-a_c1800-b_res-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c1800-b_res-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0610-r_on-p_all-a_c0600-b_full-d_off-cc;1;;;;v6p0_SSP2-cp0590-r_on-p_all-a_c0600-b_full-d_off-def;SSP2|NDC|cc|rcp2p6;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0610-r_off-p_off-a_off-b_off-d_off-cc;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;SSP2|NDC|cc|rcp2p6;;;;;;;;;;;;;;;
+v6p0_SSP2-cp0610-r_on-p_all-a_c0600-b_full-d_off-cc45;1;;;;v6p0_SSP2-cp0590-r_on-p_all-a_c0600-b_full-d_off-def;SSP2|NDC|cc|rcp4p5;;;;;;;;;;;;;;;
+v6p0_SSP2-cp0610-r_off-p_off-a_off-b_off-d_off-cc45;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;SSP2|NDC|cc|rcp4p5;;;;;;;;;;;;;;;
 ## Carbon Prices from PkBudg0630;0;;;;;;;;;;;;;;;;;;;;
 ### Corner scenarios;0;;;;;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0630-r_off-p_off-a_off-b_off-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;;;;;;;;;;;;;;;;
@@ -101,6 +110,7 @@ v6p0_SSP2-cp0630-r_on-p_all-a_c0600-b_full-d_off-def;1;;;;v6p0_SSP2-cp0590-r_on-
 ### In-between scenarios;0;;;;;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0630-r_off-p_for-a_c0075-b_res-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_res-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0630-r_off-p_for-a_c0075-b_off-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_off-d_off-def;;;;;;;;;;;;;;;;
+v6p0_SSP2-cp0630-r_off-p_for-a_c0075-b_100-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_100-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0630-r_off-p_for-a_c0075-b_150-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_150-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0630-r_off-p_for-a_c0075-b_full-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_full-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0630-r_off-p_off-a_c0075-b_res-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_c0075-b_res-d_off-def;;;;;;;;;;;;;;;;
@@ -114,6 +124,8 @@ v6p0_SSP2-cp0630-r_off-p_for-a_c0075-b_full-d_off-TCEx;1;;;;v6p0_SSP2-cp0590-r_o
 v6p0_SSP2-cp0630-r_off-p_for-a_c1800-b_res-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c1800-b_res-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0630-r_on-p_all-a_c0600-b_full-d_off-cc;1;;;;v6p0_SSP2-cp0590-r_on-p_all-a_c0600-b_full-d_off-def;SSP2|NDC|cc|rcp2p6;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0630-r_off-p_off-a_off-b_off-d_off-cc;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;SSP2|NDC|cc|rcp2p6;;;;;;;;;;;;;;;
+v6p0_SSP2-cp0630-r_on-p_all-a_c0600-b_full-d_off-cc45;1;;;;v6p0_SSP2-cp0590-r_on-p_all-a_c0600-b_full-d_off-def;SSP2|NDC|cc|rcp4p5;;;;;;;;;;;;;;;
+v6p0_SSP2-cp0630-r_off-p_off-a_off-b_off-d_off-cc45;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;SSP2|NDC|cc|rcp4p5;;;;;;;;;;;;;;;
 ## Carbon Prices from PkBudg0650;0;;;;;;;;;;;;;;;;;;;;
 ### Corner scenarios;0;;;;;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0650-r_off-p_off-a_off-b_off-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;;;;;;;;;;;;;;;;
@@ -127,6 +139,7 @@ v6p0_SSP2-cp0650-r_on-p_all-a_c0600-b_full-d_off-def;1;;;;v6p0_SSP2-cp0590-r_on-
 ### In-between scenarios;0;;;;;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0650-r_off-p_for-a_c0075-b_res-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_res-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0650-r_off-p_for-a_c0075-b_off-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_off-d_off-def;;;;;;;;;;;;;;;;
+v6p0_SSP2-cp0650-r_off-p_for-a_c0075-b_100-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_100-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0650-r_off-p_for-a_c0075-b_150-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_150-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0650-r_off-p_for-a_c0075-b_full-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_full-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0650-r_off-p_off-a_c0075-b_res-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_c0075-b_res-d_off-def;;;;;;;;;;;;;;;;
@@ -140,6 +153,8 @@ v6p0_SSP2-cp0650-r_off-p_for-a_c0075-b_full-d_off-TCEx;1;;;;v6p0_SSP2-cp0590-r_o
 v6p0_SSP2-cp0650-r_off-p_for-a_c1800-b_res-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c1800-b_res-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0650-r_on-p_all-a_c0600-b_full-d_off-cc;1;;;;v6p0_SSP2-cp0590-r_on-p_all-a_c0600-b_full-d_off-def;SSP2|NDC|cc|rcp2p6;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0650-r_off-p_off-a_off-b_off-d_off-cc;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;SSP2|NDC|cc|rcp2p6;;;;;;;;;;;;;;;
+v6p0_SSP2-cp0650-r_on-p_all-a_c0600-b_full-d_off-cc45;1;;;;v6p0_SSP2-cp0590-r_on-p_all-a_c0600-b_full-d_off-def;SSP2|NDC|cc|rcp4p5;;;;;;;;;;;;;;;
+v6p0_SSP2-cp0650-r_off-p_off-a_off-b_off-d_off-cc45;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;SSP2|NDC|cc|rcp4p5;;;;;;;;;;;;;;;
 ## Carbon Prices from PkBudg0700;0;;;;;;;;;;;;;;;;;;;;
 ### Corner scenarios;0;;;;;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0700-r_off-p_off-a_off-b_off-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;;;;;;;;;;;;;;;;
@@ -153,6 +168,7 @@ v6p0_SSP2-cp0700-r_on-p_all-a_c0600-b_full-d_off-def;1;;;;v6p0_SSP2-cp0590-r_on-
 ### In-between scenarios;0;;;;;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0700-r_off-p_for-a_c0075-b_res-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_res-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0700-r_off-p_for-a_c0075-b_off-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_off-d_off-def;;;;;;;;;;;;;;;;
+v6p0_SSP2-cp0700-r_off-p_for-a_c0075-b_100-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_100-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0700-r_off-p_for-a_c0075-b_150-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_150-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0700-r_off-p_for-a_c0075-b_full-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_full-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0700-r_off-p_off-a_c0075-b_res-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_c0075-b_res-d_off-def;;;;;;;;;;;;;;;;
@@ -166,6 +182,8 @@ v6p0_SSP2-cp0700-r_off-p_for-a_c0075-b_full-d_off-TCEx;1;;;;v6p0_SSP2-cp0590-r_o
 v6p0_SSP2-cp0700-r_off-p_for-a_c1800-b_res-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c1800-b_res-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0700-r_on-p_all-a_c0600-b_full-d_off-cc;1;;;;v6p0_SSP2-cp0590-r_on-p_all-a_c0600-b_full-d_off-def;SSP2|NDC|cc|rcp2p6;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0700-r_off-p_off-a_off-b_off-d_off-cc;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;SSP2|NDC|cc|rcp2p6;;;;;;;;;;;;;;;
+v6p0_SSP2-cp0700-r_on-p_all-a_c0600-b_full-d_off-cc45;1;;;;v6p0_SSP2-cp0590-r_on-p_all-a_c0600-b_full-d_off-def;SSP2|NDC|cc|rcp4p5;;;;;;;;;;;;;;;
+v6p0_SSP2-cp0700-r_off-p_off-a_off-b_off-d_off-cc45;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;SSP2|NDC|cc|rcp4p5;;;;;;;;;;;;;;;
 ## Carbon Prices from PkBudg0800;0;;;;;;;;;;;;;;;;;;;;
 ### Corner scenarios;0;;;;;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0800-r_off-p_off-a_off-b_off-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;;;;;;;;;;;;;;;;
@@ -179,6 +197,7 @@ v6p0_SSP2-cp0800-r_on-p_all-a_c0600-b_full-d_off-def;1;;;;v6p0_SSP2-cp0590-r_on-
 ### In-between scenarios;0;;;;;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0800-r_off-p_for-a_c0075-b_res-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_res-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0800-r_off-p_for-a_c0075-b_off-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_off-d_off-def;;;;;;;;;;;;;;;;
+v6p0_SSP2-cp0800-r_off-p_for-a_c0075-b_100-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_100-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0800-r_off-p_for-a_c0075-b_150-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_150-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0800-r_off-p_for-a_c0075-b_full-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_full-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0800-r_off-p_off-a_c0075-b_res-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_c0075-b_res-d_off-def;;;;;;;;;;;;;;;;
@@ -192,6 +211,8 @@ v6p0_SSP2-cp0800-r_off-p_for-a_c0075-b_full-d_off-TCEx;1;;;;v6p0_SSP2-cp0590-r_o
 v6p0_SSP2-cp0800-r_off-p_for-a_c1800-b_res-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c1800-b_res-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0800-r_on-p_all-a_c0600-b_full-d_off-cc;1;;;;v6p0_SSP2-cp0590-r_on-p_all-a_c0600-b_full-d_off-def;SSP2|NDC|cc|rcp2p6;;;;;;;;;;;;;;;
 v6p0_SSP2-cp0800-r_off-p_off-a_off-b_off-d_off-cc;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;SSP2|NDC|cc|rcp2p6;;;;;;;;;;;;;;;
+v6p0_SSP2-cp0800-r_on-p_all-a_c0600-b_full-d_off-cc45;1;;;;v6p0_SSP2-cp0590-r_on-p_all-a_c0600-b_full-d_off-def;SSP2|NDC|cc|rcp4p5;;;;;;;;;;;;;;;
+v6p0_SSP2-cp0800-r_off-p_off-a_off-b_off-d_off-cc45;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;SSP2|NDC|cc|rcp4p5;;;;;;;;;;;;;;;
 ## Carbon Prices from PkBudg1000;0;;;;;;;;;;;;;;;;;;;;
 ### Corner scenarios;0;;;;;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp1000-r_off-p_off-a_off-b_off-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;;;;;;;;;;;;;;;;
@@ -205,6 +226,7 @@ v6p0_SSP2-cp1000-r_on-p_all-a_c0600-b_full-d_off-def;1;;;;v6p0_SSP2-cp0590-r_on-
 ### In-between scenarios;0;;;;;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp1000-r_off-p_for-a_c0075-b_res-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_res-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp1000-r_off-p_for-a_c0075-b_off-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_off-d_off-def;;;;;;;;;;;;;;;;
+v6p0_SSP2-cp1000-r_off-p_for-a_c0075-b_100-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_100-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp1000-r_off-p_for-a_c0075-b_150-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_150-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp1000-r_off-p_for-a_c0075-b_full-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_full-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp1000-r_off-p_off-a_c0075-b_res-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_c0075-b_res-d_off-def;;;;;;;;;;;;;;;;
@@ -218,6 +240,8 @@ v6p0_SSP2-cp1000-r_off-p_for-a_c0075-b_full-d_off-TCEx;1;;;;v6p0_SSP2-cp0590-r_o
 v6p0_SSP2-cp1000-r_off-p_for-a_c1800-b_res-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c1800-b_res-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp1000-r_on-p_all-a_c0600-b_full-d_off-cc;1;;;;v6p0_SSP2-cp0590-r_on-p_all-a_c0600-b_full-d_off-def;SSP2|NDC|cc|rcp2p6;;;;;;;;;;;;;;;
 v6p0_SSP2-cp1000-r_off-p_off-a_off-b_off-d_off-cc;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;SSP2|NDC|cc|rcp2p6;;;;;;;;;;;;;;;
+v6p0_SSP2-cp1000-r_on-p_all-a_c0600-b_full-d_off-cc45;1;;;;v6p0_SSP2-cp0590-r_on-p_all-a_c0600-b_full-d_off-def;SSP2|NDC|cc|rcp4p5;;;;;;;;;;;;;;;
+v6p0_SSP2-cp1000-r_off-p_off-a_off-b_off-d_off-cc45;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;SSP2|NDC|cc|rcp4p5;;;;;;;;;;;;;;;
 ## Carbon Prices from PkBudg1300;0;;;;;;;;;;;;;;;;;;;;
 ### Corner scenarios;0;;;;;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp1300-r_off-p_off-a_off-b_off-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;;;;;;;;;;;;;;;;
@@ -231,6 +255,7 @@ v6p0_SSP2-cp1300-r_on-p_all-a_c0600-b_full-d_off-def;1;;;;v6p0_SSP2-cp0590-r_on-
 ### In-between scenarios;0;;;;;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp1300-r_off-p_for-a_c0075-b_res-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_res-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp1300-r_off-p_for-a_c0075-b_off-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_off-d_off-def;;;;;;;;;;;;;;;;
+v6p0_SSP2-cp1300-r_off-p_for-a_c0075-b_100-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_100-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp1300-r_off-p_for-a_c0075-b_150-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_150-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp1300-r_off-p_for-a_c0075-b_full-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_full-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp1300-r_off-p_off-a_c0075-b_res-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_c0075-b_res-d_off-def;;;;;;;;;;;;;;;;
@@ -244,6 +269,8 @@ v6p0_SSP2-cp1300-r_off-p_for-a_c0075-b_full-d_off-TCEx;1;;;;v6p0_SSP2-cp0590-r_o
 v6p0_SSP2-cp1300-r_off-p_for-a_c1800-b_res-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c1800-b_res-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp1300-r_on-p_all-a_c0600-b_full-d_off-cc;1;;;;v6p0_SSP2-cp0590-r_on-p_all-a_c0600-b_full-d_off-def;SSP2|NDC|cc|rcp2p6;;;;;;;;;;;;;;;
 v6p0_SSP2-cp1300-r_off-p_off-a_off-b_off-d_off-cc;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;SSP2|NDC|cc|rcp2p6;;;;;;;;;;;;;;;
+v6p0_SSP2-cp1300-r_on-p_all-a_c0600-b_full-d_off-cc45;1;;;;v6p0_SSP2-cp0590-r_on-p_all-a_c0600-b_full-d_off-def;SSP2|NDC|cc|rcp4p5;;;;;;;;;;;;;;;
+v6p0_SSP2-cp1300-r_off-p_off-a_off-b_off-d_off-cc45;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;SSP2|NDC|cc|rcp4p5;;;;;;;;;;;;;;;
 ## Carbon Prices from PkBudg1700;0;;;;;;;;;;;;;;;;;;;;
 ### Corner scenarios;0;;;;;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp1700-r_off-p_off-a_off-b_off-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;;;;;;;;;;;;;;;;
@@ -257,6 +284,7 @@ v6p0_SSP2-cp1700-r_on-p_all-a_c0600-b_full-d_off-def;1;;;;v6p0_SSP2-cp0590-r_on-
 ### In-between scenarios;0;;;;;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp1700-r_off-p_for-a_c0075-b_res-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_res-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp1700-r_off-p_for-a_c0075-b_off-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_off-d_off-def;;;;;;;;;;;;;;;;
+v6p0_SSP2-cp1700-r_off-p_for-a_c0075-b_100-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_100-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp1700-r_off-p_for-a_c0075-b_150-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_150-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp1700-r_off-p_for-a_c0075-b_full-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_full-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp1700-r_off-p_off-a_c0075-b_res-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_c0075-b_res-d_off-def;;;;;;;;;;;;;;;;
@@ -270,6 +298,8 @@ v6p0_SSP2-cp1700-r_off-p_for-a_c0075-b_full-d_off-TCEx;1;;;;v6p0_SSP2-cp0590-r_o
 v6p0_SSP2-cp1700-r_off-p_for-a_c1800-b_res-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c1800-b_res-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp1700-r_on-p_all-a_c0600-b_full-d_off-cc;1;;;;v6p0_SSP2-cp0590-r_on-p_all-a_c0600-b_full-d_off-def;SSP2|NDC|cc|rcp2p6;;;;;;;;;;;;;;;
 v6p0_SSP2-cp1700-r_off-p_off-a_off-b_off-d_off-cc;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;SSP2|NDC|cc|rcp2p6;;;;;;;;;;;;;;;
+v6p0_SSP2-cp1700-r_on-p_all-a_c0600-b_full-d_off-cc45;1;;;;v6p0_SSP2-cp0590-r_on-p_all-a_c0600-b_full-d_off-def;SSP2|NDC|cc|rcp4p5;;;;;;;;;;;;;;;
+v6p0_SSP2-cp1700-r_off-p_off-a_off-b_off-d_off-cc45;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;SSP2|NDC|cc|rcp4p5;;;;;;;;;;;;;;;
 ## Carbon Prices from PkBudg2700;0;;;;;;;;;;;;;;;;;;;;
 ### Corner scenarios;0;;;;;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp2700-r_off-p_off-a_off-b_off-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;;;;;;;;;;;;;;;;
@@ -283,6 +313,7 @@ v6p0_SSP2-cp2700-r_on-p_all-a_c0600-b_full-d_off-def;1;;;;v6p0_SSP2-cp0590-r_on-
 ### In-between scenarios;0;;;;;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp2700-r_off-p_for-a_c0075-b_res-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_res-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp2700-r_off-p_for-a_c0075-b_off-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_off-d_off-def;;;;;;;;;;;;;;;;
+v6p0_SSP2-cp2700-r_off-p_for-a_c0075-b_100-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_100-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp2700-r_off-p_for-a_c0075-b_150-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_150-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp2700-r_off-p_for-a_c0075-b_full-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c0075-b_full-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp2700-r_off-p_off-a_c0075-b_res-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_c0075-b_res-d_off-def;;;;;;;;;;;;;;;;
@@ -296,3 +327,5 @@ v6p0_SSP2-cp2700-r_off-p_for-a_c0075-b_full-d_off-TCEx;1;;;;v6p0_SSP2-cp0590-r_o
 v6p0_SSP2-cp2700-r_off-p_for-a_c1800-b_res-d_off-def;1;;;;v6p0_SSP2-cp0590-r_off-p_for-a_c1800-b_res-d_off-def;;;;;;;;;;;;;;;;
 v6p0_SSP2-cp2700-r_on-p_all-a_c0600-b_full-d_off-cc;1;;;;v6p0_SSP2-cp0590-r_on-p_all-a_c0600-b_full-d_off-def;SSP2|NDC|cc|rcp2p6;;;;;;;;;;;;;;;
 v6p0_SSP2-cp2700-r_off-p_off-a_off-b_off-d_off-cc;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;SSP2|NDC|cc|rcp2p6;;;;;;;;;;;;;;;
+v6p0_SSP2-cp2700-r_on-p_all-a_c0600-b_full-d_off-cc45;1;;;;v6p0_SSP2-cp0590-r_on-p_all-a_c0600-b_full-d_off-def;SSP2|NDC|cc|rcp4p5;;;;;;;;;;;;;;;
+v6p0_SSP2-cp2700-r_off-p_off-a_off-b_off-d_off-cc45;1;;;;v6p0_SSP2-cp0590-r_off-p_off-a_off-b_off-d_off-def;SSP2|NDC|cc|rcp4p5;;;;;;;;;;;;;;;
