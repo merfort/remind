@@ -398,7 +398,14 @@ $ifthen.carbonprice %carbonprice% == "functionalForm"
 
 *** Check whether difference in cumulative emissions between both time steps is greater than sm_peakbudget_diff_tolerance
 if (  (   cm_iterative_target_adj eq 9
-      AND abs(sm_peakbudget_diff) gt sm_peakbudget_diff_tolerance),
+      AND abs(sm_peakbudget_diff) gt sm_peakbudget_diff_tolerance
+      AND sm_interpret_peakbudget eq 0),
+  s80_bool = 0;
+  p80_messageShow("peakbudget") = YES;
+);
+if (  (   cm_iterative_target_adj eq 9
+      AND abs(sm_globalBudget_absDev) gt cm_budgetCO2_absDevTol
+      AND sm_interpret_peakbudget eq 1),
   s80_bool = 0;
   p80_messageShow("peakbudget") = YES;
 );
@@ -474,6 +481,7 @@ $ifthen.carbonprice %carbonprice% == "functionalForm"
         if(sameas(convMessage80, "peakbudgyr"),
 		      display "#### 6.) Years are different: cm_peakBudgYr is not equal to sm_peakBudgYr_check.";
           display cm_peakBudgYr;
+          display sm_peakBudgYr_check;
 	      );
         if(sameas(convMessage80, "peakbudget"),
 		      display "#### 6.) PeakBudget not reached: sm_peakbudget_diff is greater than sm_peakbudget_diff_tolerance.";

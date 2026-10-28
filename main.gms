@@ -563,6 +563,10 @@ parameter
   cm_taxCO2_IncAfterPeakBudgYr = 0; !! def = 0 . For weak targets (higher than 1100 Peak Budget), this value might need to increased to prevent continually increasing temperatures
 *'
 parameter
+  sm_interpret_peakbudget  "interpret cm_budgetCO2from2020 as peak budget for the whole timeframe, 2150 (0) or just until 2100 (1). (1) essentially allows positive emissions to continue after 2100"
+;
+  sm_interpret_peakbudget      = 1;   !! def = 1 !! regexp = is.nonnegative
+parameter
   sm_peakbudget_diff_tolerance  "convergence criterion for allowed difference between cumulative emissions in peak budget year and year of maximum cumulative emissions if both years are not the same. It is formulated as an absolute deviation from the target budget [GtCO2]"
 ;
   sm_peakbudget_diff_tolerance      = 1;   !! def = 1 !! regexp = is.nonnegative

@@ -83,10 +83,17 @@ if((cm_iterative_target_adj eq 5) OR (cm_iterative_target_adj eq 9),
       else
         p45_factorRescale_taxCO2(iteration) = max(0.1, (s45_actualbudgetco2/cm_budgetCO2from2020) ) ** s45_factorRescale_taxCO2_exponent_from10;
       );
-      p45_factorRescale_taxCO2_Funneled(iteration) 
+      !! Funnel CO2 tax rescale factor to avoid too strong jumps in CO2 price in later iterations
+      !! If the budget is still far away from the target budget, don't apply the funnel.
+      !! "Far away" here is defined as a difference of more than 5% of the target budget or more than 10 times the tolerance deviation from the target budget.
+      if((iteration.val gt 40) AND ((abs(sm_globalBudget_absDev) > 0.05*cm_budgetCO2from2020) or (abs(sm_globalBudget_absDev) > 10*cm_budgetCO2_absDevTol)),
+        p45_factorRescale_taxCO2_Funneled(iteration) = p45_factorRescale_taxCO2(iteration);
+      else
+        p45_factorRescale_taxCO2_Funneled(iteration) 
         = max(min( 2 * EXP( -0.15 * iteration.val ) + 1.01 ,p45_factorRescale_taxCO2(iteration)),
               1/ ( 2 * EXP( -0.15 * iteration.val ) + 1.01)
           );
+      );
     else !! if budget has turned negative, reduce CO2 price by 20%
       !! CO2 tax rescale factor
       p45_factorRescale_taxCO2(iteration) = 0.8;
